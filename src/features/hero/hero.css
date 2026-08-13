@@ -1,0 +1,215 @@
+.hero-narrative {
+  position: relative;
+  min-height: 220vh;
+  background: #081018;
+}
+.hero-narrative__sticky {
+  position: relative;
+  min-height: calc(100svh - 5rem);
+  display: grid;
+  align-items: center;
+  overflow: hidden;
+}
+html.js .hero-narrative__sticky {
+  position: sticky;
+  top: 0;
+}
+.hero-sky,
+.hero-sky__photograph,
+.hero-sky__canvas,
+.hero-sky__glow,
+.hero-sky__haze,
+.hero-sky__horizon {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.hero-sky {
+  background: #07111d;
+}
+.hero-sky__photograph {
+  background: url('/images/hero/coquimbo-night-sky.webp') center/cover;
+  filter: blur(3px) saturate(0.58) contrast(0.82) brightness(0.72);
+  transform: scale(1.02);
+  transition: filter 0.3s ease;
+}
+.hero-sky__canvas {
+  z-index: 1;
+  opacity: 0.2;
+}
+.hero-sky__glow {
+  z-index: 2;
+  background: radial-gradient(ellipse at 50% 100%, #f4bd63 0, #d88b4b 17%, transparent 58%);
+  mix-blend-mode: screen;
+  opacity: 0.88;
+}
+.hero-sky__haze {
+  z-index: 3;
+  background: linear-gradient(180deg, transparent 20%, #c7854b18 58%, #f4bd634d 100%);
+  backdrop-filter: blur(1.5px);
+}
+.hero-sky__horizon {
+  z-index: 4;
+  background: linear-gradient(0deg, #081018 0 3%, transparent 18%);
+}
+.hero-narrative__content {
+  position: relative;
+  z-index: 10;
+  width: min(calc(100% - 2rem), 760px);
+  min-height: calc(100svh - 5rem);
+  margin-inline: auto;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 1.5rem;
+  padding-block: 4rem 2rem;
+}
+.hero-narrative__stage,
+.hero-narrative__opening,
+.hero-narrative__messages,
+.hero-message {
+  display: grid;
+  place-items: center;
+}
+.hero-narrative__stage {
+  min-height: 0;
+}
+.hero-narrative__opening,
+.hero-narrative__messages,
+.hero-message {
+  grid-area: 1 / 1;
+  width: 100%;
+  text-align: center;
+}
+.hero-narrative__opening {
+  max-width: 42rem;
+  margin-inline: auto;
+}
+.hero-narrative__opening h1 {
+  max-width: 16ch;
+  margin-inline: auto;
+  font-size: clamp(2.5rem, 5vw, 3.25rem);
+  text-wrap: balance;
+}
+.hero-message h2 {
+  max-width: 18ch;
+  margin-inline: auto;
+  font-size: clamp(2rem, 4vw, 3rem);
+  text-wrap: balance;
+}
+.hero-message > p:last-child {
+  max-width: 36rem;
+  margin-inline: auto;
+  color: #d1dce1;
+  font-size: 1.15rem;
+  line-height: 1.65;
+}
+html.js .hero-message {
+  opacity: 0;
+  filter: blur(8px);
+}
+.hero-message--closing h2 {
+  color: #f4bd63;
+}
+.hero-narrative__footer {
+  display: grid;
+  justify-items: center;
+  gap: 0.75rem;
+  padding-bottom: 2rem;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.8rem;
+}
+.button {
+  display: inline-flex;
+  padding: 0.85rem 1.1rem;
+  border: 1px solid #506675;
+  text-decoration: none;
+  font-weight: 700;
+}
+.button-primary {
+  color: #081018;
+  background: #f4bd63;
+  border-color: #f4bd63;
+  transition:
+    box-shadow 0.3s ease,
+    filter 0.3s ease,
+    transform 0.3s ease;
+}
+.hero-progress {
+  width: 8rem;
+  height: 2px;
+  overflow: hidden;
+  background: #ffffff44;
+}
+.hero-progress span {
+  display: block;
+  height: 100%;
+  background: #f4bd63;
+  transform: scaleX(0);
+  transform-origin: left;
+}
+@media (max-width: 760px) {
+  .hero-narrative__content {
+    padding-block: 3rem 2rem;
+  }
+  html.js .hero-narrative__sticky,
+  html.js .hero-narrative__content {
+    min-height: calc(100svh - 8.4rem);
+  }
+  .hero-narrative__opening h1,
+  .hero-message h2 {
+    font-size: clamp(1.875rem, 9vw, 2.375rem);
+  }
+  .hero-copy,
+  .hero-message > p:last-child {
+    font-size: 1rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-narrative {
+    min-height: auto;
+  }
+  html.js .hero-narrative__sticky {
+    position: relative;
+    min-height: auto;
+    padding-block: 4rem;
+  }
+  .hero-sky__canvas {
+    display: none;
+  }
+  .hero-sky__photograph {
+    filter: none;
+  }
+  .hero-sky__glow,
+  .hero-sky__haze {
+    opacity: 0;
+  }
+  html.js .hero-narrative__content {
+    min-height: auto;
+    gap: 4rem;
+    padding-bottom: 9rem;
+  }
+  .hero-narrative__stage {
+    display: block;
+  }
+  html.js .hero-narrative__messages {
+    display: block;
+  }
+  html.js .hero-message {
+    display: block;
+    grid-area: auto;
+    margin-bottom: 4rem;
+    opacity: 1 !important;
+    filter: none !important;
+  }
+  html.js .hero-narrative__footer {
+    position: relative;
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+  }
+  .hero-progress {
+    display: none;
+  }
+}
