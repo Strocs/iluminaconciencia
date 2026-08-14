@@ -36,3 +36,37 @@ export interface CanvasRenderer extends HeroLifecycle {
 export interface FrameScheduler extends HeroLifecycle {
   request(render: FrameCallback): () => void
 }
+
+export interface HeroSceneState {
+  readonly opacity: number
+  readonly y: number
+}
+
+export interface HeroAnimationSnapshot {
+  readonly progress: NormalizedProgress
+  readonly scenes: readonly HeroSceneState[]
+}
+
+export interface NightSkyFrame {
+  readonly progress: NormalizedProgress
+  readonly animationTimeMs: number
+}
+
+export interface HeroAnimationState {
+  getSnapshot(): HeroAnimationSnapshot
+  setProgress(value: number): HeroAnimationSnapshot
+}
+
+export interface HeroConsumer extends HeroLifecycle {
+  project(snapshot: HeroAnimationSnapshot): void
+}
+
+export interface NightSkyConsumer extends HeroLifecycle {
+  draw(frame: NightSkyFrame): void
+  resize(): void
+}
+
+export interface CanvasTicker extends HeroLifecycle {
+  start(): void
+  stop(finalFrame?: NightSkyFrame): void
+}
