@@ -13,7 +13,7 @@ export const skyRendering = {
     { min: 0.6, max: 0.8 },
     { min: 0.9, max: 1 },
     { min: 1, max: 1.1 },
-    { min: 1.2, max: 2.2 },
+    { min: 1.2, max: 2.2 }
   ],
   parallaxOffsets: [0, 3, 9, 16, 24, 32, 38, 46],
   minimumDriftSpeed: 0.2,
@@ -26,6 +26,6 @@ export const skyRendering = {
     maximumAlpha: 1,
     fadeHeightRatio: 1,
     yShiftFactor: 1.2,
-    backdropBlurPixels: 2,
-  },
-} as const;
+    backdropBlurPixels: 2
+  }
+} as const

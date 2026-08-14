@@ -1,16 +1,16 @@
 ---
-import type { HeroScene } from '../data/hero-scenes';
+import type { HeroScene } from '../data/hero-scenes'
 
 const { scene, index } = Astro.props as {
-  scene: HeroScene;
-  index: number;
-};
+  scene: HeroScene
+  index: number
+}
 ---
 
 <article
   class:list={[
     'absolute inset-0 flex flex-col items-center justify-center p-6 text-center sm:p-10 [@media(max-height:34rem)]:p-3',
-    index === 0 ? 'opacity-100' : 'opacity-0',
+    index === 0 ? 'opacity-100' : 'opacity-0'
   ]}
   data-hero-scene={scene.id}
   aria-hidden={index === 0 ? undefined : 'true'}
@@ -18,14 +18,14 @@ const { scene, index } = Astro.props as {
 >
   {
     scene.eyebrow && (
-      <p class="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-accent [@media(max-height:34rem)]:mb-1">
+      <p class="mb-2 text-xs font-semibold tracking-[0.2em] text-accent uppercase [@media(max-height:34rem)]:mb-1">
         {scene.eyebrow}
       </p>
     )
   }
   <h1
     id={index === 0 ? 'hero-title' : undefined}
-    class="!max-w-none !text-4xl !leading-tight !tracking-tight font-serif italic text-slate-100 sm:!text-4xl [@media(max-height:34rem)]:!text-3xl"
+    class="!max-w-none font-serif !text-4xl !leading-tight !tracking-tight text-slate-100 italic sm:!text-4xl [@media(max-height:34rem)]:!text-3xl"
   >
     {scene.title}
   </h1>
@@ -40,7 +40,7 @@ const { scene, index } = Astro.props as {
     index === 0 && (
       <div class="mt-12 flex flex-col items-center gap-2 [@media(max-height:34rem)]:mt-4">
         <div class="h-12 w-px bg-gradient-to-b from-white/50 to-transparent [@media(max-height:34rem)]:h-6" />
-        <span class="font-mono text-[9px] uppercase tracking-[0.3em] text-slate-300 opacity-50">
+        <span class="font-mono text-[9px] tracking-[0.3em] text-slate-300 uppercase opacity-50">
           Desliza para conocer más
         </span>
       </div>

@@ -24,3 +24,5 @@ pnpm-debug.log*
 .idea/
 evidence/
 .playwright-cli/
+.codegraph/
+.atl/

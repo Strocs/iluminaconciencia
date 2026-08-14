@@ -1,8 +1,8 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Hero from '../features/hero/Hero.astro';
-import MapFallback from '../components/MapFallback.astro';
-import { observationPoints } from '../features/observation-points/fixtures';
+import Layout from '../layouts/Layout.astro'
+import Hero from '../features/hero/Hero.astro'
+import MapFallback from '../components/MapFallback.astro'
+import { observationPoints } from '../features/observation-points/fixtures'
 ---
 
 <Layout overlayHeader>
@@ -15,8 +15,8 @@ import { observationPoints } from '../features/observation-points/fixtures';
         </h2>
       </div>
       <p class="section-lede">
-        Este es un fixture local para la primera entrega vertical. Muestra los estados del dominio
-        que debemos hacer visibles antes de seleccionar datos en vivo y un proveedor de mapas.
+        Este es un fixture local para la primera entrega vertical. Muestra los estados del dominio que debemos hacer
+        visibles antes de seleccionar datos en vivo y un proveedor de mapas.
       </p>
     </div>
     <MapFallback network={{ points: observationPoints }} />

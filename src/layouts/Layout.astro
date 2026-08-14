@@ -1,11 +1,11 @@
 ---
-import '../styles/global.css';
+import '../styles/global.css'
 
 const {
   title = 'CALUZ · Red de observación',
   description = 'Punto de entrada provisional y accesible a la red de observación CALUZ.',
-  overlayHeader = false,
-} = Astro.props;
+  overlayHeader = false
+} = Astro.props
 ---
 
 <!doctype html>
@@ -28,33 +28,25 @@ const {
       class:list={[
         'measure flex min-h-20 items-center justify-between gap-8 border-b border-border max-md:flex-col max-md:items-start max-md:py-5',
         overlayHeader &&
-          'absolute inset-x-0 top-0 z-30 border-white/15 bg-hero-canvas/35 text-slate-100 backdrop-blur-sm',
+          'absolute inset-x-0 top-0 z-30 border-white/15 bg-hero-canvas/35 text-slate-100 backdrop-blur-sm'
       ]}
     >
       <a class="flex flex-col font-extrabold tracking-[0.12em] no-underline" href="/">
         CALUZ <span
-          class:list={[
-            'text-[0.65rem] font-medium tracking-[0.05em]',
-            overlayHeader ? 'text-slate-300' : 'text-muted',
-          ]}>red de observación nocturna</span
+          class:list={['text-[0.65rem] font-medium tracking-[0.05em]', overlayHeader ? 'text-slate-300' : 'text-muted']}
+          >red de observación nocturna</span
         >
       </a>
       <nav
-        class:list={[
-          'flex gap-6 text-sm max-md:flex-wrap',
-          overlayHeader ? 'text-slate-200' : 'text-subtle',
-        ]}
+        class:list={['flex gap-6 text-sm max-md:flex-wrap', overlayHeader ? 'text-slate-200' : 'text-subtle']}
         aria-label="Navegación principal"
       >
-        <a class="no-underline transition-colors hover:text-accent" href="/#hero">Por qué importa</a
-        >
+        <a class="no-underline transition-colors hover:text-accent" href="/#hero">Por qué importa</a>
         <a class="no-underline transition-colors hover:text-accent" href="/#map">Explorar puntos</a>
       </nav>
     </header>
     <main><slot /></main>
-    <footer
-      class="measure flex justify-between gap-4 border-t border-border py-8 text-xs text-faint max-md:flex-col"
-    >
+    <footer class="measure flex justify-between gap-4 border-t border-border py-8 text-xs text-faint max-md:flex-col">
       <p>Red de observación CALUZ · interfaz provisional</p>
       <a class="text-accent" href="/#map">Explorar la red</a>
     </footer>

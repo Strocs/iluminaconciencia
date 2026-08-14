@@ -1,8 +1,8 @@
 export interface ProminentStar {
-  xRatio: number;
-  yRatio: number;
-  magnitude: number;
-  color: string;
+  xRatio: number
+  yRatio: number
+  magnitude: number
+  color: string
 }
 
 export const prominentStars: readonly ProminentStar[] = [
@@ -15,5 +15,5 @@ export const prominentStars: readonly ProminentStar[] = [
   { xRatio: 0.7, yRatio: 0.25, magnitude: 0.03, color: '#a3c2ff' },
   { xRatio: 0.38, yRatio: 0.6, magnitude: -1.46, color: '#cce7ff' },
   { xRatio: 0.25, yRatio: 0.55, magnitude: 0.34, color: '#ffe3a0' },
-  { xRatio: 0.82, yRatio: 0.5, magnitude: 0.77, color: '#ffffff' },
-];
+  { xRatio: 0.82, yRatio: 0.5, magnitude: 0.77, color: '#ffffff' }
+]

@@ -1,8 +1,8 @@
 ---
-import StatusBadge from './StatusBadge.astro';
-import type { MapNetwork } from '../domain/observation-point';
-import '../features/observation-points/map.css';
-const { network } = Astro.props as { network: MapNetwork };
+import StatusBadge from './StatusBadge.astro'
+import type { MapNetwork } from '../domain/observation-point'
+import '../features/observation-points/map.css'
+const { network } = Astro.props as { network: MapNetwork }
 ---
 
 <div class="map-layout">
@@ -10,11 +10,7 @@ const { network } = Astro.props as { network: MapNetwork };
     <div class="map-lines" aria-hidden="true"></div>
     {
       network.points.map((point, index) => (
-        <a
-          class={`map-point point-${index + 1}`}
-          href={`/points/${point.id}`}
-          aria-label={`Abrir ${point.name}`}
-        >
+        <a class={`map-point point-${index + 1}`} href={`/points/${point.id}`} aria-label={`Abrir ${point.name}`}>
           {index + 1}
         </a>
       ))
@@ -37,11 +33,9 @@ const { network } = Astro.props as { network: MapNetwork };
                 <StatusBadge status={point.status} />
               </>
             </div>
-            <p class="text-subtle leading-normal">{point.everydayMeaning}</p>
+            <p class="leading-normal text-subtle">{point.everydayMeaning}</p>
             <p class="text-xs text-faint">
-              {point.updatedAt
-                ? `Actualizado el ${point.updatedAt}`
-                : 'Aún no hay fecha de observación'}
+              {point.updatedAt ? `Actualizado el ${point.updatedAt}` : 'Aún no hay fecha de observación'}
             </p>
             <a class="text-link" href={`/points/${point.id}`}>
               Leer ficha del punto <span aria-hidden="true">→</span>

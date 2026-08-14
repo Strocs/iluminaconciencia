@@ -1,4 +1,4 @@
-import { OBSERVATION_STATUS, type ObservationPoint } from '../../domain/observation-point';
+import { OBSERVATION_STATUS, type ObservationPoint } from '../../domain/observation-point'
 
 export const observationPoints: ReadonlyArray<ObservationPoint> = [
   {
@@ -15,14 +15,14 @@ export const observationPoints: ReadonlyArray<ObservationPoint> = [
       {
         label: 'Calidad del cielo',
         value: '21.4 mag/arcsec²',
-        meaning: 'Un cielo más oscuro permite ver más estrellas.',
+        meaning: 'Un cielo más oscuro permite ver más estrellas.'
       },
       {
         label: 'Ventana de lectura',
         value: 'Muestra nocturna',
-        meaning: 'Es una observación resumida, no un flujo en tiempo real.',
-      },
-    ],
+        meaning: 'Es una observación resumida, no un flujo en tiempo real.'
+      }
+    ]
   },
   {
     id: 'coastal-ridge',
@@ -38,9 +38,9 @@ export const observationPoints: ReadonlyArray<ObservationPoint> = [
       {
         label: 'Calidad del cielo',
         value: '20.1 mag/arcsec²',
-        meaning: 'Debe interpretarse junto con su fecha de actualización.',
-      },
-    ],
+        meaning: 'Debe interpretarse junto con su fecha de actualización.'
+      }
+    ]
   },
   {
     id: 'forest-edge',
@@ -51,10 +51,10 @@ export const observationPoints: ReadonlyArray<ObservationPoint> = [
     updatedAt: null,
     everydayMeaning: 'Un punto conocido que espera su primera observación utilizable.',
     context: 'No se muestran indicadores hasta que haya datos disponibles.',
-    indicators: [],
-  },
-];
+    indicators: []
+  }
+]
 
 export function getObservationPoint(id: string): ObservationPoint {
-  return observationPoints.find((point) => point.id === id) ?? observationPoints[0];
+  return observationPoints.find((point) => point.id === id) ?? observationPoints[0]
 }

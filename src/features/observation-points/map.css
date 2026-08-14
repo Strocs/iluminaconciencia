@@ -10,8 +10,7 @@
   border: 1px solid #385666;
   background:
     radial-gradient(circle at 35% 45%, #1c5263, transparent 1.2rem),
-    radial-gradient(circle at 70% 22%, #1c5263, transparent 1rem),
-    linear-gradient(145deg, #122431, #0b151d);
+    radial-gradient(circle at 70% 22%, #1c5263, transparent 1rem), linear-gradient(145deg, #122431, #0b151d);
 }
 .map-lines {
   position: absolute;
