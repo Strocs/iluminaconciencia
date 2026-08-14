@@ -1,0 +1,41 @@
+---
+import { bortleClasses } from '../data/bortle-classes';
+---
+
+<section
+  aria-label="Escala de Bortle"
+  class="flex w-full flex-col gap-2 font-sans [@media(max-height:34rem)]:gap-1"
+>
+  <div
+    class="mx-auto flex items-center gap-2 text-xs font-mono tracking-wider text-slate-300 uppercase [@media(max-height:34rem)]:text-[10px]"
+  >
+    <span
+      class="size-2.5 rounded-full bg-white transition-colors duration-200 animate-pulse"
+      data-bortle-indicator></span>
+    <span class="font-semibold">Escala de Bortle</span>
+  </div>
+  <div class="w-full overflow-x-auto scrollbar-none">
+    <ol class="grid min-w-162 grid-cols-8 overflow-hidden rounded-full">
+      {
+        bortleClasses.map((bortleClass, index) => (
+          <li
+            class:list={[
+              'group relative flex min-w-0 items-center justify-between gap-2 p-2 text-xs opacity-40 grayscale transition-all duration-200 select-none motion-reduce:transition-none data-[active]:z-10 data-[active]:opacity-100 data-[active]:grayscale-0 [@media(max-height:34rem)]:p-1.5',
+              index === 0 ? 'pl-4' : '',
+              index === bortleClasses.length - 1 ? 'pr-4' : '',
+              bortleClass.textTone === 'dark' ? 'text-slate-950' : 'text-white',
+            ]}
+            data-bortle-class={bortleClass.level}
+            aria-current={index === 0 ? 'true' : undefined}
+            style={`background-color: ${bortleClass.color}`}
+          >
+            <span class="mb-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-white text-xs font-bold text-slate-950 transition-all duration-150 group-data-[active]:scale-110 group-data-[active]:ring group-data-[active]:ring-black">
+              {bortleClass.label}
+            </span>
+            <span class="text-right text-[11px] font-bold leading-tight">{bortleClass.name}</span>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>

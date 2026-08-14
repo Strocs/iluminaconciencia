@@ -16,8 +16,8 @@ This is the initial Astro vertical slice for a progressive entry into the CALUZ 
 - `src/features/observation-points` contains provisional fixtures and point lookup.
 - `src/components` contains reusable Astro presentation pieces.
 - `src/layouts` owns the document shell and navigation.
-- `src/features/hero` contains the hero markup, narrative content and motion logic.
-- The hero uses `public/images/hero/coquimbo-night-sky.webp`, a locally optimized 1920x1080 crop from the upper-left area of the current client site banner at `https://iluminaconciencia.userena.digital/static/images/full_slider/banner-web-1.jpg`. The local asset is used for performance and does not hotlink the source image.
+- `src/features/hero` contains the Astro-first hero composition, its declarative data, and framework-free runtime.
+- The hero uses the approved `public/images/hero/iluminaconciencia-logo.png` and procedural Canvas layers; it does not include a photographic sky asset.
 - `src/pages` composes the home feature and static point routes.
 - `src/styles` contains Tailwind 4 import and global visual/accessibility rules.
 
@@ -34,7 +34,7 @@ pnpm preview
 
 ## Motion and reduced motion
 
-The hero is a continuous native-scroll narrative: artificial glow clears toward a starry sky while messages transition through the same visual field. With `prefers-reduced-motion: reduce`, all content remains in normal flow, visible, unpinned and without artificial narrative space.
+The hero is a continuous native-scroll narrative with a shared normalized progress stream for the scene, procedural sky, and Bortle scale. With `prefers-reduced-motion: reduce`, the overlaid composition remains static, exposes one active scene, and does not start the runtime.
 
 ## Provisional boundaries
 

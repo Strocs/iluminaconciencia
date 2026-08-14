@@ -1,59 +1,34 @@
 ---
-import { heroMessages } from './content';
-import './hero.css';
+import HeroBortleScale from './components/HeroBortleScale.astro';
+import HeroActions from './components/HeroActions.astro';
+import HeroBrand from './components/HeroBrand.astro';
+import HeroNarrative from './components/HeroNarrative.astro';
+import HeroSky from './components/HeroSky.astro';
+import { heroScenes } from './data/hero-scenes';
 ---
 
-<script is:inline>
-  document.documentElement.classList.add('js');
-</script>
-
-<section class="hero-narrative" id="hero" aria-labelledby="hero-title">
-  <div class="hero-narrative__sticky">
-    <div class="hero-sky" aria-hidden="true">
-      <div class="hero-sky__photograph"></div>
-      <canvas class="hero-sky__canvas" aria-hidden="true"></canvas>
-      <div class="hero-sky__glow"></div>
-      <div class="hero-sky__haze"></div>
-      <div class="hero-sky__horizon"></div>
+<section id="hero" class="relative min-h-[550dvh] bg-hero-canvas" aria-labelledby="hero-title">
+  <div class="sticky top-0 flex h-dvh flex-col justify-between overflow-hidden">
+    <HeroSky />
+    <HeroBrand />
+    <HeroNarrative scenes={heroScenes} />
+    <div
+      class="absolute inset-x-0 top-[calc(50%+6rem)] z-20 flex justify-center [@media(max-height:34rem)]:top-[calc(50%+4rem)]"
+      data-hero-actions
+    >
+      <HeroActions />
     </div>
-    <div class="hero-narrative__content">
-      <div class="hero-narrative__stage">
-        <div class="hero-narrative__opening">
-          <p class="eyebrow">IluminaConCiencia · Región de Coquimbo</p>
-          <h1 id="hero-title">
-            Medimos la contaminación lumínica para proteger los cielos de la Región de Coquimbo.
-          </h1>
-          <p class="hero-copy">
-            IluminaConCiencia genera información territorial para comprender el problema y apoyar
-            mejores decisiones.
-          </p>
-        </div>
-        <div class="hero-narrative__messages" aria-label="Narrativa del proyecto">
-          {
-            heroMessages.map((message, index) => (
-              <article class="hero-message" data-hero-message={index}>
-                <p class="eyebrow">{message.eyebrow}</p>
-                <h2>{message.title}</h2>
-                <p>{message.copy}</p>
-              </article>
-            ))
-          }
-          <article class="hero-message hero-message--closing" data-hero-message="closing">
-            <p class="eyebrow">Un derecho compartido</p>
-            <h2>Contemplar el firmamento es un derecho de todas y todos.</h2>
-          </article>
-        </div>
-      </div>
-      <div class="hero-narrative__footer">
-        <div class="actions">
-          <a class="button button-primary" href="#map">Explorar el mapa</a>
-          <a class="button text-ink" href="#map">Ir directamente a los datos</a>
-        </div>
-        <span class="hero-progress" aria-hidden="true"><span></span></span>
-      </div>
+    <div
+      class="relative z-10 mx-auto w-full max-w-5xl px-4 pb-6 sm:px-8 [@media(max-height:34rem)]:pb-3"
+    >
+      <HeroBortleScale />
     </div>
   </div>
 </section>
 
-<script src="./motion.ts"></script>
-<script src="./star-field.ts"></script>
+<script>
+  import { initializeHero } from './lib/runtime/initialize-hero';
+
+  const root = document.querySelector<HTMLElement>('#hero');
+  if (root) initializeHero(root);
+</script>
