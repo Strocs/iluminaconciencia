@@ -1,11 +1,9 @@
-import type {
-  HeroAnimationSnapshot,
-  HeroAnimationState,
-  HeroSceneState,
-  NormalizedProgress
-} from '../contracts/hero-runtime'
+import type { HeroAnimationSnapshot, HeroAnimationState, HeroSceneState } from '../contracts/hero-runtime'
 import { heroMotion } from '../../config/hero-motion'
-import { toNormalizedProgress } from '../progress/normalized-progress'
+
+function toProgress(value: number): number {
+  return Number.isFinite(value) ? Math.min(1, Math.max(0, value)) : 0
+}
 
 function ease(value: number): number {
   const clamped = Math.min(1, Math.max(0, value))
@@ -43,17 +41,17 @@ function createSceneStates(count: number, progress: number): readonly HeroSceneS
   return Object.freeze(states)
 }
 
-function createSnapshot(progress: NormalizedProgress, scenes: readonly HeroSceneState[]): HeroAnimationSnapshot {
+function createSnapshot(progress: number, scenes: readonly HeroSceneState[]): HeroAnimationSnapshot {
   return Object.freeze({ progress, scenes })
 }
 
 export function createHeroAnimationState(sceneCount: number): HeroAnimationState {
-  let snapshot = createSnapshot(toNormalizedProgress(0), createSceneStates(sceneCount, 0))
+  let snapshot = createSnapshot(0, createSceneStates(sceneCount, 0))
 
   return {
     getSnapshot: () => snapshot,
     setProgress: (value) => {
-      const progress = toNormalizedProgress(value)
+      const progress = toProgress(value)
       snapshot = createSnapshot(progress, createSceneStates(sceneCount, progress))
       return snapshot
     }

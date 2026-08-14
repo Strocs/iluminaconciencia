@@ -1,18 +1,5 @@
-declare const normalizedProgress: unique symbol
-
-export type NormalizedProgress = number & { readonly [normalizedProgress]: true }
-
-export type ProgressListener = (progress: NormalizedProgress) => void
-export type FrameCallback = (time: number) => void
-
 export interface HeroLifecycle {
   destroy(): void
-}
-
-export interface ProgressChannel {
-  get(): NormalizedProgress
-  set(value: number): void
-  subscribe(listener: ProgressListener): () => void
 }
 
 export interface NightSkyViewport {
@@ -22,7 +9,7 @@ export interface NightSkyViewport {
 }
 
 export interface NightSkyScene {
-  progress: NormalizedProgress
+  progress: number
   starVisibility: number
   lightPollution: number
   animationTime: number
@@ -33,22 +20,18 @@ export interface CanvasRenderer extends HeroLifecycle {
   draw(scene: NightSkyScene): void
 }
 
-export interface FrameScheduler extends HeroLifecycle {
-  request(render: FrameCallback): () => void
-}
-
 export interface HeroSceneState {
   readonly opacity: number
   readonly y: number
 }
 
 export interface HeroAnimationSnapshot {
-  readonly progress: NormalizedProgress
+  readonly progress: number
   readonly scenes: readonly HeroSceneState[]
 }
 
 export interface NightSkyFrame {
-  readonly progress: NormalizedProgress
+  readonly progress: number
   readonly animationTimeMs: number
 }
 

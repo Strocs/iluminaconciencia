@@ -11,17 +11,33 @@ export function createScenePresenter({ root }: CreateScenePresenterOptions): Her
 
   return {
     project: (snapshot: HeroAnimationSnapshot) => {
-      const nextActive = snapshot.scenes.reduce(
-        (active, scene, index, states) => (scene.opacity > states[active].opacity ? index : active),
-        0
-      )
+      const sceneCount = Math.min(scenes.length, snapshot.scenes.length)
+      if (sceneCount === 0) {
+        scenes.forEach((scene) => {
+          scene.style.visibility = 'hidden'
+          scene.setAttribute('aria-hidden', 'true')
+          scene.toggleAttribute('inert', true)
+        })
+        actions?.toggleAttribute('hidden', true)
+        actions?.toggleAttribute('inert', true)
+        actions?.setAttribute('aria-hidden', 'true')
+        activeIndex = -1
+        return
+      }
+      const nextActive = snapshot.scenes
+        .slice(0, sceneCount)
+        .reduce((active, scene, index, states) => (scene.opacity > states[active].opacity ? index : active), 0)
       scenes.forEach((scene, index) => {
         const visual = snapshot.scenes[index]
+        if (!visual) {
+          scene.style.visibility = 'hidden'
+          return
+        }
         scene.style.opacity = String(visual.opacity)
         scene.style.transform = `translateY(${visual.y}px)`
         scene.style.visibility = visual.opacity === 0 ? 'hidden' : 'visible'
       })
-      if (nextActive === activeIndex) return
+      if (nextActive === activeIndex && scenes.length === snapshot.scenes.length) return
 
       activeIndex = nextActive
       scenes.forEach((scene, index) => {
@@ -29,7 +45,7 @@ export function createScenePresenter({ root }: CreateScenePresenterOptions): Her
         scene.setAttribute('aria-hidden', String(!active))
         scene.toggleAttribute('inert', !active)
       })
-      const showActions = nextActive === scenes.length - 1
+      const showActions = nextActive === sceneCount - 1
       actions?.toggleAttribute('hidden', !showActions)
       actions?.toggleAttribute('inert', !showActions)
       actions?.setAttribute('aria-hidden', String(!showActions))

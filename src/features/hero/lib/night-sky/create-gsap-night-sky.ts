@@ -26,22 +26,38 @@ export function createGsapNightSky({ canvas, kind }: CreateGsapNightSkyOptions):
       devicePixelRatio: Math.min(window.devicePixelRatio || 1, skyRendering.maximumDevicePixelRatio)
     }
   }
-  const resize = (): void => renderer.resize(getViewport())
+  let progress = 0
+  const redraw = (): void => {
+    renderer.draw({
+      progress,
+      starVisibility: 1,
+      lightPollution: 1 - progress,
+      animationTime: 0
+    })
+  }
+  const resize = (): void => {
+    renderer.resize(getViewport())
+    redraw()
+  }
   const observer = new ResizeObserver(resize)
+  let destroyed = false
   observer.observe(canvas)
   resize()
 
   return {
     draw: (frame: NightSkyFrame) => {
+      progress = frame.progress
       renderer.draw({
-        progress: frame.progress,
+        progress,
         starVisibility: 1,
-        lightPollution: 1 - frame.progress,
+        lightPollution: 1 - progress,
         animationTime: frame.animationTimeMs
       })
     },
     resize,
     destroy: () => {
+      if (destroyed) return
+      destroyed = true
       observer.disconnect()
       renderer.destroy()
     }
