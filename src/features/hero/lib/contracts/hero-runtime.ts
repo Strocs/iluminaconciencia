@@ -11,7 +11,6 @@ export interface NightSkyViewport {
 export interface NightSkyScene {
   progress: number
   starVisibility: number
-  lightPollution: number
   animationTime: number
 }
 

@@ -1,5 +1,4 @@
 @import 'tailwindcss';
-@import '../features/hero/styles/hero-motion-tokens.css';
 
 @theme {
   --color-canvas: #081018;

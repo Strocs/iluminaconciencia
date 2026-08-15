@@ -1,23 +1,13 @@
 import { skyRendering } from '../../config/sky-rendering'
 import type { NightSkyConsumer, NightSkyFrame, NightSkyViewport } from '../contracts/hero-runtime'
-import { createLightPollutionRenderer } from './light-pollution-renderer'
 import { createStarFieldRenderer } from './star-field-renderer'
-
-const NIGHT_SKY_KINDS = {
-  STARS: 'stars',
-  POLLUTION: 'pollution'
-} as const
-
-type NightSkyKind = (typeof NIGHT_SKY_KINDS)[keyof typeof NIGHT_SKY_KINDS]
 
 interface CreateGsapNightSkyOptions {
   canvas: HTMLCanvasElement
-  kind: NightSkyKind
 }
 
-export function createGsapNightSky({ canvas, kind }: CreateGsapNightSkyOptions): NightSkyConsumer {
-  const renderer =
-    kind === NIGHT_SKY_KINDS.STARS ? createStarFieldRenderer(canvas) : createLightPollutionRenderer(canvas)
+export function createGsapNightSky({ canvas }: CreateGsapNightSkyOptions): NightSkyConsumer {
+  const renderer = createStarFieldRenderer(canvas)
   const getViewport = (): NightSkyViewport => {
     const { width, height } = canvas.getBoundingClientRect()
     return {
@@ -31,7 +21,6 @@ export function createGsapNightSky({ canvas, kind }: CreateGsapNightSkyOptions):
     renderer.draw({
       progress,
       starVisibility: 1,
-      lightPollution: 1 - progress,
       animationTime: 0
     })
   }
@@ -50,7 +39,6 @@ export function createGsapNightSky({ canvas, kind }: CreateGsapNightSkyOptions):
       renderer.draw({
         progress,
         starVisibility: 1,
-        lightPollution: 1 - progress,
         animationTime: frame.animationTimeMs
       })
     },

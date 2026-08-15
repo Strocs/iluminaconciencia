@@ -31,11 +31,7 @@ export function createHeroAnimation(root: HTMLElement): HeroLifecycle {
   const bortlePresenter = createGsapBortlePresenter({ root })
   const consumers = [scenePresenter, bortlePresenter] as const
   const starCanvas = root.querySelector<HTMLCanvasElement>(skyRendering.starCanvasSelector)
-  const pollutionCanvas = root.querySelector<HTMLCanvasElement>(skyRendering.lightPollutionCanvasSelector)
-  const nightSky = [
-    ...(starCanvas ? [createGsapNightSky({ canvas: starCanvas, kind: 'stars' as const })] : []),
-    ...(pollutionCanvas ? [createGsapNightSky({ canvas: pollutionCanvas, kind: 'pollution' as const })] : [])
-  ]
+  const nightSky = starCanvas ? [createGsapNightSky({ canvas: starCanvas })] : []
   const ticker = createCanvasTicker({ consumers: nightSky, getProgress: () => state.getSnapshot().progress })
   const project = (progress: number): void => {
     const snapshot = state.setProgress(progress)

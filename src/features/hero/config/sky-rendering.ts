@@ -3,7 +3,7 @@ export const skyRendering = {
   desktopStarLimit: 2200,
   starDensityDivisor: 600,
   starCanvasSelector: '[data-hero-stars]',
-  lightPollutionCanvasSelector: '[data-hero-light-pollution]',
+  lightPollutionSelector: '[data-hero-light-pollution]',
   starColors: ['#ffffff', '#ffffff', '#cce7ff', '#a3c2ff', '#ffe3a0', '#ffc890', '#ffb3b3'],
   skyGradient: { top: '#020308', bottom: '#050814' },
   layerStarSizes: [
@@ -22,10 +22,8 @@ export const skyRendering = {
   movingStarsRatio: 0.12,
   pollution: {
     baseColor: { red: 70, green: 83, blue: 98 },
-    intensity: 1,
-    maximumAlpha: 1,
-    fadeHeightRatio: 1,
-    yShiftFactor: 1.2,
-    backdropBlurPixels: 2
+    horizonSinkFactor: 0.5,
+    domeWidthFactor: 1,
+    domeHeightFactor: 0.55
   }
 } as const
