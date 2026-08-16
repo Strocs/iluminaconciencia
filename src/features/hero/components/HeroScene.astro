@@ -18,28 +18,28 @@ const { scene, index } = Astro.props as {
 >
   {
     scene.eyebrow && (
-      <p class="mb-2 text-xs font-semibold tracking-[0.2em] text-accent uppercase [@media(max-height:34rem)]:mb-1">
+      <p class="mb-2 text-xs font-semibold tracking-[0.2em] text-white uppercase [@media(max-height:34rem)]:mb-1">
         {scene.eyebrow}
       </p>
     )
   }
   <h1
     id={index === 0 ? 'hero-title' : undefined}
-    class="!max-w-none font-serif !text-4xl !leading-tight !tracking-tight text-slate-100 italic sm:!text-4xl [@media(max-height:34rem)]:!text-3xl"
+    class="max-w-none font-sans text-4xl leading-tight font-bold tracking-tight text-accent italic sm:text-4xl [@media(max-height:34rem)]:text-3xl"
   >
     {scene.title}
   </h1>
   {
     scene.copy && (
-      <p class="mt-2 max-w-lg text-sm leading-relaxed tracking-wide text-slate-300 opacity-80 sm:text-base [@media(max-height:34rem)]:mt-1 [@media(max-height:34rem)]:text-xs">
+      <p class="mt-2 max-w-xl text-sm leading-relaxed tracking-wide text-white/80 opacity-80 sm:text-base [@media(max-height:34rem)]:mt-1 [@media(max-height:34rem)]:text-xs">
         {scene.copy}
       </p>
     )
   }
   {
     index === 0 && (
-      <div class="mt-12 flex flex-col items-center gap-2 [@media(max-height:34rem)]:mt-4">
-        <div class="h-12 w-px bg-gradient-to-b from-white/50 to-transparent [@media(max-height:34rem)]:h-6" />
+      <div class="absolute top-2/3 flex flex-col items-center gap-2 [@media(max-height:34rem)]:mt-4">
+        <div class="h-12 w-px bg-linear-to-b from-white/50 to-transparent [@media(max-height:34rem)]:h-6" />
         <span class="font-mono text-[9px] tracking-[0.3em] text-slate-300 uppercase opacity-50">
           Desliza para conocer más
         </span>

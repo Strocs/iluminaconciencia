@@ -22,7 +22,7 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
-evidence/
 .playwright-cli/
 .codegraph/
 .atl/
+docs/

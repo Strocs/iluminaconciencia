@@ -1,0 +1,27 @@
+---
+import { skyRendering } from '../config/sky-rendering'
+const { baseColor, width, height, centerY, opacity, initialOpacity } = skyRendering.pollution
+const { red, green, blue } = baseColor
+const color = `${red}, ${green}, ${blue}`
+---
+
+<div
+  data-hero-light-pollution
+  class="pointer-events-none absolute inset-x-0 top-0 h-screen"
+  style={`
+    opacity: ${initialOpacity};
+    background:
+      radial-gradient(
+        ellipse ${width}vw ${height}lvh at 50% ${centerY}lvh,
+        rgba(${color}, ${opacity}) 0%,
+        rgba(${color}, 0.2) 100%
+      ),
+      radial-gradient(
+        ellipse 100vw 100lvh at 50% ${centerY}lvh,
+        rgba(${color}, 1) 0%,
+        rgba(${color}, 0.30) 100%
+      );
+  `}
+  aria-hidden="true"
+>
+</div>

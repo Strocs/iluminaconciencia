@@ -1,24 +1,8 @@
 ---
-import Layout from '../layouts/Layout.astro'
-import Hero from '../features/hero/Hero.astro'
-import MapFallback from '../components/MapFallback.astro'
-import { observationPoints } from '../features/observation-points/fixtures'
+import Layout from '@shared/components/Layout.astro'
+import Hero from '@features/hero/Hero.astro'
 ---
 
-<Layout overlayHeader>
+<Layout>
   <Hero />
-  <section id="map" class="measure py-28 max-md:py-16" tabindex="-1">
-    <div class="mb-16 flex max-w-none justify-between gap-12 max-md:flex-col">
-      <div>
-        <p class="eyebrow">Explora la red</p><h2>
-          Comienza por un punto<br /><em>que puedas comprender.</em>
-        </h2>
-      </div>
-      <p class="section-lede">
-        Este es un fixture local para la primera entrega vertical. Muestra los estados del dominio que debemos hacer
-        visibles antes de seleccionar datos en vivo y un proveedor de mapas.
-      </p>
-    </div>
-    <MapFallback network={{ points: observationPoints }} />
-  </section>
 </Layout>

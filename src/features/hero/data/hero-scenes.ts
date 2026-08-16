@@ -8,7 +8,7 @@ export interface HeroScene {
 export const heroScenes = [
   {
     id: 'introduction',
-    eyebrow: null,
+    eyebrow: 'IluminaConCiencia',
     title: 'Medimos la contaminación lumínica para proteger los cielos de la Región de Coquimbo',
     copy: 'IluminaConCiencia genera información territorial para comprender el problema y apoyar mejores decisiones'
   },
