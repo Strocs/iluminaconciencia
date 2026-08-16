@@ -1,30 +1,70 @@
 ---
 import { skyRendering } from '../config/sky-rendering'
-const { baseColor, domeHeightFactor, domeWidthFactor, horizonSinkFactor } = skyRendering.pollution
-const { red, green, blue } = baseColor
-const boostedRed = Math.round(red * 1.12)
-const boostedGreen = Math.round(green * 1.12)
-const boostedBlue = Math.round(blue * 1.12)
-const restCenter = 1 / (1 + horizonSinkFactor)
-// Static baseline (progress 0). The GSAP timeline tween (normal motion branch)
-// starts from these exact values and interpolates toward the sunk/faded state;
-// the reduced-motion branch inherits this static state unchanged.
-const pollutionStyle = [
-  `background: radial-gradient(ellipse ${domeWidthFactor * 100}vw ${domeHeightFactor * 100}dvh at 50% calc(var(--cy) * 100%), rgba(${boostedRed}, ${boostedGreen}, ${boostedBlue}, 0.9) 0%, rgba(${red}, ${green}, ${blue}, 0.4) 30%, rgba(${red}, ${green}, ${blue}, 0.15) 60%, rgba(${red}, ${green}, ${blue}, 0.05) 85%, rgba(${red}, ${green}, ${blue}, 0) 100%)`,
-  `height: ${(1 + horizonSinkFactor) * 100}dvh`,
-  `--cy: ${restCenter}`,
-  'opacity: 1'
-].join('; ')
+import LightPollution from './LightPollution.astro'
+const cssSkyBaselineStyle = `background: linear-gradient(to bottom, ${skyRendering.skyGradient.top}, ${skyRendering.skyGradient.bottom})`
 ---
 
-<div class="pointer-events-none absolute inset-0" aria-hidden="true">
-  <canvas data-hero-stars class="absolute inset-0 size-full" aria-hidden="true"></canvas>
-  <div
-    data-hero-light-pollution
-    class="pointer-events-none absolute inset-x-0 top-0"
-    style={pollutionStyle}
+<div data-hero-sky-host class="pointer-events-none absolute inset-0" aria-hidden="true">
+  <div data-hero-sky-baseline class="absolute inset-0" style={cssSkyBaselineStyle}></div>
+  <img
+    data-hero-sky-fallback
+    data-configured-src={skyRendering.fallbackImagePath}
+    data-placeholder-src={skyRendering.fallbackPlaceholderPath}
+    class="absolute inset-0 size-full object-cover"
+    alt=""
     aria-hidden="true"
-  >
-  </div>
-  <div class="absolute inset-0 bg-gradient-to-b from-hero-canvas/50 via-hero-canvas/10 to-hero-canvas/60"></div>
+    hidden
+  />
+  <canvas data-hero-stars class="absolute inset-0 size-full" aria-hidden="true"></canvas>
+  <LightPollution />
 </div>
+
+<script>
+  const isRootRelativeLocalPath = (value: string | undefined): value is string =>
+    Boolean(value?.startsWith('/') && !value.startsWith('//') && !value.includes('\\'))
+
+  document.querySelectorAll<HTMLElement>('[data-hero-sky-host]').forEach((host) => {
+    const canvas = host.querySelector<HTMLCanvasElement>('[data-hero-stars]')
+    const fallbackImage = host.querySelector<HTMLImageElement>('[data-hero-sky-fallback]')
+    if (!canvas || !fallbackImage) return
+
+    const configuredSource = fallbackImage.dataset.configuredSrc
+    const placeholderSource = fallbackImage.dataset.placeholderSrc
+    let source: 'configured' | 'placeholder' | undefined
+
+    const hideFallback = (): void => {
+      source = undefined
+      fallbackImage.hidden = true
+      fallbackImage.removeAttribute('src')
+    }
+    const showFallback = (): void => {
+      if (source) return
+      fallbackImage.hidden = false
+      source = isRootRelativeLocalPath(configuredSource) ? 'configured' : 'placeholder'
+      const nextSource = source === 'configured' ? configuredSource : placeholderSource
+      if (isRootRelativeLocalPath(nextSource)) fallbackImage.src = nextSource
+    }
+    const syncFallback = (): void => {
+      if (canvas.dataset.heroSkyFallback === 'visible') showFallback()
+      else hideFallback()
+    }
+
+    fallbackImage.addEventListener('error', () => {
+      if (canvas.dataset.heroSkyFallback !== 'visible') return
+      if (source === 'configured' && isRootRelativeLocalPath(placeholderSource)) {
+        source = 'placeholder'
+        fallbackImage.src = placeholderSource
+        return
+      }
+      source = undefined
+      fallbackImage.hidden = true
+      fallbackImage.removeAttribute('src')
+    })
+
+    new MutationObserver(syncFallback).observe(canvas, {
+      attributes: true,
+      attributeFilter: ['data-hero-sky-fallback']
+    })
+    syncFallback()
+  })
+</script>

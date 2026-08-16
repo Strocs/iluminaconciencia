@@ -46,9 +46,13 @@ export function createHeroTimeline({ root, state, consumers, ticker }: CreateHer
     scrub: true,
     onEnter: () => ticker.start(),
     onEnterBack: () => ticker.start(),
-    onLeave: () => drawBoundary(1),
-    onLeaveBack: () => drawBoundary(0)
+    onLeave: () => drawBoundary(1)
   })
+
+  // Start the ticker immediately on mount. ScrollTrigger's onEnter only fires
+  // when the element enters from below, not when it's already visible at load.
+  // onLeave will stop it when the hero exits the viewport.
+  ticker.start()
 
   const snapshot = state.setProgress(trigger.progress)
   consumers.forEach((consumer) => consumer.project(snapshot))

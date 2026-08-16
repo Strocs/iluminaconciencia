@@ -1,0 +1,57 @@
+{
+  "source": {
+    "format": "hero-sky-source-v1",
+    "seed": 12648430,
+    "referenceViewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "palette": ["#dbeeffff", "#ffd9aaff", "#b8c8ffff"],
+    "stars": [
+      {
+        "x": 8192,
+        "y": 12288,
+        "phase": 4096,
+        "size": 72,
+        "alpha": 220,
+        "speed": 48,
+        "color": 0,
+        "layerFlags": 25,
+        "densityWeight": 5
+      },
+      {
+        "x": 32768,
+        "y": 24576,
+        "phase": 32768,
+        "size": 124,
+        "alpha": 255,
+        "speed": 0,
+        "color": 1,
+        "layerFlags": 10,
+        "densityWeight": 3
+      },
+      {
+        "x": 57343,
+        "y": 49151,
+        "phase": 61440,
+        "size": 36,
+        "alpha": 156,
+        "speed": 96,
+        "color": 2,
+        "layerFlags": 4,
+        "densityWeight": 1
+      }
+    ],
+    "maxInstances": 12
+  },
+  "expected": {
+    "payloadCrc32": "661d6314",
+    "packedSha256": "2cbf68f0a667a3da8dad9194475b8a9a76159409809c4c139b05b5645bf67e4b",
+    "svgSha256": "1010c7dbad8ba650e3cc4593e61db510288acfcc8be2cc796e698338b6f335c3",
+    "amplificationPrefix": [
+      { "sourceIndex": 1, "replicaOrdinal": 0 },
+      { "sourceIndex": 0, "replicaOrdinal": 0 },
+      { "sourceIndex": 2, "replicaOrdinal": 0 }
+    ]
+  }
+}
