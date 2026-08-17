@@ -7,7 +7,6 @@ import type {
   NightSkyScene,
   NightSkyViewport
 } from '../contracts/hero-runtime'
-import type { HeroSkyDiagnosticsRecorder } from './hero-sky-diagnostics'
 import { mapStarCatalog } from './map-star-catalog'
 import { starCatalog } from './sky-catalog'
 import { createWebglStarRenderer } from './webgl-star-renderer'
@@ -29,8 +28,6 @@ export function createGsapNightSky({ canvas, fallbackImage }: CreateGsapNightSky
   let destroyed = false
   let viewport: NightSkyViewport = { width: 1, height: 1, devicePixelRatio: 1 }
   let latestFrame: NightSkyFrame = Object.freeze({ progress: 0, animationTimeMs: 0 })
-  let fixedFrame: NightSkyFrame | undefined
-  let diagnostics: HeroSkyDiagnosticsRecorder | undefined
 
   const isReducedMotion = (): boolean => window.matchMedia(reducedMotionQuery).matches
   const getViewport = (): NightSkyViewport => {
@@ -60,8 +57,8 @@ export function createGsapNightSky({ canvas, fallbackImage }: CreateGsapNightSky
     else if (next === 'fallback') showFallback()
   }
   const getScene = (): NightSkyScene => ({
-    progress: fixedFrame?.progress ?? latestFrame.progress,
-    animationTime: isReducedMotion() ? 0 : (fixedFrame?.animationTimeMs ?? latestFrame.animationTimeMs)
+    progress: latestFrame.progress,
+    animationTime: isReducedMotion() ? 0 : latestFrame.animationTimeMs
   })
   const renderLatestFrame = (): void => {
     if (lifecycleState === 'active') renderer?.draw(getScene())
@@ -106,30 +103,12 @@ export function createGsapNightSky({ canvas, fallbackImage }: CreateGsapNightSky
   observer.observe(canvas)
   applyViewport()
 
-  if (import.meta.env.DEV) {
-    void import('./hero-sky-diagnostics').then(({ createHeroSkyDiagnostics }) => {
-      if (destroyed) return
-      diagnostics = createHeroSkyDiagnostics({
-        canvas,
-        getLifecycleState: () => lifecycleState,
-        setFixedFrame: (frame) => {
-          fixedFrame = frame
-          renderLatestFrame()
-        },
-        forceInitializationFailure: enterFallback,
-        forceContextLoss: () => onContextLost(new Event('webglcontextlost'))
-      })
-    })
-  }
-
   if (isReducedMotion() || !document.createElement('canvas').getContext('webgl2')) {
     // Reduced motion (or WebGL2 unavailable): render the static sky image instead.
     enterFallback()
   } else {
     try {
-      renderer = createWebglStarRenderer(canvas, mapStarCatalog(starCatalog), {
-        onDraw: (durationMs) => diagnostics?.recordDraw(durationMs)
-      })
+      renderer = createWebglStarRenderer(canvas, mapStarCatalog(starCatalog))
       renderer.resize(viewport)
       setLifecycleState('active')
       renderLatestFrame()
@@ -157,8 +136,6 @@ export function createGsapNightSky({ canvas, fallbackImage }: CreateGsapNightSky
       reducedMotionMedia.removeEventListener('change', onReducedMotionChange)
       renderer?.destroy()
       renderer = undefined
-      diagnostics?.destroy()
-      diagnostics = undefined
       setLifecycleState('destroyed')
     }
   }

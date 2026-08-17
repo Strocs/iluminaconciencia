@@ -30,10 +30,6 @@ export interface WebglStarRenderer {
   destroy(): void
 }
 
-export interface WebglStarRendererOptions {
-  readonly onDraw?: (durationMs: number) => void
-}
-
 interface StarResources {
   readonly program: WebGLProgram
   readonly vao: WebGLVertexArrayObject
@@ -176,11 +172,7 @@ const buildStarResources = (gl: WebGL2RenderingContext, data: MappedStarData): S
   }
 }
 
-export function createWebglStarRenderer(
-  canvas: HTMLCanvasElement,
-  data: MappedStarData,
-  options: WebglStarRendererOptions = {}
-): WebglStarRenderer {
+export function createWebglStarRenderer(canvas: HTMLCanvasElement, data: MappedStarData): WebglStarRenderer {
   const gl = canvas.getContext('webgl2', { alpha: true, premultipliedAlpha: true })
   if (!gl) throw new Error('Hero sky WebGL: WebGL2 is unavailable')
 
@@ -208,7 +200,6 @@ export function createWebglStarRenderer(
     },
     draw: (frame) => {
       if (destroyed || !viewport) return
-      const startedAt = performance.now()
       gl.clearColor(0, 0, 0, 0)
       gl.clear(gl.COLOR_BUFFER_BIT)
       gl.enable(gl.BLEND)
@@ -226,8 +217,6 @@ export function createWebglStarRenderer(
       gl.uniform1f(starResources.starFinalOpacity, starOpacity.final)
       gl.drawElementsInstanced(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0, starCount)
       gl.bindVertexArray(null)
-
-      options.onDraw?.(performance.now() - startedAt)
     },
     destroy: () => {
       if (destroyed) return
