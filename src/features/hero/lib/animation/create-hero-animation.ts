@@ -3,7 +3,7 @@ import type { HeroLifecycle, NightSkyFrame } from '../contracts/hero-runtime'
 import { createGsapBortlePresenter } from '../bortle/create-gsap-bortle-presenter'
 import { createGsapNightSky } from '../night-sky/create-gsap-night-sky'
 import { createScenePresenter } from '../scenes/create-scene-presenter'
-import { skyRendering } from '../../config/sky-rendering'
+import { starCanvasSelector } from '../contracts/hero-dom-contracts'
 import { createCanvasTicker } from './create-canvas-ticker'
 import { createHeroAnimationState } from './hero-animation-state'
 import { createHeroTimeline } from './create-hero-timeline'
@@ -30,8 +30,9 @@ export function createHeroAnimation(root: HTMLElement): HeroLifecycle {
   const scenePresenter = createScenePresenter({ root })
   const bortlePresenter = createGsapBortlePresenter({ root })
   const consumers = [scenePresenter, bortlePresenter] as const
-  const starCanvas = root.querySelector<HTMLCanvasElement>(skyRendering.starCanvasSelector)
-  const nightSky = starCanvas ? [createGsapNightSky({ canvas: starCanvas })] : []
+  const starCanvas = root.querySelector<HTMLCanvasElement>(starCanvasSelector)
+  const fallbackImage = root.querySelector<HTMLImageElement>('[data-hero-sky-fallback]')
+  const nightSky = starCanvas ? [createGsapNightSky({ canvas: starCanvas, fallbackImage })] : []
   const ticker = createCanvasTicker({ consumers: nightSky, getProgress: () => state.getSnapshot().progress })
   const project = (progress: number): void => {
     const snapshot = state.setProgress(progress)

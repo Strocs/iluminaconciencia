@@ -7,35 +7,28 @@ import type {
   NightSkyScene,
   NightSkyViewport
 } from '../contracts/hero-runtime'
-import type { StarInstanceLevel } from './packed-star-data'
 import type { HeroSkyDiagnosticsRecorder } from './hero-sky-diagnostics'
-import { loadHeroSkyAssets } from './load-hero-sky-assets'
+import { mapStarCatalog } from './map-star-catalog'
+import { starCatalog } from './sky-catalog'
 import { createWebglStarRenderer } from './webgl-star-renderer'
 
 interface CreateGsapNightSkyOptions {
   canvas: HTMLCanvasElement
+  fallbackImage?: HTMLImageElement | null
 }
 
 const reducedMotionQuery = '(prefers-reduced-motion: reduce)'
 
-const selectInstanceCount = ({ width, height }: NightSkyViewport): StarInstanceLevel => {
-  const requested = Math.max(1, Math.ceil((width * height) / skyRendering.starDensityDivisor))
-  return (
-    skyRendering.instanceCounts.find((count) => count >= requested) ??
-    skyRendering.instanceCounts[skyRendering.instanceCounts.length - 1]
-  )
-}
+const isRootRelativeLocalUrl = (url: string): boolean =>
+  url.startsWith('/') && !url.startsWith('//') && !url.includes('\\')
 
-export function createGsapNightSky({ canvas }: CreateGsapNightSkyOptions): HeroSkyController {
+export function createGsapNightSky({ canvas, fallbackImage }: CreateGsapNightSkyOptions): HeroSkyController {
   let lifecycleState: HeroSkyLifecycleState = 'initializing'
   let renderer: HeroSkyRenderer | undefined
-  let generation = 0
   let resizeGeneration = 0
-  const abortController = new AbortController()
   let destroyed = false
   let viewport: NightSkyViewport = { width: 1, height: 1, devicePixelRatio: 1 }
   let latestFrame: NightSkyFrame = Object.freeze({ progress: 0, animationTimeMs: 0 })
-  let fixedInstanceCount: StarInstanceLevel | undefined
   let fixedFrame: NightSkyFrame | undefined
   let diagnostics: HeroSkyDiagnosticsRecorder | undefined
 
@@ -48,11 +41,23 @@ export function createGsapNightSky({ canvas }: CreateGsapNightSkyOptions): HeroS
       devicePixelRatio: Math.min(window.devicePixelRatio || 1, skyRendering.maximumDevicePixelRatio)
     }
   }
+  const fallbackSource = fallbackImage?.dataset.fallbackSrc
+  const showFallback = (): void => {
+    if (!fallbackImage || !fallbackSource || !isRootRelativeLocalUrl(fallbackSource)) return
+    fallbackImage.hidden = false
+    fallbackImage.src = fallbackSource
+  }
+  const hideFallback = (): void => {
+    if (!fallbackImage) return
+    // Drop src so the browser stops requesting it and no stale error re-fires.
+    fallbackImage.hidden = true
+    fallbackImage.removeAttribute('src')
+  }
   const setLifecycleState = (next: HeroSkyLifecycleState): void => {
     lifecycleState = next
     canvas.dataset.heroSkyState = next
-    if (next === 'fallback') canvas.dataset.heroSkyFallback = 'visible'
-    else delete canvas.dataset.heroSkyFallback
+    if (next === 'active') hideFallback()
+    else if (next === 'fallback') showFallback()
   }
   const getScene = (): NightSkyScene => ({
     progress: fixedFrame?.progress ?? latestFrame.progress,
@@ -66,7 +71,6 @@ export function createGsapNightSky({ canvas }: CreateGsapNightSkyOptions): HeroS
     viewport = getViewport()
     if (lifecycleState !== 'active') return
     renderer?.resize(viewport)
-    renderer?.setInstanceCount(fixedInstanceCount ?? selectInstanceCount(viewport))
     renderLatestFrame()
   }
   const enterFallback = (): void => {
@@ -88,8 +92,17 @@ export function createGsapNightSky({ canvas }: CreateGsapNightSkyOptions): HeroS
     })
   }
   const observer = new ResizeObserver(onResize)
+  const reducedMotionMedia = window.matchMedia(reducedMotionQuery)
+  const onReducedMotionChange = (event: MediaQueryListEvent): void => {
+    // Preference switched to reduced while the sky is live: freeze it into the static image.
+    if (event.matches && lifecycleState !== 'fallback' && lifecycleState !== 'destroyed') {
+      enterFallback()
+    }
+  }
 
   canvas.addEventListener('webglcontextlost', onContextLost)
+  fallbackImage?.addEventListener('error', hideFallback)
+  reducedMotionMedia.addEventListener('change', onReducedMotionChange)
   observer.observe(canvas)
   applyViewport()
 
@@ -99,10 +112,6 @@ export function createGsapNightSky({ canvas }: CreateGsapNightSkyOptions): HeroS
       diagnostics = createHeroSkyDiagnostics({
         canvas,
         getLifecycleState: () => lifecycleState,
-        setFixedInstanceCount: (count) => {
-          fixedInstanceCount = count
-          applyViewport()
-        },
         setFixedFrame: (frame) => {
           fixedFrame = frame
           renderLatestFrame()
@@ -113,30 +122,21 @@ export function createGsapNightSky({ canvas }: CreateGsapNightSkyOptions): HeroS
     })
   }
 
-  const currentGeneration = ++generation
-  void loadHeroSkyAssets({
-    packedDataUrl: skyRendering.packedDataUrl,
-    generation: currentGeneration,
-    signal: abortController.signal,
-    isCurrentGeneration: (candidate) => !destroyed && candidate === generation
-  }).then((result) => {
-    if (destroyed || result.generation !== generation || !result.ok) {
-      if (!destroyed && result.generation === generation && !result.ok && result.error.code !== 'aborted')
-        enterFallback()
-      return
-    }
+  if (isReducedMotion() || !document.createElement('canvas').getContext('webgl2')) {
+    // Reduced motion (or WebGL2 unavailable): render the static sky image instead.
+    enterFallback()
+  } else {
     try {
-      renderer = createWebglStarRenderer(canvas, result.assets.packedStarData, 2_000, {
+      renderer = createWebglStarRenderer(canvas, mapStarCatalog(starCatalog), {
         onDraw: (durationMs) => diagnostics?.recordDraw(durationMs)
       })
       renderer.resize(viewport)
-      renderer.setInstanceCount(fixedInstanceCount ?? selectInstanceCount(viewport))
       setLifecycleState('active')
       renderLatestFrame()
     } catch {
       enterFallback()
     }
-  })
+  }
 
   return {
     get lifecycleState(): HeroSkyLifecycleState {
@@ -151,10 +151,10 @@ export function createGsapNightSky({ canvas }: CreateGsapNightSkyOptions): HeroS
     destroy: () => {
       if (destroyed) return
       destroyed = true
-      generation += 1
-      abortController.abort()
       observer.disconnect()
       canvas.removeEventListener('webglcontextlost', onContextLost)
+      fallbackImage?.removeEventListener('error', hideFallback)
+      reducedMotionMedia.removeEventListener('change', onReducedMotionChange)
       renderer?.destroy()
       renderer = undefined
       diagnostics?.destroy()

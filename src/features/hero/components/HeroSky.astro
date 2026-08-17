@@ -1,15 +1,13 @@
 ---
 import { skyRendering } from '../config/sky-rendering'
 import LightPollution from './LightPollution.astro'
-const cssSkyBaselineStyle = `background: linear-gradient(to bottom, ${skyRendering.skyGradient.top}, ${skyRendering.skyGradient.bottom})`
 ---
 
 <div data-hero-sky-host class="pointer-events-none absolute inset-0" aria-hidden="true">
-  <div data-hero-sky-baseline class="absolute inset-0" style={cssSkyBaselineStyle}></div>
+  <div data-hero-sky-baseline class="absolute inset-0 bg-linear-to-b from-[#020308] to-[#050814]"></div>
   <img
     data-hero-sky-fallback
-    data-configured-src={skyRendering.fallbackImagePath}
-    data-placeholder-src={skyRendering.fallbackPlaceholderPath}
+    data-fallback-src={skyRendering.fallbackImagePath}
     class="absolute inset-0 size-full object-cover"
     alt=""
     aria-hidden="true"
@@ -19,52 +17,4 @@ const cssSkyBaselineStyle = `background: linear-gradient(to bottom, ${skyRenderi
   <LightPollution />
 </div>
 
-<script>
-  const isRootRelativeLocalPath = (value: string | undefined): value is string =>
-    Boolean(value?.startsWith('/') && !value.startsWith('//') && !value.includes('\\'))
 
-  document.querySelectorAll<HTMLElement>('[data-hero-sky-host]').forEach((host) => {
-    const canvas = host.querySelector<HTMLCanvasElement>('[data-hero-stars]')
-    const fallbackImage = host.querySelector<HTMLImageElement>('[data-hero-sky-fallback]')
-    if (!canvas || !fallbackImage) return
-
-    const configuredSource = fallbackImage.dataset.configuredSrc
-    const placeholderSource = fallbackImage.dataset.placeholderSrc
-    let source: 'configured' | 'placeholder' | undefined
-
-    const hideFallback = (): void => {
-      source = undefined
-      fallbackImage.hidden = true
-      fallbackImage.removeAttribute('src')
-    }
-    const showFallback = (): void => {
-      if (source) return
-      fallbackImage.hidden = false
-      source = isRootRelativeLocalPath(configuredSource) ? 'configured' : 'placeholder'
-      const nextSource = source === 'configured' ? configuredSource : placeholderSource
-      if (isRootRelativeLocalPath(nextSource)) fallbackImage.src = nextSource
-    }
-    const syncFallback = (): void => {
-      if (canvas.dataset.heroSkyFallback === 'visible') showFallback()
-      else hideFallback()
-    }
-
-    fallbackImage.addEventListener('error', () => {
-      if (canvas.dataset.heroSkyFallback !== 'visible') return
-      if (source === 'configured' && isRootRelativeLocalPath(placeholderSource)) {
-        source = 'placeholder'
-        fallbackImage.src = placeholderSource
-        return
-      }
-      source = undefined
-      fallbackImage.hidden = true
-      fallbackImage.removeAttribute('src')
-    })
-
-    new MutationObserver(syncFallback).observe(canvas, {
-      attributes: true,
-      attributeFilter: ['data-hero-sky-fallback']
-    })
-    syncFallback()
-  })
-</script>

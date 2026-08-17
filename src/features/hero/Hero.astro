@@ -1,23 +1,13 @@
 ---
 import HeroBortleScale from './components/HeroBortleScale.astro'
-import HeroActions from './components/HeroActions.astro'
 import HeroNarrative from './components/HeroNarrative.astro'
 import HeroSky from './components/HeroSky.astro'
-import { heroScenes } from './data/hero-scenes'
-import HeroBrand from './components/HeroBrand.astro'
 ---
 
 <section id="hero" class="relative min-h-[550dvh] bg-hero-canvas" aria-labelledby="hero-title">
   <div class="sticky top-0 flex h-dvh flex-col justify-between overflow-hidden">
     <HeroSky />
-    <HeroBrand />
-    <HeroNarrative scenes={heroScenes} />
-    <div
-      class="absolute inset-x-0 top-[calc(50%+6rem)] z-20 flex justify-center [@media(max-height:34rem)]:top-[calc(50%+4rem)]"
-      data-hero-actions
-    >
-      <HeroActions />
-    </div>
+    <HeroNarrative />
     <div class="relative z-10 mx-auto w-full max-w-5xl px-4 pb-6 sm:px-8 [@media(max-height:34rem)]:pb-3">
       <HeroBortleScale />
     </div>

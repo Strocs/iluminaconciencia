@@ -1,12 +1,10 @@
 ---
-import HeroSceneCard from './HeroScene.astro'
-import type { HeroScene } from '../data/hero-scenes'
-
-const { scenes } = Astro.props as { scenes: readonly HeroScene[] }
+import HeroScene from './HeroScene.astro'
+import { heroScenes } from '../data/hero-scenes'
 ---
 
 <div class="relative z-10 mx-auto flex h-full w-full max-w-4xl flex-1 flex-col items-center justify-center">
   <div class="relative h-full w-full px-6">
-    {scenes.map((scene, index) => <HeroSceneCard scene={scene} index={index} />)}
+    {heroScenes.map((scene, index) => <HeroScene scene={scene} index={index} />)}
   </div>
 </div>

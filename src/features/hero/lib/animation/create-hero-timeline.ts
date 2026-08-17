@@ -1,7 +1,7 @@
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { heroMotion } from '../../config/hero-motion'
-import { skyRendering } from '../../config/sky-rendering'
+import { lightPollutionSelector } from '../contracts/hero-dom-contracts'
 import type {
   CanvasTicker,
   HeroAnimationState,
@@ -34,9 +34,9 @@ export function createHeroTimeline({ root, state, consumers, ticker }: CreateHer
   // Light pollution is a plain scrub tween of the master timeline: GSAP owns the
   // state and the interpolation. The dome starts from the static markup baseline
   // (progress 0) and sinks/fades to --cy 1 / opacity 0.
-  const pollutionElement = root.querySelector<HTMLElement>(skyRendering.lightPollutionSelector)
+  const pollutionElement = root.querySelector<HTMLElement>(lightPollutionSelector)
   if (pollutionElement) {
-    timeline.to(pollutionElement, { '--cy': 1, opacity: 0, duration: heroMotion.duration, ease: 'none' }, 0)
+    timeline.to(pollutionElement, { '--cy': 150, opacity: 0, duration: heroMotion.duration, ease: 'none' }, 0)
   }
   const trigger = ScrollTrigger.create({
     trigger: root,

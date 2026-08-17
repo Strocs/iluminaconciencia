@@ -1,13 +1,10 @@
 import type { HeroSkyLifecycleState, NightSkyFrame } from '../contracts/hero-runtime'
-import { starInstanceLevels, type StarInstanceLevel } from './packed-star-data'
 
-const instanceCounts = new Set<StarInstanceLevel>(starInstanceLevels)
 const timingSampleCapacity = 120
 
 interface HeroSkyDiagnosticsOptions {
   readonly canvas: HTMLCanvasElement
   readonly getLifecycleState: () => HeroSkyLifecycleState
-  readonly setFixedInstanceCount: (count: StarInstanceLevel | undefined) => void
   readonly setFixedFrame: (frame: NightSkyFrame | undefined) => void
   readonly forceInitializationFailure: () => void
   readonly forceContextLoss: () => void
@@ -15,14 +12,12 @@ interface HeroSkyDiagnosticsOptions {
 
 export interface HeroSkyDiagnosticsSnapshot {
   readonly lifecycleState: HeroSkyLifecycleState
-  readonly fixedInstanceCount?: StarInstanceLevel
   readonly fixedFrame?: NightSkyFrame
   readonly drawCallCount: number
   readonly timingSamplesMs: readonly number[]
 }
 
 export interface HeroSkyDiagnostics {
-  setFixedInstanceCount(count?: StarInstanceLevel): void
   setFixedProgress(progress?: number): void
   setFixedAnimationTime(animationTimeMs?: number): void
   forceInitializationFailure(): void
@@ -45,7 +40,6 @@ const clampProgress = (value: number): number => Math.min(1, Math.max(0, value))
 
 export function createHeroSkyDiagnostics(options: HeroSkyDiagnosticsOptions): HeroSkyDiagnosticsRecorder {
   const timingSamples = new Float64Array(timingSampleCapacity)
-  let fixedInstanceCount: StarInstanceLevel | undefined
   let fixedFrame: NightSkyFrame | undefined
   let drawCallCount = 0
   let timingSampleCount = 0
@@ -53,11 +47,6 @@ export function createHeroSkyDiagnostics(options: HeroSkyDiagnosticsOptions): He
   let destroyed = false
 
   const diagnostics: HeroSkyDiagnosticsRecorder = {
-    setFixedInstanceCount: (count) => {
-      if (destroyed) return
-      fixedInstanceCount = count === undefined || instanceCounts.has(count) ? count : fixedInstanceCount
-      options.setFixedInstanceCount(fixedInstanceCount)
-    },
     setFixedProgress: (progress) => {
       if (destroyed) return
       fixedFrame =
@@ -89,7 +78,6 @@ export function createHeroSkyDiagnostics(options: HeroSkyDiagnosticsOptions): He
       )
       return {
         lifecycleState: options.getLifecycleState(),
-        ...(fixedInstanceCount === undefined ? {} : { fixedInstanceCount }),
         ...(fixedFrame === undefined ? {} : { fixedFrame }),
         drawCallCount,
         timingSamplesMs: samples

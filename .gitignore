@@ -26,3 +26,4 @@ pnpm-debug.log*
 .codegraph/
 .atl/
 docs/
+output/

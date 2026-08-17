@@ -1,6 +1,14 @@
 ---
-import { skyRendering } from '../config/sky-rendering'
-const { baseColor, width, height, centerY, opacity, initialOpacity } = skyRendering.pollution
+const pollution = {
+  baseColor: { red: 70, green: 83, blue: 98 },
+  width: 100,
+  height: 20,
+  centerY: 100,
+  opacity: 1,
+  initialOpacity: 1
+} as const
+
+const { baseColor, width, height, centerY, opacity, initialOpacity } = pollution
 const { red, green, blue } = baseColor
 const color = `${red}, ${green}, ${blue}`
 ---
@@ -9,15 +17,16 @@ const color = `${red}, ${green}, ${blue}`
   data-hero-light-pollution
   class="pointer-events-none absolute inset-x-0 top-0 h-screen"
   style={`
+    --cy: ${centerY};
     opacity: ${initialOpacity};
     background:
       radial-gradient(
-        ellipse ${width}vw ${height}lvh at 50% ${centerY}lvh,
+        ellipse ${width}vw ${height}lvh at 50% calc(var(--cy) * 1lvh),
         rgba(${color}, ${opacity}) 0%,
         rgba(${color}, 0.2) 100%
       ),
       radial-gradient(
-        ellipse 100vw 100lvh at 50% ${centerY}lvh,
+        ellipse 100vw 100lvh at 50% calc(var(--cy) * 1lvh),
         rgba(${color}, 1) 0%,
         rgba(${color}, 0.30) 100%
       );
