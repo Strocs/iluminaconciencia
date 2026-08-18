@@ -1,0 +1,32 @@
+---
+import { nightSkyConfig } from './config'
+import LightPollution from '../light-pollution/LightPollution.astro'
+---
+
+<div data-hero-sky-host class="pointer-events-none absolute inset-0" aria-hidden="true">
+  <div data-hero-sky-baseline class="absolute inset-0 bg-linear-to-t from-[#04070f] via-[#03050c] via-50% to-[#010204]">
+  </div>
+  <div
+    data-hero-sky-airglow
+    class="pointer-events-none absolute inset-x-0 top-0 h-screen"
+    style="background:
+      radial-gradient(ellipse 100vw 14lvh at 50% 100lvh, rgba(16, 26, 22, 0.6) 0%, rgba(16, 26, 22, 0) 100%),
+      radial-gradient(ellipse 100vw 45lvh at 50% 100lvh, rgba(13, 22, 19, 0.3) 0%, rgba(13, 22, 19, 0) 100%);"
+    aria-hidden="true"
+  >
+  </div>
+  <img
+    data-hero-sky-fallback
+    data-fallback-src={nightSkyConfig.fallbackImagePath}
+    class="absolute inset-0 size-full object-cover"
+    alt=""
+    aria-hidden="true"
+    hidden
+  />
+  <canvas
+    data-hero-stars
+    style={`opacity: ${nightSkyConfig.starOpacity.initial}`}
+    class="absolute inset-0 size-full"
+    aria-hidden="true"></canvas>
+  <LightPollution />
+</div>

@@ -1,17 +1,6 @@
-import type { MappedStarData } from './map-star-catalog'
-
-const twinkle = {
-  amplitude: 0.06,
-  baseFrequency: 20,
-  speedMultiplier: 50
-} as const
-
-const starOpacity = {
-  /** Opacity multiplier at the initial position (scroll progress 0) */
-  initial: 0.2,
-  /** Opacity multiplier when the scroll ends (progress 1) */
-  final: 1
-} as const
+import { nightSkyConfig } from './config'
+import type { MappedStarData } from './star-mapper'
+import { computeSkyCrop, type SkyCrop } from './sky-crop'
 
 export interface WebglStarViewport {
   readonly width: number
@@ -19,14 +8,9 @@ export interface WebglStarViewport {
   readonly devicePixelRatio: number
 }
 
-export interface WebglStarFrame {
-  readonly progress: number
-  readonly animationTime: number
-}
-
 export interface WebglStarRenderer {
   resize(viewport: WebglStarViewport): void
-  draw(frame: WebglStarFrame): void
+  draw(timeMs: number): void
   destroy(): void
 }
 
@@ -36,13 +20,12 @@ interface StarResources {
   readonly buffers: readonly WebGLBuffer[]
   readonly indexBuffer: WebGLBuffer
   readonly viewport: WebGLUniformLocation
-  readonly progress: WebGLUniformLocation
+  readonly cropScale: WebGLUniformLocation
+  readonly cropOffset: WebGLUniformLocation
   readonly time: WebGLUniformLocation
   readonly twinkleAmplitude: WebGLUniformLocation
   readonly twinkleBaseFrequency: WebGLUniformLocation
   readonly twinkleSpeedMultiplier: WebGLUniformLocation
-  readonly starInitialOpacity: WebGLUniformLocation
-  readonly starFinalOpacity: WebGLUniformLocation
 }
 
 const vertexShader = `#version 300 es
@@ -51,25 +34,24 @@ layout(location=1) in vec2 a_origin;
 layout(location=2) in vec4 a_star;
 layout(location=3) in vec4 a_color;
 uniform vec2 u_viewport;
-uniform float u_progress;
+uniform vec2 u_cropScale;
+uniform vec2 u_cropOffset;
 uniform float u_time;
 uniform float u_twinkleAmplitude;
 uniform float u_twinkleBaseFrequency;
 uniform float u_twinkleSpeedMultiplier;
-uniform float u_starInitialOpacity;
-uniform float u_starFinalOpacity;
 out vec2 v_corner;
 out vec4 v_color;
 out float v_alpha;
 void main() {
   float twinkle = (1.0 - u_twinkleAmplitude) + sin(u_time * (u_twinkleBaseFrequency + a_star.w * u_twinkleSpeedMultiplier) + a_star.x * 6.2831853) * u_twinkleAmplitude;
   float size = a_star.y * twinkle;
-  vec2 cssPosition = a_origin * u_viewport + a_corner * size;
+  vec2 cssPosition = (a_origin * u_cropScale - u_cropOffset) * u_viewport + a_corner * size;
   vec2 clip = cssPosition / u_viewport * 2.0 - 1.0;
   gl_Position = vec4(clip.x, -clip.y, 0.0, 1.0);
   v_corner = a_corner;
   v_color = a_color;
-  v_alpha = a_star.z * mix(u_starInitialOpacity, u_starFinalOpacity, u_progress);
+  v_alpha = a_star.z;
 }`
 
 const fragmentShader = `#version 300 es
@@ -162,13 +144,12 @@ const buildStarResources = (gl: WebGL2RenderingContext, data: MappedStarData): S
     buffers,
     indexBuffer,
     viewport: requiredUniform(gl, program, 'u_viewport'),
-    progress: requiredUniform(gl, program, 'u_progress'),
+    cropScale: requiredUniform(gl, program, 'u_cropScale'),
+    cropOffset: requiredUniform(gl, program, 'u_cropOffset'),
     time: requiredUniform(gl, program, 'u_time'),
     twinkleAmplitude: requiredUniform(gl, program, 'u_twinkleAmplitude'),
     twinkleBaseFrequency: requiredUniform(gl, program, 'u_twinkleBaseFrequency'),
-    twinkleSpeedMultiplier: requiredUniform(gl, program, 'u_twinkleSpeedMultiplier'),
-    starInitialOpacity: requiredUniform(gl, program, 'u_starInitialOpacity'),
-    starFinalOpacity: requiredUniform(gl, program, 'u_starFinalOpacity')
+    twinkleSpeedMultiplier: requiredUniform(gl, program, 'u_twinkleSpeedMultiplier')
   }
 }
 
@@ -188,17 +169,21 @@ export function createWebglStarRenderer(canvas: HTMLCanvasElement, data: MappedS
   }
 
   let viewport: WebglStarViewport | null = null
+  let crop: SkyCrop = { scaleX: 1, scaleY: 1, offsetX: 0, offsetY: 0 }
   let destroyed = false
 
   return {
     resize: (nextViewport) => {
       if (destroyed) return
       viewport = nextViewport
+      if (nextViewport.height > 0) {
+        crop = computeSkyCrop(nextViewport.width / nextViewport.height)
+      }
       canvas.width = Math.max(1, Math.round(nextViewport.width * nextViewport.devicePixelRatio))
       canvas.height = Math.max(1, Math.round(nextViewport.height * nextViewport.devicePixelRatio))
       gl.viewport(0, 0, canvas.width, canvas.height)
     },
-    draw: (frame) => {
+    draw: (timeMs) => {
       if (destroyed || !viewport) return
       gl.clearColor(0, 0, 0, 0)
       gl.clear(gl.COLOR_BUFFER_BIT)
@@ -208,13 +193,12 @@ export function createWebglStarRenderer(canvas: HTMLCanvasElement, data: MappedS
       gl.useProgram(starResources.program)
       gl.bindVertexArray(starResources.vao)
       gl.uniform2f(starResources.viewport, Math.max(1, viewport.width), Math.max(1, viewport.height))
-      gl.uniform1f(starResources.progress, Math.min(1, Math.max(0, frame.progress)))
-      gl.uniform1f(starResources.time, frame.animationTime / 1_000)
-      gl.uniform1f(starResources.twinkleAmplitude, twinkle.amplitude)
-      gl.uniform1f(starResources.twinkleBaseFrequency, twinkle.baseFrequency)
-      gl.uniform1f(starResources.twinkleSpeedMultiplier, twinkle.speedMultiplier)
-      gl.uniform1f(starResources.starInitialOpacity, starOpacity.initial)
-      gl.uniform1f(starResources.starFinalOpacity, starOpacity.final)
+      gl.uniform2f(starResources.cropScale, crop.scaleX, crop.scaleY)
+      gl.uniform2f(starResources.cropOffset, crop.offsetX, crop.offsetY)
+      gl.uniform1f(starResources.time, timeMs / 1_000)
+      gl.uniform1f(starResources.twinkleAmplitude, nightSkyConfig.twinkle.amplitude)
+      gl.uniform1f(starResources.twinkleBaseFrequency, nightSkyConfig.twinkle.baseFrequency)
+      gl.uniform1f(starResources.twinkleSpeedMultiplier, nightSkyConfig.twinkle.speedMultiplier)
       gl.drawElementsInstanced(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0, starCount)
       gl.bindVertexArray(null)
     },

@@ -1,4 +1,5 @@
-import type { StarCatalogRecord } from './sky-catalog'
+import type { StarCatalogRecord } from './star-catalog'
+import { REGION_BBOX } from './sky-crop'
 
 /**
  * Star catalog -> GPU-ready mapper.
@@ -91,29 +92,6 @@ const bvToRgb = (bv: number): readonly [number, number, number] => {
   ]
 }
 
-/** Normalize a projected axis to [0, 1] by its data min/max, inverting y. */
-const normalize = (values: Float64Array, invert: boolean): Float32Array => {
-  const out = new Float32Array(values.length)
-  let minimum = Number.POSITIVE_INFINITY
-  let maximum = Number.NEGATIVE_INFINITY
-  for (const value of values) {
-    if (value < minimum) minimum = value
-    if (value > maximum) maximum = value
-  }
-  const span = maximum - minimum
-  if (span <= Number.EPSILON) {
-    // Degenerate axis (all points identical): center the fragment instead of
-    // dividing by zero.
-    out.fill(0.5)
-    return out
-  }
-  for (let index = 0; index < values.length; index += 1) {
-    const normalized = (values[index] - minimum) / span
-    out[index] = invert ? 1 - normalized : normalized
-  }
-  return out
-}
-
 export function mapStarCatalog(records: readonly StarCatalogRecord[]): MappedStarData {
   const count = records.length
   const origins = new Float32Array(count * 2)
@@ -133,7 +111,8 @@ export function mapStarCatalog(records: readonly StarCatalogRecord[]): MappedSta
   const magSpan = Math.max(magMax - magMin, Number.EPSILON)
 
   // Stereographic (conformal) projection onto the tangent plane at the window
-  // center, then each axis normalized to [0, 1] and y inverted so 0 = top.
+  // center, then each axis normalized to [0, 1] against the fixed window D
+  // region bbox and y inverted so 0 = top.
   const ra0 = PROJECTION.raHours * 15 * DEG_TO_RAD
   const dec0 = PROJECTION.decDegrees * DEG_TO_RAD
   const sinDec0 = Math.sin(dec0)
@@ -150,14 +129,20 @@ export function mapStarCatalog(records: readonly StarCatalogRecord[]): MappedSta
     const deltaRa = ra - ra0
     const cosC = sinDec0 * sinDec + cosDec0 * cosDec * Math.cos(deltaRa)
     // k = 2 / (1 + cos c) is the stereographic scale factor; the tangent point
-    // itself (cosC == 1) is handled by the degenerate normalization fallback.
+    // itself (cosC == 1) projects to (0, 0), well inside the fixed region bbox.
     const scale = 2 / (1 + cosC)
     projectedX[index] = scale * cosDec * Math.sin(deltaRa)
     projectedY[index] = scale * (cosDec0 * sinDec - sinDec0 * cosDec * Math.cos(deltaRa))
   }
 
-  const normalizedX = normalize(projectedX, false)
-  const normalizedY = normalize(projectedY, true) // invert: y = 0 is the top
+  const normalizedX = new Float32Array(count)
+  const normalizedY = new Float32Array(count)
+  const regionSpanX = REGION_BBOX.xMax - REGION_BBOX.xMin
+  const regionSpanY = REGION_BBOX.yMax - REGION_BBOX.yMin
+  for (let index = 0; index < count; index += 1) {
+    normalizedX[index] = (projectedX[index] - REGION_BBOX.xMin) / regionSpanX
+    normalizedY[index] = 1 - (projectedY[index] - REGION_BBOX.yMin) / regionSpanY // invert: y = 0 is the top
+  }
 
   for (let index = 0; index < count; index += 1) {
     const record = records[index]

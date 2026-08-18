@@ -1,12 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
   <title>Hero sky fallback</title>
-  <defs>
-    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#020308"/>
-      <stop offset="1" stop-color="#050814"/>
-    </linearGradient>
-  </defs>
-  <rect width="1600" height="900" fill="url(#sky)"/>
   <g fill="#ffffff" opacity="0.9">
     <circle cx="971.1" cy="239.0" r="1.18"/>
     <circle cx="265.5" cy="744.8" r="1.41"/>

@@ -1,7 +1,7 @@
 ---
-import HeroBortleScale from './components/HeroBortleScale.astro'
-import HeroNarrative from './components/HeroNarrative.astro'
-import HeroSky from './components/HeroSky.astro'
+import HeroBortleScale from './capabilities/bortle-scale/HeroBortleScale.astro'
+import HeroNarrative from './capabilities/scenes/HeroNarrative.astro'
+import HeroSky from './capabilities/night-sky/HeroSky.astro'
 ---
 
 <section id="hero" class="relative min-h-[550dvh] bg-hero-canvas" aria-labelledby="hero-title">
@@ -15,7 +15,7 @@ import HeroSky from './components/HeroSky.astro'
 </section>
 
 <script>
-  import { initializeHero } from './lib/runtime/initialize-hero'
+  import { initializeHero } from './runtime/initialize-hero'
 
   const root = document.querySelector<HTMLElement>('#hero')
   if (root) initializeHero(root)
