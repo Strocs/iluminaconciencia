@@ -10,8 +10,9 @@
   --color-accent: #f4bd63;
   --color-border: #20313d;
   --color-status: #8bd0a5;
-  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-  --font-serif: 'Playfair Display', Georgia, serif;
+  --font-sans: 'Geist', system-ui, -apple-system, sans-serif;
+  --font-display: 'Sora', system-ui, -apple-system, sans-serif;
+  --font-serif: 'Source Serif 4', Georgia, serif;
   --color-hero-canvas: #020205;
 }
 
