@@ -12,6 +12,12 @@ import { REGION_BBOX } from './sky-crop'
  * normalized 0..1 space where y = 0 is the TOP of the viewport. This matches
  * the shader convention (see webgl-star-renderer.ts) so no transform is needed
  * at draw time.
+ *
+ * Projection: stereographic tangent at RA 9.75h / Dec −70° (first-person south
+ * view from ~30°S). Mirror: projectedX is negated AFTER the projection loop
+ * and BEFORE normalization with the mirrored-space REGION_BBOX. This flips
+ * east to the left (higher-RA stars → lower normalized x). No mirror logic in
+ * shader or CSS — the orientation is baked into the data.
  */
 
 export interface MappedStarData {
@@ -27,8 +33,8 @@ export interface MappedStarData {
 const PROJECTION = {
   /** RA of the tangent point, in decimal hours (9.75h). */
   raHours: 9.75,
-  /** Dec of the tangent point, in decimal degrees (-7.5 deg). */
-  decDegrees: -7.5
+  /** Dec of the tangent point, in decimal degrees (-70 deg, first-person south view). */
+  decDegrees: -70
 } as const
 
 const SIZE = {
@@ -111,8 +117,9 @@ export function mapStarCatalog(records: readonly StarCatalogRecord[]): MappedSta
   const magSpan = Math.max(magMax - magMin, Number.EPSILON)
 
   // Stereographic (conformal) projection onto the tangent plane at the window
-  // center, then each axis normalized to [0, 1] against the fixed window D
-  // region bbox and y inverted so 0 = top.
+  // center. After projection, negate projectedX to flip east to the left
+  // (higher-RA stars → lower normalized x). Normalize each axis to [0, 1]
+  // against the mirrored-space REGION_BBOX, y inverted so 0 = top.
   const ra0 = PROJECTION.raHours * 15 * DEG_TO_RAD
   const dec0 = PROJECTION.decDegrees * DEG_TO_RAD
   const sinDec0 = Math.sin(dec0)
@@ -133,6 +140,14 @@ export function mapStarCatalog(records: readonly StarCatalogRecord[]): MappedSta
     const scale = 2 / (1 + cosC)
     projectedX[index] = scale * cosDec * Math.sin(deltaRa)
     projectedY[index] = scale * (cosDec0 * sinDec - sinDec0 * cosDec * Math.cos(deltaRa))
+  }
+
+  // Mirror: negate projectedX to place east on the left. Higher-RA stars (east)
+  // now have lower projectedX and thus lower normalized x (left side of viewport).
+  // This must happen AFTER the projection loop and BEFORE normalization with
+  // mirrored-space REGION_BBOX constants. The shader and CSS are untouched.
+  for (let index = 0; index < count; index += 1) {
+    projectedX[index] = -projectedX[index]
   }
 
   const normalizedX = new Float32Array(count)
