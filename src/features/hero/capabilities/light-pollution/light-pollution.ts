@@ -21,11 +21,13 @@ export function createLightPollutionCapability({
       {
         '--cy': config.sinkCenterY,
         opacity: config.finalOpacity,
-        duration: 1,
+        duration: config.endProgress - config.startProgress,
         ease: 'none'
       },
-      0
+      config.startProgress
     )
+    // Keep the timeline duration at 1 so timeline.progress(p) maps p onto the same 0..1 space as the tween.
+    timeline.add(() => undefined, 1)
   }
 
   return {

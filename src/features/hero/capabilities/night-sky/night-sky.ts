@@ -44,7 +44,26 @@ export function createNightSkyCapability({
   let timeMs = 0
   let rafId = 0
   const fadeTimeline = gsap.timeline({ paused: true })
-  fadeTimeline.to(canvas, { opacity: nightSkyConfig.starOpacity.final, duration: 1, ease: 'none' }, 0)
+  fadeTimeline.fromTo(
+    canvas,
+    { opacity: config.starOpacity.initial },
+    {
+      opacity: config.starOpacity.full,
+      duration: config.starOpacity.fullProgress,
+      ease: 'none'
+    },
+    0
+  )
+  fadeTimeline.to(
+    canvas,
+    {
+      opacity: config.starOpacity.final,
+      duration: config.starOpacity.finalProgress - config.starOpacity.fadeOutStartProgress,
+      ease: 'none'
+    },
+    config.starOpacity.fadeOutStartProgress
+  )
+  fadeTimeline.add(() => undefined, 1)
 
   const isReducedMotion = (): boolean => window.matchMedia(reducedMotionQuery).matches
   const getViewport = (): NightSkyViewport => {

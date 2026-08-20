@@ -6,5 +6,7 @@ export const lightPollutionConfig = {
   opacity: 1,
   initialOpacity: 1,
   sinkCenterY: 150,
-  finalOpacity: 0
+  finalOpacity: 0,
+  startProgress: 0,
+  endProgress: 0.8
 } as const
