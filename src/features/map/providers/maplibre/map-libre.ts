@@ -1,4 +1,3 @@
-import { Map as MapLibreMap, Marker, setWorkerUrl } from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import type { Instrument } from '@shared/features/instruments'
 import { DEFAULT_CENTER, DEFAULT_ZOOM, MAP_STYLE_URL } from './config'
@@ -14,7 +13,24 @@ import type { MaplibreViewConfig } from './types'
 // stays black. See the "Map provider" section of the README for the full diagnosis.
 import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'
 
-setWorkerUrl(maplibreWorkerUrl)
+/**
+ * Lazy-loaded MapLibre GL JS namespace. The library (~900 KB minified) is only
+ * needed when the map section actually mounts; importing it dynamically splits
+ * it into a separate chunk instead of bloating the initial bundle. `setWorkerUrl`
+ * must run before the first `Map` instance is created, so it is called inside the
+ * async initializer below.
+ */
+let maplibrePromise: Promise<typeof import('maplibre-gl')> | null = null
+
+async function loadMaplibre() {
+  if (!maplibrePromise) {
+    maplibrePromise = import('maplibre-gl').then((mod) => {
+      mod.setWorkerUrl(maplibreWorkerUrl)
+      return mod
+    })
+  }
+  return maplibrePromise
+}
 
 /** Public surface of the MapLibre provider. */
 export interface MaplibreView {
@@ -23,7 +39,9 @@ export interface MaplibreView {
   destroy(): void
 }
 
-export function createMaplibreView(config: MaplibreViewConfig): MaplibreView {
+export async function createMaplibreView(config: MaplibreViewConfig): Promise<MaplibreView> {
+  const { Map: MapLibreMap, Marker } = await loadMaplibre()
+
   const map = new MapLibreMap({
     container: config.container,
     style: config.styleUrl ?? MAP_STYLE_URL,
@@ -32,7 +50,7 @@ export function createMaplibreView(config: MaplibreViewConfig): MaplibreView {
     cooperativeGestures: true
   })
 
-  let markers: Marker[] = []
+  let markers: InstanceType<typeof Marker>[] = []
   let pinClickHandler: ((pin: Instrument) => void) | null = null
 
   return {

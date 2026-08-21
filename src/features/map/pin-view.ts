@@ -1,4 +1,5 @@
 import type { Instrument } from '@shared/features/instruments'
+import { getBortleClass } from '@shared/features/bortle'
 
 const PIN_SVG =
   '<svg width="28" height="36" viewBox="0 0 28 36" fill="none" aria-hidden="true">' +
@@ -9,9 +10,8 @@ const PIN_SVG =
 /**
  * Renders the pin DOM for an instrument.
  *
- * Neutral by default (accent color); the Bortle scale color plugs in
- * here once the shared palette exists — the pin already receives the
- * instrument, so that change is a single color lookup.
+ * Uses the shared Bortle color when the instrument has a known level;
+ * instruments without a measurement retain the accent color.
  */
 export function renderPin(instrument: Instrument): HTMLElement {
   const pin = document.createElement('button')
@@ -19,7 +19,7 @@ export function renderPin(instrument: Instrument): HTMLElement {
   pin.className = 'flex cursor-pointer items-center justify-center drop-shadow-md'
   pin.setAttribute('aria-label', instrument.name)
   pin.title = instrument.name
-  pin.style.color = 'var(--color-accent)'
+  pin.style.color = getBortleClass(instrument.bortleLevel)?.color ?? 'var(--color-accent)'
   pin.innerHTML = PIN_SVG
   return pin
 }

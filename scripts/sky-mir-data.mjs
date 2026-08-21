@@ -89,7 +89,6 @@ console.error(`Region bbox (above-horizon): x[${xMin.toFixed(4)}, ${xMax.toFixed
 
 // Design-specified constants (mirrored space, from design decision #2608)
 const REGION_DESIGN = { xMin: -1.5916, xMax: 1.6023, yMin: -2.1536, yMax: 1.0328 }
-const MARQUEE_DESIGN = { xMin: -0.90, xMax: 0.98, yMin: -0.76, yMax: 0.79 }
 
 // Verify computed bboxes are close to design
 const xMinDiff = Math.abs(xMin - REGION_DESIGN.xMin)

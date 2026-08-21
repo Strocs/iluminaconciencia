@@ -1,3 +1,7 @@
+---
+import BortleBar from '@shared/components/BortleBar.astro'
+---
+
 <section id="nodos" class="relative z-10 h-full min-h-[90dvh] w-full p-4 sm:p-6">
   <div class="mx-auto h-full">
     <!-- <h2 class="font-serif text-3xl text-ink">Nodos de medición</h2> -->
@@ -6,7 +10,7 @@
     <!--   o por escala Bortle, y selecciona un nodo para ver su detalle. -->
     <!-- </p> -->
 
-    <div class="relative min-h-[90vh] overflow-hidden rounded-2xl border border-border bg-surface">
+    <div class="relative h-[90vh] overflow-hidden rounded-2xl border border-border bg-surface">
       <div id="map" class="size-full overflow-hidden"></div>
 
       <div class="pointer-events-none absolute inset-x-4 top-4 flex flex-wrap gap-3">
@@ -17,13 +21,12 @@
           <legend class="px-1 text-xs font-medium text-muted">Tipo de instrumento</legend>
           <div data-type-chips class="mt-2 flex flex-wrap gap-2"></div>
         </fieldset>
-        <fieldset
+        <div
           data-bortle-filters
           class="pointer-events-auto rounded-xl border border-border bg-canvas/80 p-3 backdrop-blur"
         >
-          <legend class="px-1 text-xs font-medium text-muted">Escala Bortle</legend>
-          <div data-bortle-chips class="mt-2 flex flex-wrap gap-2"></div>
-        </fieldset>
+          <BortleBar />
+        </div>
       </div>
 
       <aside
@@ -59,6 +62,8 @@
 
 <script>
   import { loadInstruments } from '@shared/features/instruments'
+  import { bortleClasses } from '@shared/features/bortle'
+  import { createBortleFilter } from './bortle-filter'
   import { createInstrumentDrawer } from './drawer'
   import { filterByBortle, filterByType } from './filters'
   import { renderPin } from './pin-view'
@@ -69,18 +74,12 @@
   if (!mapEl || !drawerEl) throw new Error('Map section is missing a required element')
 
   const instruments = loadInstruments()
-  const view = createMaplibreView({ container: mapEl })
   const drawer = createInstrumentDrawer(drawerEl)
 
   // Filter options derive from the data itself, so new instrument types
   // or Bortle levels appear automatically — the contract stays open.
   const types = [...new Set(instruments.map((instrument) => instrument.type))].sort()
-  const levels = [
-    ...new Set(instruments.flatMap((instrument) => (instrument.bortleLevel === null ? [] : [instrument.bortleLevel])))
-  ].sort((a, b) => a - b)
-
   const selectedTypes = new Set(types)
-  const selectedLevels = new Set(levels)
 
   function chipClass(active: boolean): string {
     return active
@@ -88,11 +87,11 @@
       : 'rounded-full border border-border bg-surface px-3 py-1 text-xs text-subtle transition-colors hover:text-ink'
   }
 
-  function renderChips<T extends string | number>(
+  function renderTypeChips(
     container: HTMLElement,
-    values: readonly T[],
-    selected: Set<T>,
-    onToggle: (value: T) => void
+    values: readonly string[],
+    selected: Set<string>,
+    onToggle: (value: string) => void
   ): void {
     container.replaceChildren(
       ...values.map((value) => {
@@ -111,21 +110,33 @@
     )
   }
 
-  function refresh(): void {
-    const filtered = filterByBortle(filterByType(instruments, selectedTypes), selectedLevels)
-    view.setPins(filtered, renderPin)
-  }
+  let selectedLevels: ReadonlySet<number> = new Set(bortleClasses.map(({ level }) => level))
 
-  renderChips(document.querySelector<HTMLElement>('[data-type-chips]')!, types, selectedTypes, (type) => {
+  renderTypeChips(document.querySelector<HTMLElement>('[data-type-chips]')!, types, selectedTypes, (type) => {
     selectedTypes.has(type) ? selectedTypes.delete(type) : selectedTypes.add(type)
     refresh()
   })
 
-  renderChips(document.querySelector<HTMLElement>('[data-bortle-chips]')!, levels, selectedLevels, (level) => {
-    selectedLevels.has(level) ? selectedLevels.delete(level) : selectedLevels.add(level)
-    refresh()
+  const bortleFilterRoot = document.querySelector<HTMLElement>('[data-bortle-filters]')
+  if (!bortleFilterRoot) throw new Error('Map section is missing the Bortle filter')
+  createBortleFilter({
+    root: bortleFilterRoot,
+    classes: bortleClasses,
+    onToggle: (selected) => {
+      selectedLevels = new Set(selected)
+      refresh()
+    }
   })
 
+  // MapLibre GL JS (~900 KB) is loaded dynamically so it splits into a separate
+  // chunk instead of blocking the initial bundle. Pins are attached once the
+  // view is ready; filters update the already-created view.
+  const view = await createMaplibreView({ container: mapEl })
   view.onPinClick((instrument) => drawer.open(instrument))
+
+  function refresh(): void {
+    const filtered = filterByBortle(filterByType(instruments, selectedTypes), selectedLevels)
+    view.setPins(filtered, renderPin)
+  }
   refresh()
 </script>

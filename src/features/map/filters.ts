@@ -1,4 +1,5 @@
 import type { Instrument } from '@shared/features/instruments'
+import { toBortleSegmentLevel } from '@shared/features/bortle'
 
 /**
  * Keeps only the instruments whose type is in the given set.
@@ -22,6 +23,7 @@ export function filterByBortle(
   levels: ReadonlySet<number>
 ): Instrument[] {
   return instruments.filter(
-    (instrument) => instrument.bortleLevel !== null && levels.has(instrument.bortleLevel)
+    (instrument) =>
+      instrument.bortleLevel !== null && levels.has(toBortleSegmentLevel(instrument.bortleLevel))
   )
 }

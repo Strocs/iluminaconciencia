@@ -1,6 +1,6 @@
 import { gsap } from 'gsap'
 import type { HeroCapability } from '../../core/contracts'
-import type { BortleClass } from './bortle-classes'
+import type { BortleClass } from '@shared/features/bortle'
 import type { bortleConfig } from './config'
 
 type BortleConfig = typeof bortleConfig
