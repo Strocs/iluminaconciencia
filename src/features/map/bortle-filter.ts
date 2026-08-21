@@ -1,6 +1,8 @@
 import type { BortleClass } from '@shared/features/bortle'
 
 export interface BortleFilter {
+  suspend(): void
+  resume(): void
   destroy(): void
 }
 
@@ -24,10 +26,29 @@ interface ManagedElement {
 export function createBortleFilter({ root, classes, onToggle }: BortleFilterOptions): BortleFilter {
   const selected = new Set(classes.map((bortleClass) => bortleClass.level))
   const managedElements: ManagedElement[] = []
+  let suspended = false
 
   const setActive = (element: HTMLElement, active: boolean): void => {
     element.setAttribute('aria-pressed', String(active))
     element.toggleAttribute('data-active', active)
+  }
+
+  const applyFilterSemantics = (managed: ManagedElement): void => {
+    managed.element.setAttribute('role', 'button')
+    managed.element.setAttribute('tabindex', '0')
+    setActive(managed.element, selected.has(managed.level))
+  }
+
+  const restoreOriginalAttributes = (managed: ManagedElement): void => {
+    const { element, role, tabIndex, ariaPressed, active } = managed
+    if (role === null) element.removeAttribute('role')
+    else element.setAttribute('role', role)
+    if (tabIndex === null) element.removeAttribute('tabindex')
+    else element.setAttribute('tabindex', tabIndex)
+    if (ariaPressed === null) element.removeAttribute('aria-pressed')
+    else element.setAttribute('aria-pressed', ariaPressed)
+    if (active === null) element.removeAttribute('data-active')
+    else element.setAttribute('data-active', active)
   }
 
   const toggle = (managed: ManagedElement): void => {
@@ -60,29 +81,39 @@ export function createBortleFilter({ root, classes, onToggle }: BortleFilterOpti
       active: element.getAttribute('data-active')
     }
 
-    element.setAttribute('role', 'button')
-    element.setAttribute('tabindex', '0')
-    setActive(element, true)
+    applyFilterSemantics(managed)
     element.addEventListener('click', managed.onClick)
     element.addEventListener('keydown', managed.onKeyDown)
     managedElements.push(managed)
   })
 
   return {
-    destroy() {
+    suspend() {
+      if (suspended) return
+      suspended = true
       managedElements.forEach((managed) => {
-        const { element, onClick, onKeyDown, role, tabIndex, ariaPressed, active } = managed
+        const { element, onClick, onKeyDown } = managed
         element.removeEventListener('click', onClick)
         element.removeEventListener('keydown', onKeyDown)
-
-        if (role === null) element.removeAttribute('role')
-        else element.setAttribute('role', role)
-        if (tabIndex === null) element.removeAttribute('tabindex')
-        else element.setAttribute('tabindex', tabIndex)
-        if (ariaPressed === null) element.removeAttribute('aria-pressed')
-        else element.setAttribute('aria-pressed', ariaPressed)
-        if (active === null) element.removeAttribute('data-active')
-        else element.setAttribute('data-active', active)
+        restoreOriginalAttributes(managed)
+      })
+    },
+    resume() {
+      if (!suspended) return
+      suspended = false
+      managedElements.forEach((managed) => {
+        const { element, onClick, onKeyDown } = managed
+        applyFilterSemantics(managed)
+        element.addEventListener('click', onClick)
+        element.addEventListener('keydown', onKeyDown)
+      })
+    },
+    destroy() {
+      managedElements.forEach((managed) => {
+        const { element, onClick, onKeyDown } = managed
+        element.removeEventListener('click', onClick)
+        element.removeEventListener('keydown', onKeyDown)
+        restoreOriginalAttributes(managed)
       })
     }
   }

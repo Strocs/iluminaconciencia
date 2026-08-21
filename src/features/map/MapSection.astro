@@ -1,8 +1,23 @@
 ---
-import BortleBar from '@shared/components/BortleBar.astro'
 ---
 
-<section id="nodos" class="relative z-10 h-full min-h-[90dvh] w-full p-4 sm:p-6">
+<!--
+  MapSection negative margin (Opción B).
+
+  The BortleBar sticky wrapper bottom is the sum of its children. The bar is
+  the last child and sticks to the viewport bottom, but the wrapper bottom is
+  further down because the `#nodos` section adds `p-4 sm:p-6` padding below the
+  map container. That 16-24px of section padding would place the wrapper bottom
+  ~16-24px below the map container bottom, so the bar would settle ~16-24px
+  below the map bottom when stuck — instead of aligning exactly with it.
+
+  This static negative bottom margin cancels the section padding below the map
+  container, aligning the wrapper bottom with the map container bottom so the
+  sticky bar's `pb-6` (24px) yields exactly 24px between the bar's visual
+  content and the map bottom when stuck. The values mirror the `#nodos`
+  padding responsively: -16px below `sm`, -24px at `sm+`.
+-->
+<section id="nodos" class="relative z-10 h-full min-h-[90dvh] w-full p-4 sm:p-6 -mb-4 sm:-mb-6">
   <div class="mx-auto h-full">
     <!-- <h2 class="font-serif text-3xl text-ink">Nodos de medición</h2> -->
     <!-- <p class="mt-2 max-w-2xl text-sm leading-relaxed text-subtle"> -->
@@ -10,7 +25,7 @@ import BortleBar from '@shared/components/BortleBar.astro'
     <!--   o por escala Bortle, y selecciona un nodo para ver su detalle. -->
     <!-- </p> -->
 
-    <div class="relative h-[90vh] overflow-hidden rounded-2xl border border-border bg-surface">
+    <div data-map-container class="relative h-[90vh] overflow-hidden rounded-2xl border border-border bg-surface">
       <div id="map" class="size-full overflow-hidden"></div>
 
       <div class="pointer-events-none absolute inset-x-4 top-4 flex flex-wrap gap-3">
@@ -21,12 +36,6 @@ import BortleBar from '@shared/components/BortleBar.astro'
           <legend class="px-1 text-xs font-medium text-muted">Tipo de instrumento</legend>
           <div data-type-chips class="mt-2 flex flex-wrap gap-2"></div>
         </fieldset>
-        <div
-          data-bortle-filters
-          class="pointer-events-auto rounded-xl border border-border bg-canvas/80 p-3 backdrop-blur"
-        >
-          <BortleBar />
-        </div>
       </div>
 
       <aside
@@ -63,6 +72,7 @@ import BortleBar from '@shared/components/BortleBar.astro'
 <script>
   import { loadInstruments } from '@shared/features/instruments'
   import { bortleClasses } from '@shared/features/bortle'
+  import { getBortleBarController } from '@shared/features/bortle/bar-controller'
   import { createBortleFilter } from './bortle-filter'
   import { createInstrumentDrawer } from './drawer'
   import { filterByBortle, filterByType } from './filters'
@@ -117,16 +127,26 @@ import BortleBar from '@shared/components/BortleBar.astro'
     refresh()
   })
 
-  const bortleFilterRoot = document.querySelector<HTMLElement>('[data-bortle-filters]')
-  if (!bortleFilterRoot) throw new Error('Map section is missing the Bortle filter')
-  createBortleFilter({
-    root: bortleFilterRoot,
-    classes: bortleClasses,
-    onToggle: (selected) => {
+  const controller = getBortleBarController()
+  const barElement = controller.getBarElement()
+
+  if (barElement) {
+    const filter = createBortleFilter({
+      root: barElement,
+      classes: bortleClasses,
+      onToggle: (selected) => {
+        selectedLevels = new Set(selected)
+        refresh()
+      }
+    })
+    controller.setMapFilter(filter, (selected) => {
       selectedLevels = new Set(selected)
       refresh()
-    }
-  })
+    })
+  }
+
+  const mapContainer = document.querySelector<HTMLElement>('[data-map-container]')
+  if (mapContainer) controller.setMapContainer(mapContainer)
 
   // MapLibre GL JS (~900 KB) is loaded dynamically so it splits into a separate
   // chunk instead of blocking the initial bundle. Pins are attached once the

@@ -12,6 +12,8 @@ import { createNightSkyCapability } from '../capabilities/night-sky/night-sky'
 import { nightSkyConfig } from '../capabilities/night-sky/config'
 import { createHeroMapTransitionCapability } from '../capabilities/hero-map-transition/hero-map-transition'
 import { heroMapTransitionConfig } from '../capabilities/hero-map-transition/config'
+import { createBortleProxy } from '../capabilities/bortle-scale/bortle-proxy'
+import { getBortleBarController } from '@shared/features/bortle/bar-controller'
 
 const initializedHeroes = new WeakMap<HTMLElement, HeroLifecycle>()
 
@@ -23,12 +25,23 @@ const MOTION_QUERIES = {
 function composeHero(root: HTMLElement): HeroLifecycle {
   const scenes = createScenesCapability({ root, config: scenesConfig })
   const lightPollution = createLightPollutionCapability({ root, config: lightPollutionConfig })
-  const bortle = createBortleCapability({ root, classes: bortleClasses, config: bortleConfig })
   const nightSky = createNightSkyCapability({ root, config: nightSkyConfig })
   const heroMapTransition = createHeroMapTransitionCapability({ root, config: heroMapTransitionConfig })
+
+  const barElement = document.querySelector<HTMLElement>('[data-bortle-bar]')
+  const bortleProxy = createBortleProxy()
+  let bortleCapability: HeroCapability = bortleProxy
+
+  if (barElement) {
+    const bortleBehavior = createBortleCapability({ root: barElement, classes: bortleClasses, config: bortleConfig })
+    getBortleBarController().setHeroBehavior(bortleBehavior)
+  } else {
+    bortleCapability = createBortleCapability({ root, classes: bortleClasses, config: bortleConfig })
+  }
+
   const capabilities: readonly HeroCapability[] = nightSky
-    ? [scenes, lightPollution, bortle, nightSky, heroMapTransition]
-    : [scenes, lightPollution, bortle, heroMapTransition]
+    ? [scenes, lightPollution, bortleCapability, nightSky, heroMapTransition]
+    : [scenes, lightPollution, bortleCapability, heroMapTransition]
   const matchMedia = gsap.matchMedia(root)
 
   matchMedia.add(MOTION_QUERIES.normal, () => {

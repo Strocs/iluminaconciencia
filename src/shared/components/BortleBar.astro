@@ -3,18 +3,17 @@ import { bortleClasses } from '@shared/features/bortle'
 
 interface Props {
   showIndicator?: boolean
-  sticky?: boolean
   class?: string
 }
 
-const { showIndicator = false, sticky = false, class: className } = Astro.props
+const { showIndicator = false, class: className } = Astro.props
 ---
 
 <section
+  data-bortle-bar
   aria-label="Escala de Bortle"
   class:list={[
     'flex w-full max-w-5xl flex-col gap-2 font-sans [@media(max-height:34rem)]:gap-1',
-    sticky ? 'sticky bottom-0 z-10' : '',
     className ?? ''
   ]}
 >

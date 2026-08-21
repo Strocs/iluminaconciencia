@@ -1,5 +1,4 @@
 ---
-import HeroBortleScale from './capabilities/bortle-scale/HeroBortleScale.astro'
 import HeroNarrative from './capabilities/scenes/HeroNarrative.astro'
 import HeroSky from './capabilities/night-sky/HeroSky.astro'
 ---
@@ -8,9 +7,6 @@ import HeroSky from './capabilities/night-sky/HeroSky.astro'
   <div class="sticky top-0 flex h-dvh flex-col justify-between overflow-hidden">
     <HeroSky />
     <HeroNarrative />
-    <div class="relative z-10 mx-auto w-full max-w-5xl px-4 pb-6 sm:px-8 [@media(max-height:34rem)]:pb-3">
-      <HeroBortleScale />
-    </div>
   </div>
 </section>
 
