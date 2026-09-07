@@ -4,7 +4,7 @@ import { getBortleClass } from '@shared/features/bortle'
 const PIN_SVG =
   '<svg width="28" height="36" viewBox="0 0 28 36" fill="none" aria-hidden="true">' +
   '<path d="M14 0C6.27 0 0 6.27 0 14c0 9.8 14 22 14 22s14-12.2 14-22C28 6.27 21.73 0 14 0z" fill="currentColor"/>' +
-  '<circle cx="14" cy="14" r="6" fill="var(--color-canvas)"/>' +
+  '<circle cx="14" cy="14" r="6" fill="var(--color-background)"/>' +
   '</svg>'
 
 /**

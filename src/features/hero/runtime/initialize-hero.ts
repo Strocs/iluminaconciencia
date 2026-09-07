@@ -12,8 +12,6 @@ import { createNightSkyCapability } from '../capabilities/night-sky/night-sky'
 import { nightSkyConfig } from '../capabilities/night-sky/config'
 import { createHeroMapTransitionCapability } from '../capabilities/hero-map-transition/hero-map-transition'
 import { heroMapTransitionConfig } from '../capabilities/hero-map-transition/config'
-import { createBortleProxy } from '../capabilities/bortle-scale/bortle-proxy'
-import { getBortleBarController } from '@shared/features/bortle/bar-controller'
 
 const initializedHeroes = new WeakMap<HTMLElement, HeroLifecycle>()
 
@@ -28,16 +26,11 @@ function composeHero(root: HTMLElement): HeroLifecycle {
   const nightSky = createNightSkyCapability({ root, config: nightSkyConfig })
   const heroMapTransition = createHeroMapTransitionCapability({ root, config: heroMapTransitionConfig })
 
-  const barElement = document.querySelector<HTMLElement>('[data-bortle-bar]')
-  const bortleProxy = createBortleProxy()
-  let bortleCapability: HeroCapability = bortleProxy
-
-  if (barElement) {
-    const bortleBehavior = createBortleCapability({ root: barElement, classes: bortleClasses, config: bortleConfig })
-    getBortleBarController().setHeroBehavior(bortleBehavior)
-  } else {
-    bortleCapability = createBortleCapability({ root, classes: bortleClasses, config: bortleConfig })
-  }
+  const bortleCapability: HeroCapability = createBortleCapability({
+    root,
+    classes: bortleClasses,
+    config: bortleConfig
+  })
 
   const capabilities: readonly HeroCapability[] = nightSky
     ? [scenes, lightPollution, bortleCapability, nightSky, heroMapTransition]

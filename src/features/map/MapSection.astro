@@ -1,54 +1,76 @@
 ---
+import { bortleClasses } from '@shared/features/bortle'
 ---
 
-<!--
-  MapSection negative margin (Opción B).
-
-  The BortleBar sticky wrapper bottom is the sum of its children. The bar is
-  the last child and sticks to the viewport bottom, but the wrapper bottom is
-  further down because the `#nodos` section adds `p-4 sm:p-6` padding below the
-  map container. That 16-24px of section padding would place the wrapper bottom
-  ~16-24px below the map container bottom, so the bar would settle ~16-24px
-  below the map bottom when stuck — instead of aligning exactly with it.
-
-  This static negative bottom margin cancels the section padding below the map
-  container, aligning the wrapper bottom with the map container bottom so the
-  sticky bar's `pb-6` (24px) yields exactly 24px between the bar's visual
-  content and the map bottom when stuck. The values mirror the `#nodos`
-  padding responsively: -16px below `sm`, -24px at `sm+`.
--->
-<section id="nodos" class="relative z-10 h-full min-h-[90dvh] w-full p-4 sm:p-6 -mb-4 sm:-mb-6">
+<section id="nodos" class="relative z-10 h-full min-h-[90dvh] w-full p-4 sm:p-6">
   <div class="mx-auto h-full">
-    <!-- <h2 class="font-serif text-3xl text-ink">Nodos de medición</h2> -->
-    <!-- <p class="mt-2 max-w-2xl text-sm leading-relaxed text-subtle"> -->
+    <!-- <h2 class="font-heading text-3xl text-foreground">Nodos de medición</h2> -->
+    <!-- <p class="mt-2 max-w-2xl font-body text-sm leading-relaxed text-text"> -->
     <!--   Red de monitoreo de la contaminación lumínica en la Región de Coquimbo. Filtra los puntos por tipo de instrumento -->
     <!--   o por escala Bortle, y selecciona un nodo para ver su detalle. -->
     <!-- </p> -->
 
-    <div data-map-container class="relative h-[90vh] overflow-hidden rounded-2xl border border-border bg-surface">
+    <div data-map-container class="relative h-[90vh] overflow-hidden rounded-2xl border border-border bg-background">
       <div id="map" class="size-full overflow-hidden"></div>
 
       <div class="pointer-events-none absolute inset-x-4 top-4 flex flex-wrap gap-3">
         <fieldset
           data-type-filters
-          class="pointer-events-auto rounded-xl border border-border bg-canvas/80 p-3 backdrop-blur"
+          class="pointer-events-auto rounded-xl border border-border bg-background/80 p-3 backdrop-blur"
         >
-          <legend class="px-1 text-xs font-medium text-muted">Tipo de instrumento</legend>
+          <legend class="px-1 text-xs font-medium text-text">Tipo de instrumento</legend>
           <div data-type-chips class="mt-2 flex flex-wrap gap-2"></div>
         </fieldset>
       </div>
 
+      <div class="pointer-events-none absolute inset-x-4 bottom-0">
+        <section
+          data-map-bortle-filter
+          aria-label="Escala de Bortle"
+          class="pointer-events-auto mx-auto flex w-full max-w-5xl flex-col gap-2 px-0 pb-6 font-body sm:px-4 [@media(max-height:34rem)]:gap-1 [@media(max-height:34rem)]:pb-3"
+        >
+          <div
+            class="mx-auto flex items-center gap-2 font-mono text-xs tracking-wider text-text uppercase [@media(max-height:34rem)]:text-[10px]"
+          >
+            <span class="font-semibold">Escala de Bortle</span>
+          </div>
+          <ol class="mx-auto grid w-full max-w-5xl grid-cols-3 overflow-hidden rounded-full sm:grid-cols-9">
+            {
+              bortleClasses.map((bortleClass, index) => (
+                <li
+                  class:list={[
+                    'group relative flex min-w-0 items-center justify-between gap-2 p-2 text-xs opacity-40 grayscale transition-all duration-200 select-none data-[active]:z-10 data-[active]:opacity-100 data-[active]:grayscale-0 motion-reduce:transition-none [@media(max-height:34rem)]:p-1.5',
+                    index === 0 ? 'pl-4' : '',
+                    index === bortleClasses.length - 1 ? 'pr-4' : '',
+                    bortleClass.textTone === 'dark' ? 'text-background' : 'text-foreground'
+                  ]}
+                  data-map-bortle-class={bortleClass.level}
+                  aria-label={`Bortle ${bortleClass.level}: ${bortleClass.name}`}
+                  title={bortleClass.name}
+                  style={`background-color: ${bortleClass.color}`}
+                >
+                  <span class="mb-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-foreground text-xs font-bold text-background transition-all duration-150 group-data-[active]:scale-110 group-data-[active]:ring group-data-[active]:ring-background">
+                    {bortleClass.label}
+                  </span>
+                  <span class="min-w-0 break-words text-right text-[11px] leading-tight font-bold">{bortleClass.shortName}</span>
+                </li>
+              ))
+            }
+          </ol>
+        </section>
+      </div>
+
       <aside
         id="instrument-drawer"
-        class="absolute inset-y-0 right-0 z-10 flex h-full w-full max-w-sm translate-x-full flex-col overflow-y-auto border-l border-border bg-surface p-5 shadow-2xl transition-transform duration-300"
+        class="absolute inset-y-0 right-0 z-10 flex h-full w-full max-w-sm translate-x-full flex-col overflow-y-auto border-l border-border bg-background p-5 shadow-2xl transition-transform duration-300"
         aria-hidden="true"
       >
-        <header class="sticky top-0 flex shrink-0 items-start justify-between gap-4 bg-surface pb-2">
-          <h3 data-drawer-title class="font-serif text-xl leading-snug text-ink"></h3>
+        <header class="sticky top-0 flex shrink-0 items-start justify-between gap-4 bg-background pb-2">
+          <h3 data-drawer-title class="font-heading text-xl leading-snug text-foreground"></h3>
           <button
             data-drawer-close
             type="button"
-            class="rounded-full border border-border px-2.5 py-1 text-muted transition-colors hover:text-ink"
+            class="rounded-full border border-border px-2.5 py-1 text-text transition-colors hover:text-foreground"
             aria-label="Cerrar panel"
           >
             ✕
@@ -60,7 +82,7 @@
           href="#"
           target="_blank"
           rel="noopener"
-          class="mt-6 inline-block rounded-full bg-accent px-5 py-2 text-sm font-semibold text-canvas transition-opacity hover:opacity-90"
+          class="mt-6 inline-block rounded-full bg-primary px-5 py-2 text-sm font-semibold text-background transition-opacity hover:opacity-90"
         >
           Más información
         </a>
@@ -72,7 +94,6 @@
 <script>
   import { loadInstruments } from '@shared/features/instruments'
   import { bortleClasses } from '@shared/features/bortle'
-  import { getBortleBarController } from '@shared/features/bortle/bar-controller'
   import { createBortleFilter } from './bortle-filter'
   import { createInstrumentDrawer } from './drawer'
   import { filterByBortle, filterByType } from './filters'
@@ -93,8 +114,8 @@
 
   function chipClass(active: boolean): string {
     return active
-      ? 'rounded-full bg-accent px-3 py-1 text-xs font-semibold text-canvas'
-      : 'rounded-full border border-border bg-surface px-3 py-1 text-xs text-subtle transition-colors hover:text-ink'
+      ? 'rounded-full bg-primary px-3 py-1 text-xs font-semibold text-background'
+      : 'rounded-full border border-border bg-background px-3 py-1 text-xs text-text transition-colors hover:text-foreground'
   }
 
   function renderTypeChips(
@@ -123,36 +144,36 @@
   let selectedLevels: ReadonlySet<number> = new Set(bortleClasses.map(({ level }) => level))
 
   renderTypeChips(document.querySelector<HTMLElement>('[data-type-chips]')!, types, selectedTypes, (type) => {
-    selectedTypes.has(type) ? selectedTypes.delete(type) : selectedTypes.add(type)
+    if (selectedTypes.has(type)) selectedTypes.delete(type)
+    else selectedTypes.add(type)
     refresh()
   })
 
-  const controller = getBortleBarController()
-  const barElement = controller.getBarElement()
+  const bortleFilterRoot = document.querySelector<HTMLElement>('[data-map-bortle-filter]')
+  if (!bortleFilterRoot) throw new Error('Map section is missing its Bortle filter')
 
-  if (barElement) {
-    const filter = createBortleFilter({
-      root: barElement,
-      classes: bortleClasses,
-      onToggle: (selected) => {
-        selectedLevels = new Set(selected)
-        refresh()
-      }
-    })
-    controller.setMapFilter(filter, (selected) => {
+  const bortleFilter = createBortleFilter({
+    root: bortleFilterRoot,
+    classes: bortleClasses,
+    onToggle: (selected) => {
       selectedLevels = new Set(selected)
       refresh()
-    })
-  }
-
-  const mapContainer = document.querySelector<HTMLElement>('[data-map-container]')
-  if (mapContainer) controller.setMapContainer(mapContainer)
+    }
+  })
 
   // MapLibre GL JS (~900 KB) is loaded dynamically so it splits into a separate
   // chunk instead of blocking the initial bundle. Pins are attached once the
   // view is ready; filters update the already-created view.
   const view = await createMaplibreView({ container: mapEl })
   view.onPinClick((instrument) => drawer.open(instrument))
+  window.addEventListener(
+    'pagehide',
+    () => {
+      bortleFilter.destroy()
+      view.destroy()
+    },
+    { once: true }
+  )
 
   function refresh(): void {
     const filtered = filterByBortle(filterByType(instruments, selectedTypes), selectedLevels)

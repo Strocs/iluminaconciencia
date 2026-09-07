@@ -65,10 +65,10 @@ export function createInstrumentDrawer(root: HTMLElement): InstrumentDrawer {
           const row = document.createElement('div')
           row.className = 'flex items-baseline justify-between gap-4 border-b border-border pb-2'
           const dt = document.createElement('dt')
-          dt.className = 'text-sm text-muted'
+          dt.className = 'text-sm text-text'
           dt.textContent = label
           const dd = document.createElement('dd')
-          dd.className = 'text-sm font-medium text-ink'
+          dd.className = 'text-sm font-medium text-foreground'
           dd.textContent = value
           row.append(dt, dd)
           return row

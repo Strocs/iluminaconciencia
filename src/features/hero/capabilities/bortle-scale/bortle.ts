@@ -13,12 +13,11 @@ export function createBortleCapability({
   root: HTMLElement
   classes: readonly BortleClass[]
   config: BortleConfig
-}): HeroCapability & { suspend(): void; resume(): void } {
-  const classElements = Array.from(root.querySelectorAll<HTMLElement>('[data-bortle-class]'))
-  const indicator = root.querySelector<HTMLElement>('[data-bortle-indicator]')
+}): HeroCapability {
+  const classElements = Array.from(root.querySelectorAll<HTMLElement>('[data-hero-bortle-class]'))
+  const indicator = root.querySelector<HTMLElement>('[data-hero-bortle-indicator]')
   const timeline = gsap.timeline({ paused: true })
   let activeLevel = ''
-  let suspended = false
 
   const setLevel = (level: number): void => {
     const nextLevel = String(level)
@@ -26,7 +25,7 @@ export function createBortleCapability({
 
     activeLevel = nextLevel
     classElements.forEach((element) => {
-      const active = element.dataset.bortleClass === nextLevel
+      const active = element.dataset.heroBortleClass === nextLevel
       element.toggleAttribute('aria-current', active)
       element.toggleAttribute('data-active', active)
       if (active && indicator) indicator.style.backgroundColor = element.style.backgroundColor
@@ -43,22 +42,7 @@ export function createBortleCapability({
   timeline.add(() => undefined, 1)
 
   return {
-    onProgress: (progress) => {
-      if (suspended) return
-      timeline.progress(progress)
-    },
-    suspend() {
-      if (suspended) return
-      timeline.pause()
-      suspended = true
-    },
-    resume() {
-      if (!suspended) return
-      // Do NOT call timeline.resume() — the timeline is always externally
-      // controlled via onProgress → timeline.progress(p). GSAP resume() would
-      // start autonomous playback, advancing levels without scroll input.
-      suspended = false
-    },
+    onProgress: (progress) => timeline.progress(progress),
     destroy: () => timeline.kill()
   }
 }

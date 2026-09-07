@@ -1,7 +1,7 @@
 import { bortleClasses, type BortleClass } from './bortle-classes'
 
 export function toBortleSegmentLevel(level: number): number {
-  return level === 8 ? 9 : level
+  return level
 }
 
 export function getBortleClass(level: number | null | undefined): BortleClass | undefined {

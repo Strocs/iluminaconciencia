@@ -1,8 +1,6 @@
 import type { BortleClass } from '@shared/features/bortle'
 
 export interface BortleFilter {
-  suspend(): void
-  resume(): void
   destroy(): void
 }
 
@@ -26,7 +24,6 @@ interface ManagedElement {
 export function createBortleFilter({ root, classes, onToggle }: BortleFilterOptions): BortleFilter {
   const selected = new Set(classes.map((bortleClass) => bortleClass.level))
   const managedElements: ManagedElement[] = []
-  let suspended = false
 
   const setActive = (element: HTMLElement, active: boolean): void => {
     element.setAttribute('aria-pressed', String(active))
@@ -62,8 +59,8 @@ export function createBortleFilter({ root, classes, onToggle }: BortleFilterOpti
     onToggle(new Set(selected))
   }
 
-  root.querySelectorAll<HTMLElement>('[data-bortle-class]').forEach((element) => {
-    const level = Number(element.dataset.bortleClass)
+  root.querySelectorAll<HTMLElement>('[data-map-bortle-class]').forEach((element) => {
+    const level = Number(element.dataset.mapBortleClass)
     if (!Number.isFinite(level)) return
 
     const managed: ManagedElement = {
@@ -88,26 +85,6 @@ export function createBortleFilter({ root, classes, onToggle }: BortleFilterOpti
   })
 
   return {
-    suspend() {
-      if (suspended) return
-      suspended = true
-      managedElements.forEach((managed) => {
-        const { element, onClick, onKeyDown } = managed
-        element.removeEventListener('click', onClick)
-        element.removeEventListener('keydown', onKeyDown)
-        restoreOriginalAttributes(managed)
-      })
-    },
-    resume() {
-      if (!suspended) return
-      suspended = false
-      managedElements.forEach((managed) => {
-        const { element, onClick, onKeyDown } = managed
-        applyFilterSemantics(managed)
-        element.addEventListener('click', onClick)
-        element.addEventListener('keydown', onKeyDown)
-      })
-    },
     destroy() {
       managedElements.forEach((managed) => {
         const { element, onClick, onKeyDown } = managed

@@ -1,46 +1,10 @@
 ---
 import Layout from '@shared/layout/Layout.astro'
-import BortleBar from '@shared/components/BortleBar.astro'
 import Hero from '@features/hero/Hero.astro'
 import MapSection from '@features/map/MapSection.astro'
 ---
 
 <Layout>
-  <!--
-    BortleBar sticky wrapper.
-
-    The BortleBar uses `position: sticky; bottom: 0` and must be the LAST child of
-    this relative wrapper. As the last child, the bar reserves its flow slot at
-    the wrapper bottom, so the Hero starts at y=0 with no gap, and the browser
-    compositor pins the bar to the viewport bottom from page load until the
-    wrapper bottom enters the viewport — zero per-frame JS positioning.
-
-    IMPORTANT: keep the bar as the LAST child of the wrapper. Moving it before
-    Hero/MapSection would reserve its slot at the wrapper top, reintroducing an
-    80px gap above the Hero and breaking the sticky-bottom-from-load behavior.
-    It is worth covering this with a test (see bar-controller) to catch
-    accidental reordering that would silently regress the sticky behavior.
-
-    The `h-[200vh]` scroll spacer is a SIBLING of the wrapper, NOT a child.
-    Placing it inside the wrapper would keep the bar artificially stuck to the
-    viewport bottom for 200vh past the map bottom (the bar would never settle
-    with the map). As a sibling, it only provides scroll room AFTER the wrapper
-    so the settled bar can scroll out of view with the map.
-  -->
-  <div class="relative">
-    <Hero />
-    <MapSection />
-    <BortleBar
-      showIndicator
-      class="sticky bottom-0 left-0 right-0 z-20 mx-auto px-4 pb-6 sm:px-8 [@media(max-height:34rem)]:pb-3"
-    />
-  </div>
-  <div class="h-[200vh]" aria-hidden="true" />
+  <Hero />
+  <MapSection />
 </Layout>
-
-<script>
-  import { getBortleBarController } from '@shared/features/bortle/bar-controller'
-
-  const barElement = document.querySelector<HTMLElement>('[data-bortle-bar]')
-  if (barElement) getBortleBarController().initBar(barElement)
-</script>
