@@ -5,47 +5,51 @@ import HeroSky from './capabilities/night-sky/HeroSky.astro'
 ---
 
 <section id="hero" class="relative min-h-[550dvh]" aria-labelledby="hero-title">
-  <div class="sticky top-0 flex h-dvh flex-col justify-between overflow-hidden">
-    <HeroSky />
-    <HeroNarrative />
+  <div data-hero-pin-layer class="h-dvh overflow-hidden">
+    <div data-hero-exit-layer class="relative flex h-full flex-col justify-between">
+      <HeroSky />
+      <HeroNarrative />
 
-    <section
-      data-hero-bortle-bar
-      aria-label="Escala de Bortle"
-      class="absolute inset-x-0 bottom-0 z-20 mx-auto flex w-full max-w-5xl flex-col gap-2 px-4 pb-6 font-body sm:px-8 [@media(max-height:34rem)]:gap-1 [@media(max-height:34rem)]:pb-3"
-    >
-      <div
-        class="mx-auto flex items-center gap-2 font-mono text-xs tracking-wider text-text uppercase [@media(max-height:34rem)]:text-[10px]"
+      <section
+        data-hero-bortle-bar
+        aria-label="Escala de Bortle"
+        class="absolute inset-x-0 bottom-0 z-20 mx-auto flex w-full max-w-5xl flex-col gap-2 px-4 pb-6 font-body sm:px-8 [@media(max-height:34rem)]:gap-1 [@media(max-height:34rem)]:pb-3"
       >
-        <span
-          class="size-2.5 animate-pulse rounded-full bg-foreground transition-colors duration-200"
-          data-hero-bortle-indicator></span>
-        <span class="font-semibold">Escala de Bortle</span>
-      </div>
-      <ol class="mx-auto grid w-full max-w-5xl grid-cols-3 overflow-hidden rounded-full sm:grid-cols-9">
-        {
-          bortleClasses.map((bortleClass, index) => (
-            <li
-              class:list={[
-                'group relative flex min-w-0 items-center justify-between gap-2 p-2 text-xs opacity-40 grayscale transition-all duration-200 select-none data-[active]:z-10 data-[active]:opacity-100 data-[active]:grayscale-0 motion-reduce:transition-none [@media(max-height:34rem)]:p-1.5',
-                index === 0 ? 'pl-4' : '',
-                index === bortleClasses.length - 1 ? 'pr-4' : '',
-                bortleClass.textTone === 'dark' ? 'text-background' : 'text-foreground'
-              ]}
-              data-hero-bortle-class={bortleClass.level}
-              aria-label={`Bortle ${bortleClass.level}: ${bortleClass.name}`}
-              title={bortleClass.name}
-              style={`background-color: ${bortleClass.color}`}
-            >
-              <span class="mb-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-foreground text-xs font-bold text-background transition-all duration-150 group-data-[active]:scale-110 group-data-[active]:ring group-data-[active]:ring-background">
-                {bortleClass.label}
-              </span>
-              <span class="min-w-0 break-words text-right text-[11px] leading-tight font-bold">{bortleClass.shortName}</span>
-            </li>
-          ))
-        }
-      </ol>
-    </section>
+        <div
+          class="mx-auto flex items-center gap-2 font-mono text-xs tracking-wider text-text uppercase [@media(max-height:34rem)]:text-[10px]"
+        >
+          <span
+            class="size-2.5 animate-pulse rounded-full bg-foreground transition-colors duration-200"
+            data-hero-bortle-indicator></span>
+          <span class="font-semibold">Escala de Bortle</span>
+        </div>
+        <ol class="mx-auto grid w-full max-w-5xl grid-cols-3 overflow-hidden rounded-full sm:grid-cols-9">
+          {
+            bortleClasses.map((bortleClass, index) => (
+              <li
+                class:list={[
+                  'group relative flex min-w-0 items-center justify-between gap-2 p-2 text-xs opacity-40 grayscale transition-all duration-200 select-none data-[active]:z-10 data-[active]:opacity-100 data-[active]:grayscale-0 motion-reduce:transition-none [@media(max-height:34rem)]:p-1.5',
+                  index === 0 ? 'pl-4' : '',
+                  index === bortleClasses.length - 1 ? 'pr-4' : '',
+                  bortleClass.textTone === 'dark' ? 'text-background' : 'text-foreground'
+                ]}
+                data-hero-bortle-class={bortleClass.level}
+                aria-label={`Bortle ${bortleClass.level}: ${bortleClass.name}`}
+                title={bortleClass.name}
+                style={`background-color: ${bortleClass.color}`}
+              >
+                <span class="mb-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-foreground text-xs font-bold text-background transition-all duration-150 group-data-[active]:scale-110 group-data-[active]:ring group-data-[active]:ring-background">
+                  {bortleClass.label}
+                </span>
+                <span class="min-w-0 text-right text-[11px] leading-tight font-bold break-words">
+                  {bortleClass.shortName}
+                </span>
+              </li>
+            ))
+          }
+        </ol>
+      </section>
+    </div>
   </div>
 </section>
 

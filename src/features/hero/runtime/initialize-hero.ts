@@ -12,6 +12,7 @@ import { createNightSkyCapability } from '../capabilities/night-sky/night-sky'
 import { nightSkyConfig } from '../capabilities/night-sky/config'
 import { createHeroMapTransitionCapability } from '../capabilities/hero-map-transition/hero-map-transition'
 import { heroMapTransitionConfig } from '../capabilities/hero-map-transition/config'
+import { createHeroExit } from '../capabilities/hero-exit/hero-exit'
 
 const initializedHeroes = new WeakMap<HTMLElement, HeroLifecycle>()
 
@@ -45,8 +46,10 @@ function composeHero(root: HTMLElement): HeroLifecycle {
       onEnterBack: () => nightSky?.start(),
       onLeave: () => nightSky?.stop()
     })
+    const heroExit = createHeroExit({ root })
     nightSky?.start()
     return () => {
+      heroExit.destroy()
       scrollTimeline.destroy()
       nightSky?.stop()
     }

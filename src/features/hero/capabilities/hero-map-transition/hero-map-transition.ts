@@ -34,19 +34,19 @@ export function createHeroMapTransitionCapability({
     { yPercent: config.movementStart },
     {
       yPercent: config.movementEnd,
-      duration: config.endProgress - config.startProgress,
+      duration: 1,
       ease: 'none'
     },
-    config.startProgress
+    0
   )
-  timeline.add(() => undefined, config.endProgress)
+  timeline.add(() => undefined, 1)
 
   return {
     onProgress: (progress) => {
       const normalizedProgress = clampHeroProgress(progress)
       if (reducedMotion) {
         gsap.set(layer, {
-          yPercent: normalizedProgress >= config.startProgress ? config.movementEnd : config.movementStart
+          yPercent: normalizedProgress >= 0.5 ? config.movementEnd : config.movementStart
         })
         return
       }

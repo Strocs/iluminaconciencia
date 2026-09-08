@@ -19,6 +19,7 @@ export function createScrollTimeline({
   onLeave
 }: CreateScrollTimelineOptions): HeroLifecycle {
   gsap.registerPlugin(ScrollTrigger)
+  const pinLayer = root.querySelector<HTMLElement>('[data-hero-pin-layer]')
   const playhead = { progress: 0 }
   const broadcast = (progress: number): void => {
     capabilities.forEach((capability) => capability.onProgress(progress))
@@ -33,6 +34,7 @@ export function createScrollTimeline({
     end: coreConfig.scroll.end,
     animation: timeline.to(playhead, { progress: 1, duration: coreConfig.duration, ease: 'none' }, 0),
     scrub: true,
+    ...(pinLayer ? { pin: pinLayer, pinSpacing: false } : {}),
     onEnter,
     onEnterBack,
     onLeave

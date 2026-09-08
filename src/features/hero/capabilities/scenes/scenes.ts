@@ -5,65 +5,67 @@ import type { scenesConfig } from './config'
 type ScenesConfig = typeof scenesConfig
 
 const scenesSelector = '[data-hero-scene]'
+const timelineDuration = 1
 
 export function createScenesCapability({ root, config }: { root: HTMLElement; config: ScenesConfig }): HeroCapability {
   const scenes = Array.from(root.querySelectorAll<HTMLElement>(scenesSelector))
-  const timeline = gsap.timeline({ paused: true })
+  const { finalDelay, initialDelay, transitionDuration, verticalOffset } = config
+  const timingValues = [initialDelay, finalDelay, transitionDuration, verticalOffset]
 
-  if (scenes.length > 0) {
-    const { fadeDuration, firstFadeStart, lastVisibleTarget, overlap, verticalOffset } = config
-    const count = scenes.length
-    const firstFadeInStart = firstFadeStart + fadeDuration - overlap
-    const lastFadeInStart = Math.max(firstFadeInStart, lastVisibleTarget - fadeDuration)
-    const step = count > 2 ? (lastFadeInStart - firstFadeInStart) / (count - 2) : 0
-
-    const setActiveScene = (index: number): void => {
-      scenes.forEach((scene, sceneIndex) => {
-        const active = sceneIndex === index
-        scene.setAttribute('aria-hidden', String(!active))
-        scene.toggleAttribute('inert', !active)
-      })
-    }
-
-    scenes.forEach((scene, index) => {
-      if (index === 0) {
-        timeline.to(
-          scene,
-          { autoAlpha: 0, y: -verticalOffset, duration: fadeDuration, ease: 'power2.inOut' },
-          firstFadeStart
-        )
-      } else if (index === count - 1) {
-        timeline.add(() => setActiveScene(index), lastFadeInStart)
-        timeline.fromTo(
-          scene,
-          { autoAlpha: 0, y: verticalOffset },
-          { autoAlpha: 1, y: 0, duration: fadeDuration, ease: 'power2.inOut' },
-          lastFadeInStart
-        )
-      } else {
-        const fadeInStart = firstFadeInStart + (index - 1) * step
-        const fadeOutStart = firstFadeInStart + index * step - fadeDuration + overlap
-        timeline.add(() => setActiveScene(index), fadeInStart)
-        timeline.fromTo(
-          scene,
-          { autoAlpha: 0, y: verticalOffset },
-          { autoAlpha: 1, y: 0, duration: fadeDuration, ease: 'power2.inOut' },
-          fadeInStart
-        )
-        timeline.to(
-          scene,
-          { autoAlpha: 0, y: -verticalOffset, duration: fadeDuration, ease: 'power2.inOut' },
-          fadeOutStart
-        )
-      }
-    })
-
-    // Keep the timeline duration at 1 so timeline.progress(p) maps p onto the same 0..1 space as the config positions.
-    timeline.add(() => undefined, 1)
+  if (!timingValues.every(Number.isFinite) || timingValues.some((value) => value < 0)) {
+    throw new Error('Hero scene timing values must be finite and non-negative.')
   }
 
+  if (initialDelay + finalDelay >= timelineDuration) {
+    throw new Error('Hero scene delays must leave positive global progress for the narrative.')
+  }
+
+  if (scenes.length > 1 && transitionDuration > timelineDuration / scenes.length) {
+    throw new Error('Hero scene transitions must not overlap or exceed their equal scene slots.')
+  }
+
+  const timeline = gsap.timeline({
+    paused: true,
+    defaults: { duration: transitionDuration, ease: 'power2.inOut' }
+  })
+  const boundaries = scenes.slice(1).map((_, index) => (index + 1) / scenes.length)
+
+  const setActiveScene = (index: number): void => {
+    scenes.forEach((scene, sceneIndex) => {
+      const active = sceneIndex === index
+      scene.setAttribute('aria-hidden', String(!active))
+      scene.toggleAttribute('inert', !active)
+    })
+  }
+
+  boundaries.forEach((boundary, index) => {
+    const transitionStart = boundary - transitionDuration / 2
+    const outgoing = scenes[index]
+    const incoming = scenes[index + 1]
+
+    timeline.to(outgoing, { autoAlpha: 0, y: -verticalOffset }, transitionStart)
+    timeline.fromTo(incoming, { autoAlpha: 0, y: verticalOffset }, { autoAlpha: 1, y: 0 }, transitionStart)
+  })
+
+  // Keep local narrative progress normalized to 0..1, including zero/one-scene cases.
+  timeline.add(() => undefined, timelineDuration)
+
+  const narrativeStart = initialDelay
+  const narrativeEnd = timelineDuration - finalDelay
+  const toLocalProgress = gsap.utils.pipe(
+    gsap.utils.clamp(narrativeStart, narrativeEnd),
+    gsap.utils.mapRange(narrativeStart, narrativeEnd, 0, timelineDuration)
+  )
+
   return {
-    onProgress: (progress) => timeline.progress(progress),
+    onProgress: (progress) => {
+      const localProgress = toLocalProgress(progress)
+      timeline.progress(localProgress)
+      if (scenes.length === 0) return
+
+      const activeIndex = boundaries.reduce((index, boundary) => index + (localProgress >= boundary ? 1 : 0), 0)
+      setActiveScene(activeIndex)
+    },
     destroy: () => timeline.kill()
   }
 }
