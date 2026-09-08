@@ -1,0 +1,54 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+import { cn } from '../../utils/cn';
+import BrandStarIcon from './BrandStarIcon.astro';
+
+type NativeAnchorProps = Omit<HTMLAttributes<'a'>, 'class' | 'href'>;
+
+export interface Props extends NativeAnchorProps {
+  active?: boolean;
+  class?: string;
+  disabled?: boolean;
+  href: string;
+}
+
+const {
+  active = false,
+  class: className,
+  disabled = false,
+  href,
+  tabindex,
+  'aria-current': ariaCurrent,
+  'aria-disabled': ariaDisabled,
+  ...rest
+} = Astro.props;
+
+const current = disabled ? undefined : active ? 'page' : ariaCurrent;
+---
+
+<a
+  {...rest}
+  href={disabled ? undefined : href}
+  tabindex={disabled ? -1 : tabindex}
+  aria-disabled={disabled ? 'true' : ariaDisabled}
+  aria-current={current}
+  class={cn(
+    'group relative inline-flex font-body text-text outline-none transition-colors hover:text-accent focus-visible:text-accent focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background motion-reduce:transition-none',
+    className,
+    active && 'text-accent',
+    disabled && 'pointer-events-none cursor-not-allowed text-text opacity-50',
+  )}
+>
+  <span><slot /></span>
+  <BrandStarIcon
+    class={cn(
+      'absolute top-full left-1/2 mt-0.5 -translate-x-1/2 text-accent',
+      disabled
+        ? 'opacity-0'
+        : active
+          ? 'scale-100 opacity-100'
+          : 'translate-y-0.5 scale-75 opacity-0 transition-[opacity,transform] duration-200 ease-out group-hover:translate-y-0 group-hover:scale-100 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:scale-100 group-focus-visible:opacity-100 motion-reduce:transform-none motion-reduce:transition-none',
+    )}
+  />
+</a>
