@@ -24,6 +24,9 @@ pnpm-debug.log*
 .idea/
 .playwright-cli/
 .codegraph/
-.atl/
+.atl/*
 docs/
 output/
+.pi/
+# Local Pi runtime state
+.atl/
