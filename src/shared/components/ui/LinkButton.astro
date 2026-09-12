@@ -1,44 +1,32 @@
 ---
-import type { HTMLAttributes } from 'astro/types';
+import type { HTMLAttributes } from 'astro/types'
 
-import { cn } from '../../utils/cn';
+import { cn } from '../../utils/cn'
 
-type Size = 'sm' | 'md';
-type Variant = 'default' | 'important';
+type Size = 'sm' | 'md'
+type Variant = 'default' | 'important'
 
-type NativeAnchorProps = Omit<
-  HTMLAttributes<'a'>,
-  'aria-disabled' | 'class' | 'href' | 'size' | 'tabindex'
->;
+type NativeAnchorProps = Omit<HTMLAttributes<'a'>, 'aria-disabled' | 'class' | 'href' | 'size' | 'tabindex'>
 
 export interface Props extends NativeAnchorProps {
-  class?: string;
-  disabled?: boolean;
-  href: string;
-  size?: Size;
-  variant?: Variant;
+  class?: string
+  disabled?: boolean
+  href: string
+  size?: Size
+  variant?: Variant
 }
 
-const {
-  class: className,
-  disabled = false,
-  href,
-  size = 'md',
-  variant = 'default',
-  ...rest
-} = Astro.props;
+const { class: className, disabled = false, href, size = 'md', variant = 'default', ...rest } = Astro.props
 
 const sizeClasses: Record<Size, string> = {
-  sm: 'h-7 gap-2 px-3 text-sm/normal',
-  md: 'h-10 gap-2.5 px-4 text-base/normal',
-};
+  sm: 'h-7 gap-2 px-4 text-sm/normal',
+  md: 'h-10 gap-2.5 px-5 text-base/normal'
+}
 
 const variantClasses: Record<Variant, string> = {
-  default:
-    'border-border bg-transparent text-primary hover:border-primary hover:bg-primary hover:text-background',
-  important:
-    'border-primary bg-primary text-background hover:border-accent hover:bg-accent hover:text-background',
-};
+  default: 'border-border bg-transparent text-primary hover:border-primary hover:bg-primary hover:text-background',
+  important: 'border-primary bg-primary text-background hover:border-accent hover:bg-accent hover:text-foreground'
+}
 ---
 
 <a
@@ -47,12 +35,12 @@ const variantClasses: Record<Variant, string> = {
   aria-disabled={disabled ? 'true' : undefined}
   tabindex={disabled ? -1 : undefined}
   class={cn(
-    'group inline-flex items-center justify-center rounded-full border font-body font-medium outline-none transition-colors focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95 motion-reduce:active:scale-100 motion-reduce:transition-none',
+    'group inline-flex items-center justify-center rounded-full border font-body font-medium transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95 motion-reduce:transition-none motion-reduce:active:scale-100',
     sizeClasses[size],
     disabled
       ? 'pointer-events-none cursor-not-allowed border-border bg-transparent text-text opacity-50'
       : variantClasses[variant],
-    className,
+    className
   )}
 >
   <span><slot /></span>
@@ -66,7 +54,7 @@ const variantClasses: Record<Variant, string> = {
     stroke-linejoin="round"
     aria-hidden="true"
   >
-    <path d="M5 12h14" />
-    <path d="m14 7 5 5-5 5" />
+    <path d="M5 12h14"></path>
+    <path d="m14 7 5 5-5 5"></path>
   </svg>
 </a>

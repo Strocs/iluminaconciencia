@@ -12,7 +12,7 @@ export default defineConfig({
       provider: fontProviders.google(),
       name: 'Baskervville',
       cssVariable: '--font-baskervville',
-      weights: [400, 700],
+      weights: [400, 600, 800],
       styles: ['normal', 'italic'],
       subsets: ['latin'],
       fallbacks: ['Georgia', 'serif']
@@ -21,7 +21,7 @@ export default defineConfig({
       provider: fontProviders.google(),
       name: 'Ubuntu',
       cssVariable: '--font-ubuntu',
-      weights: [400, 500, 700],
+      weights: [400, 600, 800],
       styles: ['normal'],
       subsets: ['latin'],
       fallbacks: ['system-ui', 'sans-serif']

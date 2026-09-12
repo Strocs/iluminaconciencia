@@ -1,22 +1,105 @@
 ---
 import { Image } from 'astro:assets'
+
 import logo from '@assets/iluminaconciencia-logo.png'
+import LinkButton from '@shared/components/ui/LinkButton.astro'
+import NavLink from '@shared/components/ui/NavLink.astro'
+
+const navigationItems = [
+  { label: 'Explorar', href: '/#nodos' },
+  { label: 'Noticias', href: '/#noticias' },
+  { label: 'Artículos', href: '/#articulos' },
+  { label: 'Multimedia', href: '/#multimedia' },
+  { label: 'Equipo', href: '/#equipo' },
+  { label: 'Recursos', href: '/#recursos' },
+  { label: 'Contacto', href: '/#contacto' }
+]
 ---
 
 <header
-  class="fixed top-0 right-0 left-0 z-100 container mx-auto flex min-h-20 items-center justify-between gap-8 px-8 max-md:flex-col max-md:items-start"
+  data-site-header
+  data-region="hero"
+  data-hidden="false"
+  class="fixed inset-x-0 top-0 z-100 bg-transparent transition-[transform,background-color] duration-300 ease-out data-[hidden=true]:-translate-y-full data-[region=post-hero]:bg-background motion-reduce:transition-none"
 >
-  <a class="flex items-center font-extrabold tracking-[0.12em] text-primary" href="/">
-    <Image class="aspect-auto w-20" src={logo} alt="" width={logo.width} height={logo.height} />
-    <p class="flex flex-col">
-      IluminAconCiencia
-      <span class="text-[0.65rem] font-medium tracking-wider">Región de Coquimbo</span>
-    </p>
-  </a>
-  <nav class="flex items-center gap-6" aria-label="Navegación principal">
-    <a class="block text-text no-underline transition-colors hover:text-accent" href="/#hero">Por qué importa</a>
-    <a class="block rounded-md bg-primary px-4 py-2 font-body text-background" href="#"
-      >Abrir <strong class="ml-1">CALUZ</strong></a
+  <div class="container mx-auto grid min-h-32 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-8 px-8">
+    <a
+      class="flex shrink-0 items-center gap-4 justify-self-start text-text no-underline"
+      href="/"
+      aria-label="Iluminaconciencia, inicio"
     >
-  </nav>
+      <Image class="size-16 object-contain" src={logo} alt="" width={62} height={62} />
+      <span class="flex flex-col">
+        <span class="font-body text-base font-bold tracking-wider"
+          >Ilumina<span class="font-extralight">con</span>ciencia</span
+        >
+        <span class="font-body text-xs">Región de Coquimbo</span>
+      </span>
+    </a>
+
+    <nav class="flex items-center justify-center gap-4" aria-label="Navegación principal">
+      {navigationItems.map(({ label, href }) => <NavLink href={href}>{label}</NavLink>)}
+    </nav>
+
+    <LinkButton class="shrink-0 justify-self-end tracking-wider" href="#" variant="important"
+      >Ir a <strong>CALUZ</strong></LinkButton
+    >
+  </div>
 </header>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-site-header]')
+  const hero = document.querySelector<HTMLElement>('#hero')
+
+  if (header && hero) {
+    const DIRECTION_THRESHOLD = 6
+    let isPostHero = hero.getBoundingClientRect().bottom <= 0
+    let referenceScrollY = window.scrollY
+    let frameRequested = false
+
+    const renderRegion = () => {
+      header.dataset.region = isPostHero ? 'post-hero' : 'hero'
+      if (!isPostHero) header.dataset.hidden = 'false'
+    }
+
+    renderRegion()
+
+    const heroObserver = new IntersectionObserver(([entry]) => {
+      if (!entry) return
+
+      isPostHero = !entry.isIntersecting && entry.boundingClientRect.bottom <= 0
+      header.dataset.region = isPostHero ? 'post-hero' : 'hero'
+      header.dataset.hidden = isPostHero ? 'true' : 'false'
+      referenceScrollY = window.scrollY
+    })
+
+    heroObserver.observe(hero)
+
+    const updateDirection = () => {
+      frameRequested = false
+      const currentScrollY = window.scrollY
+      const delta = currentScrollY - referenceScrollY
+
+      if (!isPostHero || Math.abs(delta) < DIRECTION_THRESHOLD) return
+
+      header.dataset.hidden = delta > 0 ? 'true' : 'false'
+      referenceScrollY = currentScrollY
+    }
+
+    const handleScroll = () => {
+      if (frameRequested) return
+      frameRequested = true
+      window.requestAnimationFrame(updateDirection)
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    window.addEventListener(
+      'pagehide',
+      () => {
+        heroObserver.disconnect()
+        window.removeEventListener('scroll', handleScroll)
+      },
+      { once: true }
+    )
+  }
+</script>
