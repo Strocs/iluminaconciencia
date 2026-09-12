@@ -1,0 +1,260 @@
+---
+import Header from '@shared/components/ui/Header.astro'
+import LinkButton from '@shared/components/ui/LinkButton.astro'
+
+import { articleItems, newsItems } from './news.mock'
+---
+
+<section class="news-articles relative z-10 px-4 py-20 sm:px-5 lg:py-28" aria-label="Noticias y artículos">
+  <div class="mx-auto grid w-full max-w-[90rem] gap-20 lg:grid-cols-2 lg:gap-24">
+    <section id="noticias" class="scroll-mt-28" aria-labelledby="noticias-title">
+      <Header titleId="noticias-title" class="py-0" eyebrow="03 / NOTICIAS" title="Noticias Recientes" />
+
+      <div class="mt-12 lg:mt-16">
+        {
+          newsItems.map((item) => (
+            <article class="news-row group">
+              <div class="card-image-frame">
+                <img
+                  class="card-image"
+                  src={item.image}
+                  alt={item.imageAlt}
+                  width="370"
+                  height="240"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <div class="min-w-0 flex-1">
+                <p class="item-meta">{item.date}</p>
+                <h3>
+                  <a href={item.href} target="_blank" rel="noreferrer">
+                    {item.title}
+                  </a>
+                </h3>
+                <p class="item-description">{item.description}</p>
+              </div>
+              <a class="arrow-link" href={item.href} target="_blank" rel="noreferrer" aria-label={`Leer ${item.title}`}>
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M9 12h8m-4-4 4 4-4 4" />
+                </svg>
+              </a>
+            </article>
+          ))
+        }
+      </div>
+
+      <div class="mt-8 text-center">
+        <LinkButton
+          href="https://iluminaconciencia.userena.digital/#news"
+          target="_blank"
+          rel="noreferrer"
+          variant="important">Más Noticias</LinkButton
+        >
+      </div>
+    </section>
+
+    <section id="articulos" class="scroll-mt-28" aria-labelledby="articulos-title">
+      <Header titleId="articulos-title" class="py-0" eyebrow="04 / ARTÍCULOS" title="Artículos y Publicaciones" />
+
+      <div class="mt-12 lg:mt-16">
+        {
+          articleItems.map((item) => (
+            <article class:list={['article-row group', { 'article-row--featured': item.image }]}>
+              {item.image && (
+                <div class="card-image-frame">
+                  <img
+                    class="card-image"
+                    src={item.image}
+                    alt={item.imageAlt ?? ''}
+                    width="240"
+                    height="240"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+              )}
+              <div class="min-w-0 flex-1">
+                <div class="flex flex-wrap items-center gap-2">
+                  <>
+                    <p class="item-meta">{item.date}</p>
+                    <span class="text-primary" aria-hidden="true">
+                      ✦
+                    </span>
+                    <span class="category">{item.category}</span>
+                  </>
+                </div>
+                <h3>
+                  <a href={item.href} target="_blank" rel="noreferrer">
+                    {item.title}
+                  </a>
+                </h3>
+                <p class="item-description">{item.description}</p>
+              </div>
+              <a class="arrow-link" href={item.href} target="_blank" rel="noreferrer" aria-label={`Leer ${item.title}`}>
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M9 12h8m-4-4 4 4-4 4" />
+                </svg>
+              </a>
+            </article>
+          ))
+        }
+      </div>
+
+      <div class="mt-8 text-center">
+        <LinkButton
+          href="https://iluminaconciencia.userena.digital/#articles"
+          target="_blank"
+          rel="noreferrer"
+          variant="important">Más Artículos</LinkButton
+        >
+      </div>
+    </section>
+  </div>
+</section>
+
+<style>
+  .news-row,
+  .article-row {
+    display: flex;
+    position: relative;
+    align-items: center;
+    gap: 1rem;
+    min-height: 9.25rem;
+    padding: 1rem 2.5rem 1rem 0;
+    border-bottom: 1px solid rgb(252 248 255 / 18%);
+  }
+  .news-row:first-child,
+  .article-row:first-child {
+    padding-top: 0;
+  }
+  .card-image-frame {
+    flex: 0 0 auto;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: 0.2rem;
+  }
+  .news-row > .card-image-frame {
+    width: 12rem;
+    aspect-ratio: 5 / 3;
+  }
+  .article-row--featured > .card-image-frame {
+    width: 7.25rem;
+    aspect-ratio: 1;
+  }
+  .card-image {
+    width: 100%;
+    height: 100%;
+    max-width: 200px;
+    object-fit: cover;
+    transition: transform 200ms ease-out;
+  }
+  .group:hover .card-image {
+    transform: scale(1.035);
+  }
+  .item-meta {
+    font-size: 0.67rem;
+    color: var(--color-primary);
+  }
+  .category {
+    border-radius: 0.25rem;
+    background: rgb(252 248 255 / 55%);
+    padding: 0.18rem 0.5rem;
+    font-size: 0.62rem;
+    color: var(--color-background);
+  }
+  h3 {
+    margin-top: 0.5rem;
+    font-family: var(--font-heading);
+    font-size: clamp(1.25rem, 1.8vw, 1.55rem);
+    line-height: 0.98;
+    color: var(--color-foreground);
+    text-wrap: balance;
+  }
+  h3 a {
+    border-radius: 0.15rem;
+    outline: none;
+    transition: color 150ms ease;
+  }
+  .group:hover h3 a {
+    color: var(--color-primary);
+  }
+  h3 a:focus-visible,
+  .arrow-link:focus-visible {
+    box-shadow:
+      0 0 0 2px var(--color-accent),
+      0 0 0 4px var(--color-background);
+  }
+  .item-description {
+    margin-top: 0.65rem;
+    font-size: 0.75rem;
+    line-height: 1.35;
+    color: var(--color-text);
+    text-wrap: pretty;
+  }
+  .arrow-link {
+    position: absolute;
+    right: 0.15rem;
+    display: grid;
+    width: 2rem;
+    aspect-ratio: 1;
+    place-items: center;
+    border-radius: 999px;
+    color: var(--color-primary);
+    outline: none;
+    transition:
+      transform 200ms ease-out,
+      color 150ms ease;
+  }
+  .arrow-link svg {
+    width: 1.5rem;
+    aspect-ratio: 1;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.75;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .group:hover .arrow-link {
+    transform: rotate(-45deg);
+    color: var(--color-accent);
+  }
+  @media (max-width: 639px) {
+    .news-articles {
+      padding-block: 4rem;
+    }
+    .news-row,
+    .article-row {
+      align-items: flex-start;
+      min-height: 0;
+      padding: 1.25rem 2.5rem 1.25rem 0;
+    }
+    .news-row {
+      flex-direction: column;
+    }
+    .news-row > .card-image-frame {
+      width: 100%;
+    }
+    .article-row--featured {
+      flex-direction: column;
+    }
+    .article-row--featured > .card-image-frame {
+      width: 6rem;
+    }
+    .arrow-link {
+      right: 0;
+      bottom: 1.25rem;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    h3 a,
+    .arrow-link,
+    .card-image {
+      transition: none;
+    }
+    .group:hover .arrow-link,
+    .group:hover .card-image {
+      transform: none;
+    }
+  }
+</style>
