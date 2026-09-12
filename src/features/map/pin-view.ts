@@ -1,25 +1,18 @@
 import type { Instrument } from '@shared/features/instruments'
 import { getBortleClass } from '@shared/features/bortle'
 
-const PIN_SVG =
-  '<svg width="28" height="36" viewBox="0 0 28 36" fill="none" aria-hidden="true">' +
-  '<path d="M14 0C6.27 0 0 6.27 0 14c0 9.8 14 22 14 22s14-12.2 14-22C28 6.27 21.73 0 14 0z" fill="currentColor"/>' +
-  '<circle cx="14" cy="14" r="6" fill="var(--color-background)"/>' +
-  '</svg>'
-
-/**
- * Renders the pin DOM for an instrument.
- *
- * Uses the shared Bortle color when the instrument has a known level;
- * instruments without a measurement retain the accent color.
- */
-export function renderPin(instrument: Instrument): HTMLElement {
+export function renderPin(instrument: Instrument, selected = false): HTMLElement {
+  const bortle = getBortleClass(instrument.bortleLevel)
   const pin = document.createElement('button')
   pin.type = 'button'
-  pin.className = 'flex cursor-pointer items-center justify-center drop-shadow-md'
-  pin.setAttribute('aria-label', instrument.name)
+  pin.className = 'flex size-7 cursor-pointer items-center justify-center rounded-full border-2 font-mono text-[11px] font-bold shadow-lg transition-shadow hover:shadow-xl motion-reduce:transition-none'
+  pin.dataset.instrumentId = instrument.id
+  pin.setAttribute('aria-label', `Ver detalle de ${instrument.name}`)
+  pin.setAttribute('aria-pressed', String(selected))
   pin.title = instrument.name
-  pin.style.color = getBortleClass(instrument.bortleLevel)?.color ?? 'var(--color-accent)'
-  pin.innerHTML = PIN_SVG
+  pin.style.borderColor = bortle?.color ?? 'var(--color-primary)'
+  pin.style.backgroundColor = selected ? (bortle?.color ?? 'var(--color-primary)') : '#111114'
+  pin.style.color = selected && bortle?.textTone === 'dark' ? '#111114' : '#f5f0f2'
+  pin.textContent = bortle?.label ?? '–'
   return pin
 }

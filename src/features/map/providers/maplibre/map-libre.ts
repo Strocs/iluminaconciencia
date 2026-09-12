@@ -35,7 +35,8 @@ async function loadMaplibre() {
 /** Public surface of the MapLibre provider. */
 export interface MaplibreView {
   setPins(pins: readonly Instrument[], renderPin: (pin: Instrument) => HTMLElement): void
-  onPinClick(callback: (pin: Instrument) => void): void
+  onPinClick(callback: (pin: Instrument, element: HTMLElement) => void): void
+  resize(): void
   destroy(): void
 }
 
@@ -51,21 +52,26 @@ export async function createMaplibreView(config: MaplibreViewConfig): Promise<Ma
   })
 
   let markers: InstanceType<typeof Marker>[] = []
-  let pinClickHandler: ((pin: Instrument) => void) | null = null
+  let pinClickHandler: ((pin: Instrument, element: HTMLElement) => void) | null = null
 
   return {
     setPins(pins, renderPin) {
       markers.forEach((marker) => marker.remove())
       markers = pins.map((pin) => {
         const element = renderPin(pin)
-        element.addEventListener('click', () => pinClickHandler?.(pin))
-        return new Marker({ element })
+        const marker = new Marker({ element })
           .setLngLat(toLngLat(pin.position))
           .addTo(map)
+        const markerElement = marker.getElement()
+        markerElement.addEventListener('pointerdown', () => pinClickHandler?.(pin, markerElement))
+        return marker
       })
     },
     onPinClick(callback) {
       pinClickHandler = callback
+    },
+    resize() {
+      map.resize()
     },
     destroy() {
       markers.forEach((marker) => marker.remove())

@@ -8,14 +8,13 @@ export interface LatLng {
   lng: number
 }
 
-/**
- * Open instrument type.
- *
- * The backend owns the domain of values; the UI derives filter options
- * from the data itself, so adding a new instrument type never requires
- * changing this contract.
- */
 export type InstrumentType = string
+
+export interface InstrumentDetails {
+  altitude: number
+  weather: string
+  site: string
+}
 
 export interface Instrument {
   id: string
@@ -29,8 +28,6 @@ export interface Instrument {
   mag: number | null
   /** Number of recorded data points. Null when unknown. */
   dataCount: number | null
-  /** Link to the instrument detail view ("ver más"). */
   detailUrl?: string
-  /** Additional fields the detail drawer may expose in the future. */
-  details?: Record<string, unknown>
+  details: InstrumentDetails
 }

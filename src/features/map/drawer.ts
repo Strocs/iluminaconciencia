@@ -1,87 +1,72 @@
 import type { Instrument } from '@shared/features/instruments'
+import { getBortleClass } from '@shared/features/bortle'
 
 export interface InstrumentDrawer {
-  open(instrument: Instrument): void
-  close(): void
+  open(instrument: Instrument, returnFocus?: HTMLElement): void
+  close(options?: { restoreFocus?: boolean }): void
+  destroy(): void
 }
 
-interface DrawerRow {
-  label: string
-  value: string
-}
-
-/** Builds the visible rows: fields with a value only, in display order. */
-function instrumentRows(instrument: Instrument): DrawerRow[] {
-  const rows: DrawerRow[] = [
-    { label: 'Localidad', value: instrument.location },
-    { label: 'Tipo', value: instrument.type }
-  ]
-  if (instrument.bortleLevel !== null) {
-    rows.push({ label: 'Escala Bortle', value: String(instrument.bortleLevel) })
-  }
-  if (instrument.mag !== null) {
-    rows.push({
-      label: 'Magnitud media',
-      value: instrument.mag.toLocaleString('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-    })
-  }
-  if (instrument.dataCount !== null) {
-    rows.push({ label: 'Cantidad de datos', value: instrument.dataCount.toLocaleString('es-CL') })
-  }
-  return rows
-}
-
-export function createInstrumentDrawer(root: HTMLElement): InstrumentDrawer {
+export function createInstrumentDrawer(root: HTMLElement, onOpenChange?: (open: boolean) => void): InstrumentDrawer {
   const title = root.querySelector<HTMLElement>('[data-drawer-title]')
-  const rows = root.querySelector<HTMLElement>('[data-drawer-rows]')
+  const location = root.querySelector<HTMLElement>('[data-drawer-location]')
+  const altitude = root.querySelector<HTMLElement>('[data-drawer-altitude]')
+  const weather = root.querySelector<HTMLElement>('[data-drawer-weather]')
+  const equipment = root.querySelector<HTMLElement>('[data-drawer-equipment]')
+  const bortle = root.querySelector<HTMLElement>('[data-drawer-bortle]')
   const link = root.querySelector<HTMLAnchorElement>('[data-drawer-link]')
   const closeButton = root.querySelector<HTMLButtonElement>('[data-drawer-close]')
-
-  if (!title || !rows || !link || !closeButton) {
+  if (!title || !location || !altitude || !weather || !equipment || !bortle || !link || !closeButton) {
     throw new Error('Instrument drawer is missing a required data attribute')
   }
 
+  let returnFocus: HTMLElement | undefined
+  let isOpen = false
   const setOpen = (open: boolean): void => {
-    root.classList.toggle('translate-x-0', open)
-    root.classList.toggle('translate-x-full', !open)
-    root.classList.toggle('pointer-events-none', !open)
+    isOpen = open
+    root.toggleAttribute('data-open', open)
     root.setAttribute('aria-hidden', String(!open))
+    onOpenChange?.(open)
   }
-
-  const close = (): void => {
+  const close = ({ restoreFocus = true } = {}): void => {
+    if (!isOpen) return
     setOpen(false)
+    if (restoreFocus) returnFocus?.focus()
+    returnFocus = undefined
   }
-
-  closeButton.addEventListener('click', close)
-  document.addEventListener('keydown', (event) => {
+  const onKeyDown = (event: KeyboardEvent): void => {
     if (event.key === 'Escape') close()
-  })
+  }
+  closeButton.addEventListener('click', () => close())
+  document.addEventListener('keydown', onKeyDown)
 
   return {
-    open(instrument) {
+    open(instrument, trigger) {
+      const canonical = getBortleClass(instrument.bortleLevel)
+      returnFocus = trigger
       title.textContent = instrument.name
-      rows.replaceChildren(
-        ...instrumentRows(instrument).map(({ label, value }) => {
-          const row = document.createElement('div')
-          row.className = 'flex items-baseline justify-between gap-4 border-b border-border pb-2'
-          const dt = document.createElement('dt')
-          dt.className = 'text-sm text-text'
-          dt.textContent = label
-          const dd = document.createElement('dd')
-          dd.className = 'text-sm font-medium text-foreground'
-          dd.textContent = value
-          row.append(dt, dd)
-          return row
-        })
-      )
-      if (instrument.detailUrl) {
-        link.href = instrument.detailUrl
-        link.hidden = false
-      } else {
-        link.hidden = true
+      location.textContent = `${instrument.location} · ${instrument.details.site}`
+      altitude.textContent = `${instrument.details.altitude.toLocaleString('es-CL')} m s. n. m.`
+      weather.textContent = instrument.details.weather
+      equipment.textContent = `${instrument.type} · ${instrument.dataCount?.toLocaleString('es-CL') ?? 'Sin datos'} mediciones · ${instrument.mag?.toLocaleString('es-CL', { minimumFractionDigits: 2 }) ?? '—'} mag/arcsec²`
+      bortle.replaceChildren()
+      if (canonical) {
+        const badge = document.createElement('span')
+        badge.className = 'flex size-10 shrink-0 items-center justify-center rounded-full font-bold'
+        badge.style.backgroundColor = canonical.color
+        badge.style.color = canonical.textTone === 'dark' ? 'var(--color-background)' : 'var(--color-foreground)'
+        badge.textContent = canonical.label
+        const copy = document.createElement('span')
+        copy.textContent = `${canonical.name}. Rango SQM: ${canonical.sqmRange} mag/arcsec².`
+        bortle.append(badge, copy)
       }
+      link.href = instrument.detailUrl ?? '#'
       setOpen(true)
+      closeButton.focus()
     },
-    close
+    close,
+    destroy() {
+      document.removeEventListener('keydown', onKeyDown)
+    }
   }
 }
