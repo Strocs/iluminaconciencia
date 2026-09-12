@@ -8,6 +8,10 @@ export interface HeroScene {
     after: string
   }
   copy: string
+  cta: {
+    label: string
+    href: string
+  }
 }
 
 export const heroScenes = [
@@ -18,7 +22,11 @@ export const heroScenes = [
       highlight: 'proteger los cielos',
       after: ' de la Región de Coquimbo'
     },
-    copy: 'Generamos una red que mide la contaminación lumínica en tiempo real para apoyar la toma de decisiones.'
+    copy: 'Generamos una red que mide la contaminación lumínica en tiempo real para apoyar la toma de decisiones.',
+    cta: {
+      label: 'Quiénes somos',
+      href: '#'
+    }
   },
   {
     id: 'negative-impact',
@@ -27,7 +35,11 @@ export const heroScenes = [
       highlight: 'impacto negativo',
       after: ' en la calidad de vida'
     },
-    copy: 'La contaminación lumínica altera progresivamente la oscuridad natural del territorio y afecta a las personas, la biodiversidad y el uso eficiente de la energía.'
+    copy: 'La contaminación lumínica altera progresivamente la oscuridad natural del territorio y afecta a las personas, la biodiversidad y el uso eficiente de la energía.',
+    cta: {
+      label: 'Qué hacemos',
+      href: '#'
+    }
   },
   {
     id: 'territorial-decisions',
@@ -36,6 +48,10 @@ export const heroScenes = [
       highlight: 'primer paso',
       after: ' para disminuirlo'
     },
-    copy: 'Nuestra red de medición transforma observaciones del territorio en información para orientar decisiones.'
+    copy: 'Nuestra red de medición transforma observaciones del territorio en información para orientar decisiones.',
+    cta: {
+      label: 'Saber más',
+      href: '#'
+    }
   }
 ] as const satisfies readonly HeroScene[]

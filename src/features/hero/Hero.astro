@@ -1,54 +1,23 @@
 ---
-import { bortleClasses } from '@shared/features/bortle'
 import HeroNarrative from './capabilities/scenes/HeroNarrative.astro'
 import HeroSky from './capabilities/night-sky/HeroSky.astro'
+import BortleScale from './capabilities/bortle-scale/BortleScale.astro'
 ---
 
 <section id="hero" class="relative min-h-[550dvh]" aria-labelledby="hero-title">
-  <div data-hero-pin-layer class="h-dvh overflow-hidden">
-    <div data-hero-exit-layer class="relative flex h-full flex-col justify-between">
+  <div data-hero-pin-layer class="h-dvh overflow-hidden pb-4">
+    <div class="hero-clip relative h-full">
       <HeroSky />
-      <HeroNarrative />
-
-      <section
-        data-hero-bortle-bar
-        aria-label="Escala de Bortle"
-        class="absolute inset-x-0 bottom-0 z-20 mx-auto flex w-full max-w-5xl flex-col gap-2 px-4 pb-6 font-body sm:px-8 [@media(max-height:34rem)]:gap-1 [@media(max-height:34rem)]:pb-3"
+      <div
+        class="relative z-10 mx-auto flex h-full w-full flex-col items-center justify-center gap-8 pt-32 pb-32 sm:gap-12 [@media(max-height:38rem)]:gap-4 [@media(max-height:38rem)]:pt-24 [@media(max-height:38rem)]:pb-28"
       >
-        <div
-          class="mx-auto flex items-center gap-2 font-mono text-xs tracking-wider text-text uppercase [@media(max-height:34rem)]:text-[10px]"
-        >
-          <span
-            class="size-2.5 animate-pulse rounded-full bg-foreground transition-colors duration-200"
-            data-hero-bortle-indicator></span>
-          <span class="font-semibold">Escala de Bortle</span>
-        </div>
-        <ol class="mx-auto grid w-full max-w-5xl grid-cols-3 overflow-hidden rounded-full sm:grid-cols-9">
-          {
-            bortleClasses.map((bortleClass, index) => (
-              <li
-                class:list={[
-                  'group relative flex min-w-0 items-center justify-between gap-2 p-2 text-xs opacity-40 grayscale transition-all duration-200 select-none data-[active]:z-10 data-[active]:opacity-100 data-[active]:grayscale-0 motion-reduce:transition-none [@media(max-height:34rem)]:p-1.5',
-                  index === 0 ? 'pl-4' : '',
-                  index === bortleClasses.length - 1 ? 'pr-4' : '',
-                  bortleClass.textTone === 'dark' ? 'text-background' : 'text-foreground'
-                ]}
-                data-hero-bortle-class={bortleClass.level}
-                aria-label={`Bortle ${bortleClass.level}: ${bortleClass.name}`}
-                title={bortleClass.name}
-                style={`background-color: ${bortleClass.color}`}
-              >
-                <span class="mb-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-foreground text-xs font-bold text-background transition-all duration-150 group-data-[active]:scale-110 group-data-[active]:ring group-data-[active]:ring-background">
-                  {bortleClass.label}
-                </span>
-                <span class="min-w-0 text-right text-[11px] leading-tight font-bold break-words">
-                  {bortleClass.shortName}
-                </span>
-              </li>
-            ))
-          }
-        </ol>
-      </section>
+        <HeroNarrative />
+        <BortleScale />
+      </div>
+      <div class="pointer-events-none absolute inset-x-0 bottom-8 z-20 flex flex-col items-center gap-3">
+        <p class="font-body text-sm tracking-wider text-text">Desliza para descubrir</p>
+        <span class="h-12 w-px bg-linear-to-b from-text to-transparent" aria-hidden="true"></span>
+      </div>
     </div>
   </div>
 </section>
@@ -59,3 +28,17 @@ import HeroSky from './capabilities/night-sky/HeroSky.astro'
   const root = document.querySelector<HTMLElement>('#hero')
   if (root) initializeHero(root)
 </script>
+
+<style>
+  .hero-clip {
+    -webkit-mask: url('/images/hero/lower-arc-mask.svg') center / 1280px 100% no-repeat;
+    mask: url('/images/hero/lower-arc-mask.svg') center / 1280px 100% no-repeat;
+  }
+
+  @media (min-width: 1280px) {
+    .hero-clip {
+      -webkit-mask-size: 100% 100%;
+      mask-size: 100% 100%;
+    }
+  }
+</style>

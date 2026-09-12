@@ -14,13 +14,7 @@ export const nightSkyConfig = {
     initial: 0.2,
     /** Opacity multiplier at the full-opacity phase. */
     full: 1,
-    /** Progress at which the canvas reaches full opacity. */
-    fullProgress: 0.7,
-    /** Progress at which the canvas begins fading out. */
-    fadeOutStartProgress: 0.8,
-    /** Progress at which the canvas reaches zero opacity. */
-    finalProgress: 0.95,
-    /** Opacity multiplier after the fade-out completes. */
-    final: 0
+    /** Progress at which the canvas reaches full opacity and remains there. */
+    fullProgress: 0.7
   }
 } as const

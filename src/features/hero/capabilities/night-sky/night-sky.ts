@@ -54,15 +54,6 @@ export function createNightSkyCapability({
     },
     0
   )
-  fadeTimeline.to(
-    canvas,
-    {
-      opacity: config.starOpacity.final,
-      duration: config.starOpacity.finalProgress - config.starOpacity.fadeOutStartProgress,
-      ease: 'none'
-    },
-    config.starOpacity.fadeOutStartProgress
-  )
   fadeTimeline.add(() => undefined, 1)
 
   const isReducedMotion = (): boolean => window.matchMedia(reducedMotionQuery).matches
