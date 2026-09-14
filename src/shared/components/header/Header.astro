@@ -1,0 +1,199 @@
+---
+import { Image } from 'astro:assets'
+
+import logo from '@assets/iluminaconciencia-logo.png'
+import BrandStarIcon from '@shared/components/ui/BrandStarIcon.astro'
+import LinkButton from '@shared/components/ui/LinkButton.astro'
+import NavLink from '@shared/components/ui/NavLink.astro'
+
+const navigationItems = [
+  { label: 'Explorar', href: '#explorar' },
+  { label: 'Noticias', href: '#noticias' },
+  { label: 'Artículos', href: '#articulos' },
+  { label: 'Multimedia', href: '#multimedia' },
+  { label: 'Equipo', href: '#equipo' },
+  { label: 'Recursos', href: '#recursos' },
+  { label: 'Contacto', href: '#contacto' }
+]
+---
+
+<header
+  data-site-header
+  data-region="hero"
+  data-hidden="false"
+  class="group fixed inset-x-0 top-0 z-100 flex h-24 flex-col overflow-hidden bg-transparent px-6 transition-[height,translate] duration-600 ease-[cubic-bezier(0.76,0,0.24,1)] has-checked:!h-dvh has-checked:!translate-y-0 data-[hidden=true]:-translate-y-full data-[region=post-hero]:h-20 motion-reduce:transition-none lg:h-32 lg:px-8 lg:data-[region=post-hero]:h-20"
+>
+  <input id="site-menu-toggle" data-menu-toggle class="peer sr-only lg:hidden" type="checkbox" />
+
+  <div
+    class="pointer-events-none absolute inset-0 -z-10 opacity-0 transition-opacity duration-600 ease-[cubic-bezier(0.76,0,0.24,1)] group-has-checked:opacity-100 group-data-[region=post-hero]:opacity-100 motion-reduce:transition-none"
+    aria-hidden="true"
+  >
+    <div
+      class="absolute inset-x-0 top-0 h-dvh bg-[radial-gradient(ellipse_at_50%_100%,#3b1f45_0%,#170d2f_40%,#010005_100%)]"
+    >
+    </div>
+    <svg
+      class="absolute inset-x-0 top-0 h-dvh w-full opacity-40 mix-blend-multiply"
+      viewBox="0 0 600 600"
+      preserveAspectRatio="none"
+      focusable="false"
+    >
+      <filter id="header-background-noise-filter">
+        <feTurbulence baseFrequency="2"></feTurbulence>
+      </filter>
+      <rect width="100%" height="100%" filter="url(#header-background-noise-filter)"></rect>
+    </svg>
+    <span class="absolute inset-x-0 bottom-0 border-b border-border"></span>
+  </div>
+
+  <div class="relative z-20 flex h-full max-h-24 shrink-0 items-center lg:max-h-32">
+    <div
+      class="container mx-auto grid grid-cols-[1fr_auto] items-center gap-4 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:gap-8"
+    >
+      <a
+        class="flex shrink-0 items-center justify-self-start text-text no-underline outline-none focus-visible:rounded-full focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+        href="/"
+        aria-label="Iluminaconciencia, inicio"
+      >
+        <Image class="size-12 object-contain lg:size-14" src={logo} alt="" width={62} height={62} />
+      </a>
+
+      <nav class="hidden items-center justify-center gap-4 lg:flex" aria-label="Navegación principal">
+        {navigationItems.map(({ label, href }) => <NavLink href={href}>{label}</NavLink>)}
+      </nav>
+
+      <LinkButton class="hidden shrink-0 justify-self-end tracking-wider lg:inline-flex" href="#" variant="important"
+        >Ir a <strong>CALUZ</strong></LinkButton
+      >
+
+      <label
+        for="site-menu-toggle"
+        class="relative flex size-11 cursor-pointer items-center justify-center justify-self-end text-text outline-none group-has-[[data-menu-toggle]:focus-visible]:ring-2 group-has-[[data-menu-toggle]:focus-visible]:ring-accent group-has-[[data-menu-toggle]:focus-visible]:ring-offset-3 lg:hidden"
+      >
+        <span class="sr-only group-has-checked:hidden">Abrir menú de navegación</span>
+        <span class="sr-only hidden group-has-checked:inline">Cerrar menú de navegación</span>
+        <span class="relative block h-5 w-7" aria-hidden="true">
+          <span
+            class="absolute top-0 left-0 h-0.5 w-7 rounded-full bg-border transition-opacity delay-300 duration-150 ease-out group-has-checked:opacity-0 group-has-checked:delay-0 motion-reduce:transition-none"
+          ></span>
+          <span
+            class="absolute top-1/2 left-0 h-px w-2 -translate-y-1/2 transition-[width] delay-300 duration-150 ease-out group-has-checked:w-full group-has-checked:delay-0 motion-reduce:transition-none"
+          >
+            <span
+              class="block size-full origin-center rounded-full bg-foreground transition-transform duration-300 ease-[cubic-bezier(0.76,0,0.24,1)] group-has-checked:rotate-45 group-has-checked:delay-150 motion-reduce:transition-none"
+            ></span>
+          </span>
+          <span
+            class="absolute top-1/2 right-0 h-px w-2 -translate-y-1/2 transition-[width] delay-300 duration-150 ease-out group-has-checked:w-full group-has-checked:delay-0 motion-reduce:transition-none"
+          >
+            <span
+              class="block size-full origin-center rounded-full bg-foreground transition-transform duration-300 ease-[cubic-bezier(0.76,0,0.24,1)] group-has-checked:-rotate-45 group-has-checked:delay-150 motion-reduce:transition-none"
+            ></span>
+          </span>
+          <BrandStarIcon
+            class="absolute top-1/2 left-1/2 z-10 -translate-1/2 text-primary transition-opacity delay-300 duration-150 ease-out group-has-checked:opacity-0 group-has-checked:delay-0 motion-reduce:transition-none"
+          />
+          <span
+            class="absolute right-0 bottom-0 h-0.5 w-7 rounded-full bg-border transition-opacity delay-300 duration-150 ease-out group-has-checked:opacity-0 group-has-checked:delay-0 motion-reduce:transition-none"
+          ></span>
+        </span>
+      </label>
+    </div>
+  </div>
+
+  <div
+    class="pointer-events-none invisible absolute inset-x-0 top-24 z-10 h-[calc(100dvh-6rem)] overflow-y-auto transition-[visibility] duration-600 group-data-[region=post-hero]:top-20 group-data-[region=post-hero]:h-[calc(100dvh-5rem)] peer-checked:pointer-events-auto peer-checked:visible motion-reduce:transition-none lg:hidden"
+  >
+    <nav class="flex h-full flex-col items-center justify-center gap-6" aria-label="Navegación móvil">
+      {
+        navigationItems.map(({ label, href }) => (
+          <NavLink href={href} variant="mobile">
+            {label}
+          </NavLink>
+        ))
+      }
+      <LinkButton class="mt-4 tracking-wider" href="#" variant="important">Ir a <strong>CALUZ</strong></LinkButton>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-site-header]')
+  const boundary = document.querySelector<HTMLElement>('[data-header-boundary]')
+
+  if (header && boundary) {
+    const DIRECTION_THRESHOLD = 6
+    const boundaryTop = boundary.getBoundingClientRect().top
+    let hasPassedRelease = boundaryTop < window.innerHeight
+    let hasPassedCenter = boundaryTop < window.innerHeight / 2
+    let referenceScrollY = window.scrollY
+    let frameId: number | null = null
+
+    const renderThresholdState = (hideAtCenter = false) => {
+      header.dataset.region = hasPassedRelease ? 'post-hero' : 'hero'
+
+      if (!hasPassedCenter) {
+        header.dataset.hidden = 'false'
+      } else if (hideAtCenter) {
+        header.dataset.hidden = 'true'
+      }
+    }
+
+    renderThresholdState(hasPassedCenter)
+
+    const releaseObserver = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.rootBounds) return
+
+        hasPassedRelease = entry.boundingClientRect.top < entry.rootBounds.bottom
+        renderThresholdState()
+        referenceScrollY = window.scrollY
+      },
+      { threshold: 0 }
+    )
+
+    const centerObserver = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.rootBounds) return
+
+        const wasPastCenter = hasPassedCenter
+        hasPassedCenter = entry.boundingClientRect.top < entry.rootBounds.bottom
+        renderThresholdState(!wasPastCenter && hasPassedCenter)
+        referenceScrollY = window.scrollY
+      },
+      { rootMargin: '0px 0px -50% 0px', threshold: 0 }
+    )
+
+    releaseObserver.observe(boundary)
+    centerObserver.observe(boundary)
+
+    const updateDirection = () => {
+      frameId = null
+      const currentScrollY = window.scrollY
+      const delta = currentScrollY - referenceScrollY
+
+      if (!hasPassedCenter || Math.abs(delta) < DIRECTION_THRESHOLD) return
+
+      header.dataset.hidden = delta > 0 ? 'true' : 'false'
+      referenceScrollY = currentScrollY
+    }
+
+    const handleScroll = () => {
+      if (frameId !== null) return
+      frameId = window.requestAnimationFrame(updateDirection)
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    window.addEventListener(
+      'pagehide',
+      () => {
+        releaseObserver.disconnect()
+        centerObserver.disconnect()
+        window.removeEventListener('scroll', handleScroll)
+        if (frameId !== null) window.cancelAnimationFrame(frameId)
+      },
+      { once: true }
+    )
+  }
+</script>

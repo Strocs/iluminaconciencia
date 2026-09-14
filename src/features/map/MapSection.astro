@@ -8,17 +8,17 @@ const countLabel = `${instrumentCount} ${instrumentCount === 1 ? 'punto disponib
 ---
 
 <section
-  id="nodos"
+  id="explorar"
   class="relative z-10 flex min-h-[max(100dvh,768px)] w-full flex-col px-4 pb-4 text-foreground sm:px-5 sm:pb-5"
 >
   <Header data-map-header eyebrow="02 / EXPLORAR" title="Puntos de Medición" subtitle={countLabel} class="shrink-0" />
 
-  <div data-map-workspace class="relative mx-auto flex min-h-0 w-full max-w-[90rem] flex-1 gap-4">
+  <div data-map-workspace class="group relative mx-auto flex min-h-0 w-full max-w-[90rem] flex-1 gap-4 lg:max-h-160">
     <aside
       data-filter-panel
       aria-label="Filtros del mapa"
       aria-hidden="false"
-      class="map-panel flex w-[153px] shrink-0 flex-col overflow-y-auto bg-transparent p-0 pt-8"
+      class="map-panel flex min-h-0 w-[153px] self-stretch shrink-0 flex-col overflow-y-auto bg-transparent p-0 pt-8 max-md:absolute max-md:inset-0 max-md:z-20 max-md:w-full max-md:-translate-x-full max-md:bg-black max-md:p-5 max-md:transition-transform max-md:duration-200 max-md:ease-in-out max-md:data-open:translate-x-0 motion-reduce:transition-none"
     >
       <div class="flex items-center justify-between md:hidden">
         <h3 class="font-heading text-xl font-bold">Filtros</h3>
@@ -43,7 +43,7 @@ const countLabel = `${instrumentCount} ${instrumentCount === 1 ? 'punto disponib
               <button
                 data-bortle-filter={item.level}
                 type="button"
-                class="filter-option min-w-0 rounded-[0.2rem] border-0 bg-primary py-0 text-xs font-semibold leading-none text-background h-5"
+                class="filter-option h-5 min-w-0 rounded-xs border-0 bg-primary py-0 text-xs font-semibold leading-none text-background aria-[pressed=false]:bg-[#33271a] aria-[pressed=false]:text-[#9b8365]"
                 aria-pressed="true"
               >
                 ✦&nbsp; {item.label}
@@ -73,17 +73,17 @@ const countLabel = `${instrumentCount} ${instrumentCount === 1 ? 'punto disponib
       >
     </aside>
 
-    <div class="relative min-w-0 flex-1 overflow-hidden rounded-xl border border-border bg-background">
+    <div class="relative min-h-0 min-w-0 flex-1 self-stretch overflow-hidden rounded-xl border border-primary bg-background">
       <div id="map" class="size-full"></div>
       <button
         data-filter-open
         type="button"
-        class="absolute top-3 left-3 z-10 rounded-full bg-foreground px-4 py-2 text-sm font-bold text-background shadow-lg md:hidden"
+        class="absolute top-3 left-3 z-10 rounded-full bg-foreground px-4 py-2 text-sm font-bold text-background shadow-lg group-data-[panel-open]:hidden md:hidden"
         aria-expanded="false">Filtros</button
       >
     </div>
 
-    <aside id="instrument-drawer" data-detail-panel aria-hidden="true" class="detail-panel map-panel w-[220px] shrink-0 flex-col overflow-y-auto bg-transparent p-0 pt-8 pl-4">
+    <aside id="instrument-drawer" data-detail-panel aria-hidden="true" class="detail-panel map-panel hidden min-h-0 w-[220px] self-stretch shrink-0 flex-col overflow-y-auto bg-transparent p-0 pt-8 pl-4 data-open:flex max-md:absolute max-md:inset-0 max-md:z-20 max-md:flex max-md:w-full max-md:translate-x-full max-md:bg-black max-md:p-5 max-md:transition-transform max-md:duration-200 max-md:ease-in-out max-md:data-open:translate-x-0 motion-reduce:transition-none">
       <div class="border-b border-[#5a575a] pb-4">
         <h3 data-drawer-title class="font-heading text-base font-bold leading-tight"></h3>
         <p data-drawer-location class="mt-3 text-xs leading-relaxed"></p>
@@ -96,7 +96,7 @@ const countLabel = `${instrumentCount} ${instrumentCount === 1 ? 'punto disponib
           ></dd>
         </div>
       </dl>
-      <div data-drawer-bortle class="flex min-h-28 items-center border-b border-[#5a575a] py-3 text-[0.62rem] leading-relaxed"></div>
+      <div data-drawer-bortle class="flex min-h-28 items-center border-b border-[#5a575a] py-3 text-[0.62rem] leading-relaxed [&>span:first-child]:size-auto [&>span:first-child]:flex-none [&>span:first-child]:bg-transparent [&>span:first-child]:font-heading [&>span:first-child]:text-[3.8rem] [&>span:first-child]:font-bold [&>span:first-child]:leading-none [&>span:first-child]:text-foreground"></div>
       <div class="mt-auto pb-8">
         <a data-drawer-link href="#" class="rail-button flex min-h-8 w-full items-center justify-center gap-2 rounded border border-primary px-3 text-xs font-semibold leading-none text-primary"
           >Más información <span>→</span></a
@@ -110,54 +110,10 @@ const countLabel = `${instrumentCount} ${instrumentCount === 1 ? 'punto disponib
 </section>
 
 <style>
-  @reference '../../styles/global.css';
-
-  .detail-panel {
-    display: none;
-  }
-  .detail-panel[data-open] {
-    display: flex;
-    flex-direction: column;
-  }
-  [data-map-workspace] > div {
-    @apply border border-primary rounded-xl;
-  }
-  .filter-option[aria-pressed='false'] {
-    @apply bg-[#33271a] text-[#9b8365];
-  }
-  .instrument-options :global(button) {
-    @apply h-6 w-full rounded-[0.2rem] border-0 bg-primary text-xs font-semibold leading-none text-background;
-  }
-  .instrument-options :global(button)::before {
-    content: '✦  ';
-  }
-  .instrument-options :global(button[aria-pressed='false']) {
-    @apply bg-[#33271a] text-[#9b8365];
-  }
-  .drawer-bortle :global(span:first-child) {
-    @apply size-auto flex-none bg-transparent font-heading text-[3.8rem] font-bold leading-none text-foreground;
-  }
+  /* MapLibre injects this control DOM, so component markup cannot carry Tailwind utilities. */
   @media (max-width: 767px) {
-    .map-panel {
-      @apply absolute inset-0 z-20 w-full bg-black p-5 transition-transform duration-200 ease-in-out;
-    }
-    .filter-panel {
-      @apply -translate-x-full;
-    }
-    .detail-panel {
-      @apply flex translate-x-full flex-col;
-    }
-    .map-panel[data-open] {
-      @apply translate-x-0;
-    }
-    [data-map-workspace][data-panel-open] [data-filter-open],
     [data-map-workspace][data-panel-open] :global(.maplibregl-ctrl) {
-      @apply hidden;
-    }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .map-panel {
-      @apply transition-none;
+      display: none;
     }
   }
 </style>
@@ -223,7 +179,8 @@ const countLabel = `${instrumentCount} ${instrumentCount === 1 ? 'punto disponib
     const button = document.createElement('button')
     button.type = 'button'
     button.textContent = label
-    button.className = 'filter-option'
+    button.className =
+        "filter-option h-6 w-full rounded-xs border-0 bg-primary text-xs font-semibold leading-none text-background before:content-['✦__'] aria-[pressed=false]:bg-[#33271a] aria-[pressed=false]:text-[#9b8365]"
     const sync = () => button.setAttribute('aria-pressed', String(active()))
     button.addEventListener('click', () => {
       toggle()
