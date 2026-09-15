@@ -1,0 +1,48 @@
+---
+import Button from '@shared/components/ui/Button.astro'
+import LinkButton from '@shared/components/ui/LinkButton.astro'
+---
+
+<aside
+  id="instrument-drawer"
+  data-detail-panel
+  aria-hidden="true"
+  class="detail-panel map-panel hidden min-h-0 w-[220px] shrink-0 flex-col self-stretch overflow-y-auto bg-transparent p-0 pt-8 pl-4 data-open:flex motion-reduce:transition-none max-md:absolute max-md:inset-0 max-md:z-20 max-md:flex max-md:w-full max-md:translate-x-full max-md:bg-background max-md:p-5 max-md:transition-transform max-md:duration-200 max-md:ease-in-out max-md:data-open:translate-x-0"
+>
+  <div class="border-b border-border pb-4">
+    <h3 data-drawer-title class="font-heading text-base leading-tight font-bold"></h3>
+    <p data-drawer-location class="mt-3 text-xs leading-relaxed"></p>
+  </div>
+  <dl class="grid gap-2 border-b border-border py-4">
+    <div>
+      <dt class="text-xs leading-tight font-semibold text-foreground">Altitud</dt><dd
+        data-drawer-altitude
+        class="mt-0.5 text-xs leading-relaxed"
+      >
+      </dd>
+    </div>
+    <div>
+      <dt class="text-xs leading-tight font-semibold text-foreground">Clima</dt><dd
+        data-drawer-weather
+        class="mt-0.5 text-xs leading-relaxed"
+      >
+      </dd>
+    </div>
+    <div>
+      <dt class="text-xs leading-tight font-semibold text-foreground">Equipo y mediciones</dt><dd
+        data-drawer-equipment
+        class="mt-0.5 text-xs leading-relaxed"
+      >
+      </dd>
+    </div>
+  </dl>
+  <div
+    data-drawer-bortle
+    class="flex min-h-28 items-center border-b border-border py-3 text-xs leading-relaxed [&>span:first-child]:size-auto [&>span:first-child]:flex-none [&>span:first-child]:bg-transparent [&>span:first-child]:font-heading [&>span:first-child]:text-6xl [&>span:first-child]:leading-none [&>span:first-child]:font-bold [&>span:first-child]:text-foreground"
+  >
+  </div>
+  <div class="mt-auto pb-8">
+    <LinkButton data-drawer-link href="/" size="sm" class="w-full">Más información</LinkButton>
+    <Button data-drawer-close size="sm" class="mt-4 w-full">Cerrar</Button>
+  </div>
+</aside>

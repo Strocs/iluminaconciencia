@@ -1,18 +1,26 @@
 ---
+type Size = 'sm' | 'md'
+
 interface Props {
-  label: string;
-  placement?: 'top-right' | 'bottom-right' | 'top-left' | 'bottom-left';
-  openOnHover?: boolean;
-  class?: string;
+  label: string
+  placement?: 'top-right' | 'bottom-right' | 'top-left' | 'bottom-left'
+  openOnHover?: boolean
+  size?: Size
+  class?: string
 }
 
-const {
-  label,
-  placement = 'top-right',
-  openOnHover = false,
-  class: className,
-} = Astro.props;
-const panelId = `info-popover-${globalThis.crypto.randomUUID()}`;
+const { label, placement = 'top-right', openOnHover = false, size = 'md', class: className } = Astro.props
+const panelId = `info-popover-${globalThis.crypto.randomUUID()}`
+
+const triggerSizeClasses: Record<Size, string> = {
+  sm: 'size-6',
+  md: 'size-8'
+}
+
+const iconSizeClasses: Record<Size, string> = {
+  sm: 'size-3',
+  md: 'size-4'
+}
 ---
 
 <info-popover
@@ -21,14 +29,17 @@ const panelId = `info-popover-${globalThis.crypto.randomUUID()}`;
   data-open-on-hover={openOnHover ? 'true' : 'false'}
 >
   <button
-    class="relative z-20 inline-flex size-8 cursor-pointer items-center justify-center rounded-full border border-border bg-background text-primary shadow-sm outline-none transition-colors hover:bg-primary hover:text-background focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+    class:list={[
+      'relative z-20 inline-flex cursor-pointer items-center justify-center rounded-full border border-border bg-background text-primary shadow-sm transition-colors outline-none hover:bg-primary hover:text-background focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+      triggerSizeClasses[size]
+    ]}
     type="button"
     aria-label={label}
     aria-expanded="false"
     aria-controls={panelId}
   >
     <svg
-      class="size-4"
+      class={iconSizeClasses[size]}
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -37,8 +48,8 @@ const panelId = `info-popover-${globalThis.crypto.randomUUID()}`;
       stroke-linejoin="round"
       aria-hidden="true"
     >
-      <path d="M9.1 9a3 3 0 1 1 5.8 1c0 2-3 2-3 4" />
-      <path d="M12 18h.01" />
+      <path d="M9.1 9a3 3 0 1 1 5.8 1c0 2-3 2-3 4"></path>
+      <path d="M12 18h.01"></path>
     </svg>
   </button>
 
@@ -57,233 +68,229 @@ const panelId = `info-popover-${globalThis.crypto.randomUUID()}`;
 </info-popover>
 
 <script>
-  import { gsap } from 'gsap';
+  import { gsap } from 'gsap'
 
-  type Placement = 'top-right' | 'bottom-right' | 'top-left' | 'bottom-left';
+  type Placement = 'top-right' | 'bottom-right' | 'top-left' | 'bottom-left'
 
-  const VIEWPORT_PADDING = 12;
-  const GAP = 0;
+  const VIEWPORT_PADDING = 12
+  const GAP = 0
   const opposite: Record<Placement, Placement> = {
     'top-right': 'bottom-left',
     'bottom-left': 'top-right',
     'top-left': 'bottom-right',
-    'bottom-right': 'top-left',
-  };
+    'bottom-right': 'top-left'
+  }
 
   class InfoPopoverElement extends HTMLElement {
-    private trigger!: HTMLButtonElement;
-    private panel!: HTMLDivElement;
-    private timeline?: gsap.core.Timeline;
-    private pinned = false;
-    private open = false;
-    private reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    private cleanupController?: AbortController;
+    private trigger!: HTMLButtonElement
+    private panel!: HTMLDivElement
+    private timeline?: gsap.core.Timeline
+    private pinned = false
+    private open = false
+    private reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
+    private cleanupController?: AbortController
 
     connectedCallback() {
-      if (this.cleanupController) return;
+      if (this.cleanupController) return
 
-      this.trigger = this.querySelector('button')!;
-      this.panel = this.querySelector('[data-panel]')!;
-      this.cleanupController = new AbortController();
-      const { signal } = this.cleanupController;
+      this.trigger = this.querySelector('button')!
+      this.panel = this.querySelector('[data-panel]')!
+      this.cleanupController = new AbortController()
+      const { signal } = this.cleanupController
 
-      gsap.set(this.panel, { autoAlpha: 0, pointerEvents: 'none' });
-      this.trigger.addEventListener('click', this.onTriggerClick, { signal });
-      document.addEventListener('pointerdown', this.onOutsidePointerDown, { signal });
-      document.addEventListener('keydown', this.onKeyDown, { signal });
-      this.addEventListener('focusout', this.onFocusOut, { signal });
-      window.addEventListener('resize', this.onViewportChange, { signal });
-      window.addEventListener('orientationchange', this.onViewportChange, { signal });
-      window.addEventListener('pagehide', this.disconnect, { signal, once: true });
+      gsap.set(this.panel, { autoAlpha: 0, pointerEvents: 'none' })
+      this.trigger.addEventListener('click', this.onTriggerClick, { signal })
+      document.addEventListener('pointerdown', this.onOutsidePointerDown, { signal })
+      document.addEventListener('keydown', this.onKeyDown, { signal })
+      this.addEventListener('focusout', this.onFocusOut, { signal })
+      window.addEventListener('resize', this.onViewportChange, { signal })
+      window.addEventListener('orientationchange', this.onViewportChange, { signal })
+      window.addEventListener('pagehide', this.disconnect, { signal, once: true })
 
       if (this.dataset.openOnHover === 'true') {
-        this.addEventListener('pointerenter', this.onPointerEnter, { signal });
-        this.addEventListener('pointerleave', this.onPointerLeave, { signal });
+        this.addEventListener('pointerenter', this.onPointerEnter, { signal })
+        this.addEventListener('pointerleave', this.onPointerLeave, { signal })
       }
     }
 
     disconnectedCallback() {
-      this.disconnect();
+      this.disconnect()
     }
 
     private disconnect = () => {
-      this.cleanupController?.abort();
-      this.cleanupController = undefined;
-      this.timeline?.kill();
-      this.timeline = undefined;
-    };
+      this.cleanupController?.abort()
+      this.cleanupController = undefined
+      this.timeline?.kill()
+      this.timeline = undefined
+    }
 
     private onTriggerClick = () => {
       if (this.open && this.pinned) {
-        this.pinned = false;
-        this.close();
-        return;
+        this.pinned = false
+        this.close()
+        return
       }
 
-      this.pinned = true;
-      this.show();
-    };
+      this.pinned = true
+      this.show()
+    }
 
     private onPointerEnter = () => {
-      if (!this.pinned) this.show();
-    };
+      if (!this.pinned) this.show()
+    }
 
     private onPointerLeave = () => {
-      if (!this.pinned) this.close();
-    };
+      if (!this.pinned) this.close()
+    }
 
     private onOutsidePointerDown = (event: PointerEvent) => {
       if (this.open && !this.contains(event.target as Node)) {
-        this.pinned = false;
-        this.close();
+        this.pinned = false
+        this.close()
       }
-    };
+    }
 
     private onKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== 'Escape' || !this.open) return;
-      event.preventDefault();
-      this.pinned = false;
-      this.close();
-      this.trigger.focus();
-    };
+      if (event.key !== 'Escape' || !this.open) return
+      event.preventDefault()
+      this.pinned = false
+      this.close()
+      this.trigger.focus()
+    }
 
     private onFocusOut = () => {
       queueMicrotask(() => {
         if (this.open && !this.contains(document.activeElement)) {
-          this.pinned = false;
-          this.close();
+          this.pinned = false
+          this.close()
         }
-      });
-    };
+      })
+    }
 
     private onViewportChange = () => {
-      if (!this.open) return;
-      this.positionPanel();
-      this.timeline?.progress(1);
-    };
+      if (!this.open) return
+      this.positionPanel()
+      this.timeline?.progress(1)
+    }
 
     private show() {
       if (!this.open) {
-        this.open = true;
-        this.panel.inert = false;
-        this.panel.setAttribute('aria-hidden', 'false');
-        this.trigger.setAttribute('aria-expanded', 'true');
+        this.open = true
+        this.panel.inert = false
+        this.panel.setAttribute('aria-hidden', 'false')
+        this.trigger.setAttribute('aria-expanded', 'true')
       }
 
-      this.positionPanel();
-      this.createTimeline();
-      this.timeline?.play();
+      this.positionPanel()
+      this.createTimeline()
+      this.timeline?.play()
     }
 
     private close() {
-      if (!this.open) return;
-      this.open = false;
-      this.trigger.setAttribute('aria-expanded', 'false');
-      this.panel.setAttribute('aria-hidden', 'true');
-      this.panel.inert = true;
+      if (!this.open) return
+      this.open = false
+      this.trigger.setAttribute('aria-expanded', 'false')
+      this.panel.setAttribute('aria-hidden', 'true')
+      this.panel.inert = true
 
       if (this.timeline) {
         this.timeline.eventCallback('onReverseComplete', () => {
-          gsap.set(this.panel, { pointerEvents: 'none' });
-        });
-        this.timeline.reverse();
+          gsap.set(this.panel, { pointerEvents: 'none' })
+        })
+        this.timeline.reverse()
       } else {
-        gsap.set(this.panel, { autoAlpha: 0, pointerEvents: 'none' });
+        gsap.set(this.panel, { autoAlpha: 0, pointerEvents: 'none' })
       }
     }
 
     private createTimeline() {
-      this.timeline?.kill();
-      const triggerRect = this.trigger.getBoundingClientRect();
-      const panelRect = this.panel.getBoundingClientRect();
-      const duration = this.reducedMotion.matches ? 0.08 : 0.28;
+      this.timeline?.kill()
+      const triggerRect = this.trigger.getBoundingClientRect()
+      const panelRect = this.panel.getBoundingClientRect()
+      const duration = this.reducedMotion.matches ? 0.08 : 0.28
 
-      this.timeline = gsap
-        .timeline({ paused: true, defaults: { duration, ease: 'power2.out' } })
-        .fromTo(
-          this.panel,
-          {
-            autoAlpha: 0,
-            scaleX: Math.min(1, triggerRect.width / panelRect.width),
-            scaleY: Math.min(1, triggerRect.height / panelRect.height),
-            borderRadius: triggerRect.width / 2,
-          },
-          {
-            autoAlpha: 1,
-            scaleX: 1,
-            scaleY: 1,
-            borderRadius: 8,
-            pointerEvents: 'auto',
-            immediateRender: true,
-          },
-        );
+      this.timeline = gsap.timeline({ paused: true, defaults: { duration, ease: 'power2.out' } }).fromTo(
+        this.panel,
+        {
+          autoAlpha: 0,
+          scaleX: Math.min(1, triggerRect.width / panelRect.width),
+          scaleY: Math.min(1, triggerRect.height / panelRect.height),
+          borderRadius: triggerRect.width / 2
+        },
+        {
+          autoAlpha: 1,
+          scaleX: 1,
+          scaleY: 1,
+          borderRadius: 8,
+          pointerEvents: 'auto',
+          immediateRender: true
+        }
+      )
     }
 
     private positionPanel() {
-      gsap.set(this.panel, { autoAlpha: 0, scaleX: 1, scaleY: 1 });
-      const trigger = this.trigger.getBoundingClientRect();
-      const panel = this.panel.getBoundingClientRect();
-      const preferred = this.dataset.placement as Placement;
-      const candidates: Placement[] = [preferred, opposite[preferred]];
-      let resolved = candidates.find((candidate) => this.fits(candidate, trigger, panel));
+      gsap.set(this.panel, { autoAlpha: 0, scaleX: 1, scaleY: 1 })
+      const trigger = this.trigger.getBoundingClientRect()
+      const panel = this.panel.getBoundingClientRect()
+      const preferred = this.dataset.placement as Placement
+      const candidates: Placement[] = [preferred, opposite[preferred]]
+      let resolved = candidates.find((candidate) => this.fits(candidate, trigger, panel))
 
       if (!resolved) {
         resolved = candidates.reduce((best, candidate) =>
-          this.availableArea(candidate, trigger) > this.availableArea(best, trigger)
-            ? candidate
-            : best,
-        );
+          this.availableArea(candidate, trigger) > this.availableArea(best, trigger) ? candidate : best
+        )
       }
 
-      const raw = this.coordinates(resolved, trigger, panel);
-      const maxLeft = Math.max(0, window.innerWidth - panel.width - VIEWPORT_PADDING);
-      const minLeft = Math.min(VIEWPORT_PADDING, maxLeft);
-      const maxTop = Math.max(0, window.innerHeight - panel.height - VIEWPORT_PADDING);
-      const minTop = Math.min(VIEWPORT_PADDING, maxTop);
-      const left = Math.min(Math.max(raw.left, minLeft), maxLeft);
-      const top = Math.min(Math.max(raw.top, minTop), maxTop);
+      const raw = this.coordinates(resolved, trigger, panel)
+      const maxLeft = Math.max(0, window.innerWidth - panel.width - VIEWPORT_PADDING)
+      const minLeft = Math.min(VIEWPORT_PADDING, maxLeft)
+      const maxTop = Math.max(0, window.innerHeight - panel.height - VIEWPORT_PADDING)
+      const minTop = Math.min(VIEWPORT_PADDING, maxTop)
+      const left = Math.min(Math.max(raw.left, minLeft), maxLeft)
+      const top = Math.min(Math.max(raw.top, minTop), maxTop)
       const origins: Record<Placement, string> = {
         'top-right': 'left bottom',
         'bottom-right': 'left top',
         'top-left': 'right bottom',
-        'bottom-left': 'right top',
-      };
+        'bottom-left': 'right top'
+      }
 
-      this.dataset.resolvedPlacement = resolved;
-      gsap.set(this.panel, { x: left, y: top, transformOrigin: origins[resolved] });
+      this.dataset.resolvedPlacement = resolved
+      gsap.set(this.panel, { x: left, y: top, transformOrigin: origins[resolved] })
     }
 
     private coordinates(placement: Placement, trigger: DOMRect, panel: DOMRect) {
-      const right = placement.endsWith('right');
-      const top = placement.startsWith('top');
+      const right = placement.endsWith('right')
+      const top = placement.startsWith('top')
       return {
         left: right ? trigger.left : trigger.right - panel.width,
-        top: top ? trigger.bottom - panel.height - GAP : trigger.top + GAP,
-      };
+        top: top ? trigger.bottom - panel.height - GAP : trigger.top + GAP
+      }
     }
 
     private fits(placement: Placement, trigger: DOMRect, panel: DOMRect) {
-      const { left, top } = this.coordinates(placement, trigger, panel);
+      const { left, top } = this.coordinates(placement, trigger, panel)
       return (
         left >= VIEWPORT_PADDING &&
         top >= VIEWPORT_PADDING &&
         left + panel.width <= window.innerWidth - VIEWPORT_PADDING &&
         top + panel.height <= window.innerHeight - VIEWPORT_PADDING
-      );
+      )
     }
 
     private availableArea(placement: Placement, trigger: DOMRect) {
       const horizontal = placement.endsWith('right')
         ? window.innerWidth - trigger.left - VIEWPORT_PADDING
-        : trigger.right - VIEWPORT_PADDING;
+        : trigger.right - VIEWPORT_PADDING
       const vertical = placement.startsWith('top')
         ? trigger.bottom - VIEWPORT_PADDING
-        : window.innerHeight - trigger.top - VIEWPORT_PADDING;
-      return Math.max(0, horizontal) * Math.max(0, vertical);
+        : window.innerHeight - trigger.top - VIEWPORT_PADDING
+      return Math.max(0, horizontal) * Math.max(0, vertical)
     }
   }
 
   if (!customElements.get('info-popover')) {
-    customElements.define('info-popover', InfoPopoverElement);
+    customElements.define('info-popover', InfoPopoverElement)
   }
 </script>

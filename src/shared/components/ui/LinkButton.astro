@@ -24,8 +24,13 @@ const sizeClasses: Record<Size, string> = {
 }
 
 const variantClasses: Record<Variant, string> = {
-  default: 'border-border bg-transparent text-primary hover:border-primary hover:bg-primary hover:text-background',
-  important: 'border-primary bg-primary text-background hover:border-accent hover:bg-accent hover:text-foreground'
+  default: 'border-border bg-transparent text-primary',
+  important: 'border-primary bg-primary text-background'
+}
+
+const interactiveVariantClasses: Record<Variant, string> = {
+  default: 'hover:border-primary hover:bg-primary hover:text-background',
+  important: 'hover:border-accent hover:bg-accent hover:text-foreground'
 }
 ---
 
@@ -35,17 +40,22 @@ const variantClasses: Record<Variant, string> = {
   aria-disabled={disabled ? 'true' : undefined}
   tabindex={disabled ? -1 : undefined}
   class={cn(
-    'group inline-flex items-center justify-center rounded-full border font-body font-medium transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95 motion-reduce:transition-none motion-reduce:active:scale-100',
+    'group inline-flex items-center justify-center rounded-full border font-body font-medium transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background motion-reduce:transition-none',
     sizeClasses[size],
+    variantClasses[variant],
     disabled
-      ? 'pointer-events-none cursor-not-allowed border-border bg-transparent text-text opacity-50'
-      : variantClasses[variant],
+      ? 'cursor-not-allowed opacity-50'
+      : cn(interactiveVariantClasses[variant], 'active:scale-95 motion-reduce:active:scale-100'),
     className
   )}
 >
   <span><slot /></span>
   <svg
-    class="size-4 shrink-0 transition-transform duration-200 ease-out group-hover:-rotate-45 motion-reduce:transform-none motion-reduce:transition-none"
+    class={cn(
+      'size-4 shrink-0',
+      !disabled &&
+        'transition-transform duration-200 ease-out group-hover:-rotate-45 motion-reduce:transform-none motion-reduce:transition-none'
+    )}
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
@@ -54,7 +64,7 @@ const variantClasses: Record<Variant, string> = {
     stroke-linejoin="round"
     aria-hidden="true"
   >
-    <path d="M5 12h14"></path>
-    <path d="m14 7 5 5-5 5"></path>
+    <path d="M5 12h14" />
+    <path d="m14 7 5 5-5 5" />
   </svg>
 </a>
