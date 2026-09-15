@@ -41,15 +41,25 @@ export interface MaplibreView {
 }
 
 export async function createMaplibreView(config: MaplibreViewConfig): Promise<MaplibreView> {
-  const { Map: MapLibreMap, Marker } = await loadMaplibre()
+  const { AttributionControl, Map: MapLibreMap, Marker, NavigationControl } = await loadMaplibre()
 
   const map = new MapLibreMap({
     container: config.container,
     style: config.styleUrl ?? MAP_STYLE_URL,
     center: toLngLat(config.center ?? DEFAULT_CENTER),
     zoom: config.zoom ?? DEFAULT_ZOOM,
-    cooperativeGestures: true
+    cooperativeGestures: true,
+    attributionControl: false
   })
+
+  map.addControl(new AttributionControl({ compact: true }), 'bottom-left')
+  map.addControl(
+    new NavigationControl({
+      showZoom: true,
+      showCompass: false
+    }),
+    'bottom-right'
+  )
 
   let markers: InstanceType<typeof Marker>[] = []
   let pinClickHandler: ((pin: Instrument, element: HTMLElement) => void) | null = null

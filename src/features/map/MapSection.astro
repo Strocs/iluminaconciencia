@@ -1,4 +1,5 @@
 ---
+import './styles/map-controls.css'
 import Header from '@shared/components/ui/Header.astro'
 import { bortleClasses } from '@shared/features/bortle'
 import { loadInstruments } from '@shared/features/instruments'
@@ -73,7 +74,7 @@ const countLabel = `${instrumentCount} ${instrumentCount === 1 ? 'punto disponib
       >
     </aside>
 
-    <div class="relative min-h-0 min-w-0 flex-1 self-stretch overflow-hidden rounded-xl border border-primary bg-background">
+    <div class="relative min-h-0 min-w-0 flex-1 self-stretch overflow-hidden rounded-xl border border-border bg-background">
       <div id="map" class="size-full"></div>
       <button
         data-filter-open
