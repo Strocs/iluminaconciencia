@@ -11,9 +11,9 @@ export interface LatLng {
 export type InstrumentType = string
 
 export interface InstrumentDetails {
-  altitude: number
-  weather: string
-  site: string
+  altitude: number | null
+  weather: string | null
+  site: string | null
 }
 
 export interface Instrument {
@@ -28,6 +28,10 @@ export interface Instrument {
   mag: number | null
   /** Number of recorded data points. Null when unknown. */
   dataCount: number | null
+  /** Percentage of available data. Null when unknown. */
+  dataPercent: number | null
+  /** Reporting period for the summary. Null when unknown. */
+  summaryPeriod: string | null
   detailUrl?: string
   details: InstrumentDetails
 }

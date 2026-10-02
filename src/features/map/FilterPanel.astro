@@ -1,5 +1,4 @@
 ---
-import Button from '@shared/components/ui/Button.astro'
 import InfoPopover from '@shared/components/ui/InfoPopover.astro'
 import LinkButton from '@shared/components/ui/LinkButton.astro'
 import { bortleClasses } from '@shared/features/bortle'
@@ -13,7 +12,7 @@ import { bortleClasses } from '@shared/features/bortle'
 >
   <div class="flex items-center justify-between md:hidden">
     <h3 class="font-heading text-xl font-bold">Filtros</h3>
-    <Button data-filter-close size="sm" aria-label="Cerrar filtros">Cerrar</Button>
+    <LinkButton as="btn" data-filter-close size="sm" aria-label="Cerrar filtros">Cerrar</LinkButton>
   </div>
   <div class="mt-3 max-w-44">
     <h3 class="text-base leading-none font-bold text-primary">FILTROS</h3>
@@ -55,7 +54,7 @@ import { bortleClasses } from '@shared/features/bortle'
     </legend>
     <div data-type-filters class="mt-2 flex flex-col gap-2"></div>
   </fieldset>
-  <Button data-select-all size="sm" class="mt-4 w-full">Seleccionar todo</Button>
+  <LinkButton as="btn" data-select-all size="sm" class="mt-auto w-full">Seleccionar todo</LinkButton>
   <LinkButton
     href="#"
     variant="important"

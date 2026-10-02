@@ -1,13 +1,15 @@
 import mockRaw from './instruments.mock.json?raw'
 import type { Instrument } from '../types'
+import { mapSnapshotStations } from './snapshot-mapper'
 
 /**
- * Loads instruments from the bundled mock JSON.
- *
- * Placeholder for the future data-access layer: the transport
- * (REST, direct connection, ...) is not defined yet, so this
- * function only parses the local mock through JSON.parse.
+ * Loads compact development snapshot data locally and retains the bundled mock elsewhere.
  */
-export function loadInstruments(): Instrument[] {
+export async function loadInstruments(): Promise<Instrument[]> {
+  if (import.meta.env.DEV) {
+    const { default: snapshot } = await import('../../../../../tmp/mocks/iluminaconciencia-snapshot.json')
+    return mapSnapshotStations(snapshot.stations)
+  }
+
   return JSON.parse(mockRaw) as Instrument[]
 }

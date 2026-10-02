@@ -5,22 +5,32 @@ import { cn } from '../../utils/cn'
 
 type Size = 'sm' | 'md'
 type Variant = 'default' | 'important'
-
-type NativeAnchorProps = Omit<HTMLAttributes<'a'>, 'aria-disabled' | 'class' | 'href' | 'size' | 'tabindex'>
-
-export interface Props extends NativeAnchorProps {
+type CommonProps = {
   class?: string
   disabled?: boolean
-  href: string
   size?: Size
   variant?: Variant
 }
+type LinkProps = Omit<HTMLAttributes<'a'>, 'aria-disabled' | 'class' | 'href' | 'size' | 'tabindex'> &
+  CommonProps & {
+    as?: 'link'
+    href: string
+  }
+type ButtonProps = Omit<HTMLAttributes<'button'>, 'class' | 'disabled' | 'size' | 'type'> &
+  CommonProps & {
+    as: 'btn'
+    type?: 'button' | 'submit' | 'reset'
+  }
 
-const { class: className, disabled = false, href, size = 'md', variant = 'default', ...rest } = Astro.props
+export type Props = LinkProps | ButtonProps
+
+const props = Astro.props as Props
+const { as = 'link', class: className, disabled = false, size = 'md', variant = 'default', type, ...rest } = props
+const href = 'href' in props ? props.href : undefined
 
 const sizeClasses: Record<Size, string> = {
-  sm: 'h-7 gap-2 px-4 text-sm/normal',
-  md: 'h-10 gap-2.5 px-5 text-base/normal'
+  sm: 'py-1 px-4 text-sm',
+  md: 'py-2 gap-2.5 px-5'
 }
 
 const variantClasses: Record<Variant, string> = {
@@ -32,39 +42,57 @@ const interactiveVariantClasses: Record<Variant, string> = {
   default: 'hover:border-primary hover:bg-primary hover:text-background',
   important: 'hover:border-accent hover:bg-accent hover:text-foreground'
 }
+
+const buttonType = type === 'submit' || type === 'reset' ? type : 'button'
+const anchorType = as === 'link' ? type : undefined
+const linkClass = cn(
+  'group inline-flex items-center justify-center rounded-full border font-body font-medium transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background motion-reduce:transition-none',
+  sizeClasses[size],
+  variantClasses[variant],
+  disabled
+    ? 'cursor-not-allowed opacity-50'
+    : cn(interactiveVariantClasses[variant], 'active:scale-95 motion-reduce:active:scale-100'),
+  className
+)
+const arrowClass = cn(
+  'size-4 shrink-0',
+  !disabled &&
+    'transition-transform duration-200 ease-out group-hover:-rotate-45 motion-reduce:transform-none motion-reduce:transition-none'
+)
 ---
 
-<a
-  {...rest}
-  href={disabled ? undefined : href}
-  aria-disabled={disabled ? 'true' : undefined}
-  tabindex={disabled ? -1 : undefined}
-  class={cn(
-    'group inline-flex items-center justify-center rounded-full border font-body font-medium transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background motion-reduce:transition-none',
-    sizeClasses[size],
-    variantClasses[variant],
-    disabled
-      ? 'cursor-not-allowed opacity-50'
-      : cn(interactiveVariantClasses[variant], 'active:scale-95 motion-reduce:active:scale-100'),
-    className
-  )}
->
-  <span><slot /></span>
-  <svg
-    class={cn(
-      'size-4 shrink-0',
-      !disabled &&
-        'transition-transform duration-200 ease-out group-hover:-rotate-45 motion-reduce:transform-none motion-reduce:transition-none'
-    )}
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-    aria-hidden="true"
-  >
-    <path d="M5 12h14" />
-    <path d="m14 7 5 5-5 5" />
-  </svg>
-</a>
+{
+  as === 'btn' ? (
+    <button {...rest} type={buttonType} disabled={disabled} class={linkClass}>
+      <span>
+        <slot />
+      </span>
+    </button>
+  ) : (
+    <a
+      {...rest}
+      href={disabled ? undefined : href}
+      type={anchorType}
+      aria-disabled={disabled ? 'true' : undefined}
+      tabindex={disabled ? -1 : undefined}
+      class={linkClass}
+    >
+      <span>
+        <slot />
+      </span>
+      <svg
+        class={arrowClass}
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M5 12h14" />
+        <path d="m14 7 5 5-5 5" />
+      </svg>
+    </a>
+  )
+}

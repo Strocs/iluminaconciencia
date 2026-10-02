@@ -5,7 +5,8 @@ import FilterPanel from './FilterPanel.astro'
 import InstrumentDrawer from './InstrumentDrawer.astro'
 import { loadInstruments } from '@shared/features/instruments'
 
-const instrumentCount = loadInstruments().length
+const instruments = await loadInstruments()
+const instrumentCount = instruments.length
 const countLabel = `${instrumentCount} ${instrumentCount === 1 ? 'punto disponible' : 'puntos disponibles'}`
 ---
 
@@ -15,7 +16,7 @@ const countLabel = `${instrumentCount} ${instrumentCount === 1 ? 'punto disponib
 >
   <Header data-map-header eyebrow="02 / EXPLORAR" title="Puntos de Medición" subtitle={countLabel} class="shrink-0" />
 
-  <div data-map-workspace class="group relative mx-auto flex min-h-0 w-full max-w-[90rem] flex-1 gap-4 lg:max-h-160">
+  <div data-map-workspace data-instruments={JSON.stringify(instruments)} class="group relative mx-auto flex min-h-0 w-full max-w-[90rem] flex-1 gap-4 lg:max-h-160">
     <FilterPanel />
 
     <div
@@ -45,7 +46,7 @@ const countLabel = `${instrumentCount} ${instrumentCount === 1 ? 'punto disponib
 
 <script>
   import { bortleClasses } from '@shared/features/bortle'
-  import { loadInstruments } from '@shared/features/instruments'
+  import type { Instrument } from '@shared/features/instruments'
   import { createInstrumentDrawer } from './drawer'
   import { filterByBortle, filterByType } from './filters'
   import { renderPin } from './pin-view'
@@ -58,8 +59,8 @@ const countLabel = `${instrumentCount} ${instrumentCount === 1 ? 'punto disponib
   const filterOpen = document.querySelector<HTMLButtonElement>('[data-filter-open]')
   if (!workspace || !mapEl || !filterPanel || !drawerEl || !filterOpen) throw new Error('Map section is incomplete')
 
-  const instruments = loadInstruments()
-  const types = [...new Set(instruments.map(({ type }) => type))].sort()
+  const instruments = JSON.parse(workspace.dataset.instruments ?? '[]') as Instrument[]
+  const types = [...new Set(['SQC', ...instruments.map(({ type }) => type)])].sort()
   const selectedTypes = new Set(types)
   const selectedLevels = new Set<number>(bortleClasses.map(({ level }) => level))
   let selectedId: string | null = null

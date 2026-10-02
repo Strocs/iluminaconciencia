@@ -1,6 +1,33 @@
 import type { Instrument } from '@shared/features/instruments'
 import { getBortleClass } from '@shared/features/bortle'
 
+const englishMonthToSpanish: Record<string, string> = {
+  jan: 'enero',
+  feb: 'febrero',
+  mar: 'marzo',
+  apr: 'abril',
+  may: 'mayo',
+  jun: 'junio',
+  jul: 'julio',
+  aug: 'agosto',
+  sep: 'septiembre',
+  oct: 'octubre',
+  nov: 'noviembre',
+  dec: 'diciembre'
+}
+
+function formatSummaryPeriod(period: string): string {
+  const monthOnlyPeriod = period.trim().match(/^([a-z]{3,9})\s+(\d{4})$/i)
+  if (monthOnlyPeriod) {
+    const month = englishMonthToSpanish[monthOnlyPeriod[1].slice(0, 3).toLowerCase()]
+    return month ? `${month} de ${monthOnlyPeriod[2]}` : period
+  }
+
+  const date = new Date(period)
+  if (Number.isNaN(date.getTime())) return period
+  return new Intl.DateTimeFormat('es-CL', { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(date)
+}
+
 export interface InstrumentDrawer {
   open(instrument: Instrument, returnFocus?: HTMLElement): void
   close(options?: { restoreFocus?: boolean }): void
@@ -9,14 +36,22 @@ export interface InstrumentDrawer {
 
 export function createInstrumentDrawer(root: HTMLElement, onOpenChange?: (open: boolean) => void): InstrumentDrawer {
   const title = root.querySelector<HTMLElement>('[data-drawer-title]')
-  const location = root.querySelector<HTMLElement>('[data-drawer-location]')
-  const altitude = root.querySelector<HTMLElement>('[data-drawer-altitude]')
+  const weatherRow = root.querySelector<HTMLElement>('[data-drawer-weather-row]')
   const weather = root.querySelector<HTMLElement>('[data-drawer-weather]')
   const equipment = root.querySelector<HTMLElement>('[data-drawer-equipment]')
+  const summaryRow = root.querySelector<HTMLElement>('[data-drawer-summary-row]')
+  const summary = root.querySelector<HTMLElement>('[data-drawer-summary]')
   const bortle = root.querySelector<HTMLElement>('[data-drawer-bortle]')
+  const bortleLevel = root.querySelector<HTMLElement>('[data-bortle-level]')
+  const bortleMarker = root.querySelector<HTMLElement>('[data-bortle-marker]')
+  const bortleClassification = root.querySelector<HTMLElement>('[data-bortle-classification]')
+  const bortleSqm = root.querySelector<HTMLElement>('[data-bortle-sqm]')
   const link = root.querySelector<HTMLAnchorElement>('[data-drawer-link]')
   const closeButton = root.querySelector<HTMLButtonElement>('[data-drawer-close]')
-  if (!title || !location || !altitude || !weather || !equipment || !bortle || !link || !closeButton) {
+  if (
+    !title || !weatherRow || !weather || !equipment || !summaryRow || !summary || !bortle || !bortleLevel ||
+    !bortleMarker || !bortleClassification || !bortleSqm || !link || !closeButton
+  ) {
     throw new Error('Instrument drawer is missing a required data attribute')
   }
 
@@ -45,20 +80,27 @@ export function createInstrumentDrawer(root: HTMLElement, onOpenChange?: (open: 
       const canonical = getBortleClass(instrument.bortleLevel)
       returnFocus = trigger
       title.textContent = instrument.name
-      location.textContent = `${instrument.location} · ${instrument.details.site}`
-      altitude.textContent = `${instrument.details.altitude.toLocaleString('es-CL')} m s. n. m.`
-      weather.textContent = instrument.details.weather
-      equipment.textContent = `${instrument.type} · ${instrument.dataCount?.toLocaleString('es-CL') ?? 'Sin datos'} mediciones · ${instrument.mag?.toLocaleString('es-CL', { minimumFractionDigits: 2 }) ?? '—'} mag/arcsec²`
-      bortle.replaceChildren()
+      const weatherValue = instrument.details.weather?.trim()
+      weather.textContent = weatherValue ?? ''
+      weatherRow.hidden = !weatherValue
+      const equipmentDetails = [
+        instrument.type,
+        instrument.dataCount == null ? undefined : `${instrument.dataCount.toLocaleString('es-CL')} mediciones`,
+        instrument.mag == null ? undefined : `${instrument.mag.toLocaleString('es-CL', { minimumFractionDigits: 2 })} mag/arcsec²`
+      ].filter(Boolean)
+      equipment.textContent = equipmentDetails.join(' · ')
+      const summaryPeriod = instrument.summaryPeriod ? formatSummaryPeriod(instrument.summaryPeriod) : undefined
+      const dataPercent = instrument.dataPercent?.toLocaleString('es-CL', { maximumFractionDigits: 2 })
+      const summaryDetails = [summaryPeriod, dataPercent == null ? undefined : `${dataPercent}% de datos`].filter(Boolean)
+      const summaryValue = summaryDetails.join(' · ')
+      summary.textContent = summaryValue
+      summaryRow.hidden = !summaryValue
+      bortle.hidden = !canonical
       if (canonical) {
-        const badge = document.createElement('span')
-        badge.className = 'flex size-10 shrink-0 items-center justify-center rounded-full font-bold'
-        badge.style.backgroundColor = canonical.color
-        badge.style.color = canonical.textTone === 'dark' ? 'var(--color-background)' : 'var(--color-foreground)'
-        badge.textContent = canonical.label
-        const copy = document.createElement('span')
-        copy.textContent = `${canonical.name}. Rango SQM: ${canonical.sqmRange} mag/arcsec².`
-        bortle.append(badge, copy)
+        bortleLevel.textContent = canonical.label
+        bortleMarker.style.backgroundColor = canonical.color
+        bortleClassification.textContent = canonical.name
+        bortleSqm.textContent = canonical.sqmRange
       }
       link.href = instrument.detailUrl ?? '#'
       setOpen(true)
