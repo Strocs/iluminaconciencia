@@ -26,7 +26,7 @@ Align the map point-information aside with the supplied reference: improve text 
 - The native review preflight was inspected, but START was not invoked: the candidate is the accumulated working tree with unrelated existing changes, not an isolated work-unit commit/PR slice. The untracked scope was explicitly excluded during inspect; no review lineage was started.
 - No browser rendering was captured; visual geometry was checked against the supplied composition through source structure only.
 - The shared `src/shared/components/ui/Button.astro` had been present as a pre-existing modified file at session start and temporarily disappeared during work. It was restored to the exact modified content visible in the initial diff and remains modified, preserving pre-existing user work.
-- User later authorized grouped workstream commits; commit identity will be recorded after creation.
+- User authorized grouped workstream commits. Commit: `7ec4432f8bc51263e7acc82c481f81803d96c63c` (`feat(map): load snapshot data and refine map controls`).
 
 ## Evidence
 - User supplied current/target screenshots under `/tmp/.wsl-screenshot-cli/` and approved the clarified data/design proposal.

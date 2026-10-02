@@ -34,7 +34,7 @@ Separate Button and LinkButton components duplicated APIs and styling. The user 
 - Final independent verification: `pnpm check`, `pnpm test`, and `pnpm build` all passed. `pnpm test` runs check; build emitted a chunk-over-500-kB warning.
 - One earlier verification attempt found a stale `Button` reference in InstrumentDrawer; that reference was corrected, and the final verification passed.
 - Native risk assessment was unassessable due to untracked files and requested an independent verifier, which passed. Native review inspect remains blocked pending intended-untracked selection; no selection was inferred and no lineage was started.
-- The user later authorized grouped workstream commits; commit identity will be recorded after creation.
+- The user authorized grouped workstream commits. Commit: `7ec4432f8bc51263e7acc82c481f81803d96c63c` (`feat(map): load snapshot data and refine map controls`).
 
 ## Next step
-If native review is desired for the broader working-tree candidate, resolve the inspect selection stop explicitly and ensure the selected candidate scope is appropriate. No deployment, staging, or commit was performed.
+If native review is desired for the broader working-tree candidate, resolve the inspect selection stop explicitly and ensure the selected candidate scope is appropriate. No deployment occurred; workstream commits were later authorized and recorded above.

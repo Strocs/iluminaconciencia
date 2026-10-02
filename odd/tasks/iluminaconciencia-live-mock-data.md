@@ -37,7 +37,7 @@ The full public snapshot now exists, but the current map still reads a five-stat
 - Parent spot-check: reran the focused Node test; 3/3 passed. No dev server/browser check was run, so live visual interaction remains unverified.
 - Native ASSESS failed closed as unassessable because ambient untracked files were not declared; the returned high-risk plan's independent verifier requirement was met. The `gentle-ai review mode status` CLI could not be queried because `gentle-ai` is not installed in PATH; no native review lifecycle was started. RDD is off.
 - Changed files: `src/shared/features/instruments/dal/loader.ts`, `src/shared/features/instruments/dal/snapshot-mapper.ts`, `src/shared/features/instruments/types.ts`, `src/features/map/MapSection.astro`, `src/features/map/drawer.ts`, `tests/instruments-snapshot-mapper.test.mjs`.
-- Delivery/commit: authorized after implementation; the user specifically confirmed that the 4.3 MB local snapshot should be included in the map workstream commit. Commit identity will be recorded after creation.
+- Delivery/commit: authorized after implementation; the user specifically confirmed that the 4.3 MB local snapshot should be included in the map workstream commit. Commit: `7ec4432f8bc51263e7acc82c481f81803d96c63c` (`feat(map): load snapshot data and refine map controls`).
 
 ## Next step
 Run `pnpm dev` locally to visually confirm the 37 markers and drawer behavior; check the expected port first and reuse an existing server if present.
