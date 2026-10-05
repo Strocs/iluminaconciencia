@@ -1,6 +1,5 @@
 ---
 import { nightSkyConfig } from './config'
-import LightPollution from '../light-pollution/LightPollution.astro'
 ---
 
 <div data-hero-sky-host class="pointer-events-none absolute inset-0" aria-hidden="true">
@@ -17,5 +16,4 @@ import LightPollution from '../light-pollution/LightPollution.astro'
     style={`opacity: ${nightSkyConfig.starOpacity.initial}`}
     class="absolute inset-0 size-full"
     aria-hidden="true"></canvas>
-  <LightPollution />
 </div>
