@@ -1,7 +1,0 @@
-dist/
-/.astro/
-/.codegraph/
-node_modules/
-evidence/
-.playwright-cli/
-pnpm-lock.yaml
