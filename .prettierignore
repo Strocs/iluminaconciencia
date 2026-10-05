@@ -1,0 +1,8 @@
+dist/
+.codegraph/
+.atl/
+node_modules/
+evidence/
+.playwright-cli/
+odd/
+pnpm-lock.yaml

@@ -1,9 +1,11 @@
 # Next.js Migration
 
 ## Objective and rationale
+
 Migrate the current Iluminaconciencia Astro site to the latest stable Next.js 16+ while preserving Spanish content, visual identity, routes, data, GSAP/WebGL behavior, and the MapLibre experience. Keep execution recoverable and changes reviewable in independent work units.
 
 ## Authorization and isolation
+
 - User approved implementation after the architecture plan.
 - Worktree: `/home/strocs/dev/iluminaconciencia-worktrees/nextjs16`.
 - Orphan branch: `migration/nextjs16`; it must not inherit existing history.
@@ -14,6 +16,7 @@ Migrate the current Iluminaconciencia Astro site to the latest stable Next.js 16
 - Ask the user before resolving ANY ambiguity. Workers return unresolved decisions to the parent; recommendations never constitute approval.
 
 ## Agreed architecture
+
 - Next.js App Router, server-first composition, server runtime available; no static export.
 - Enable `cacheComponents: true` in `next.config.ts`.
 - Use `use cache`, `cacheLife`, and tags only for identified caching needs; appropriate Suspense boundaries for uncached asynchronous/request-dependent work. Preserve prerendering eligibility of static content.
@@ -26,6 +29,7 @@ Migrate the current Iluminaconciencia Astro site to the latest stable Next.js 16
 - Keep local instrument/news fixtures, including the tracked development snapshot. No backend or new product features.
 
 ## Checks and routing policy
+
 - The project explicitly does not add automated tests. Do not introduce a test framework or fabricate RED/GREEN evidence. Keep the existing `test` alias semantics documented.
 - Required applicable commands: `pnpm check`, `pnpm test`, `pnpm build`; include lint/type/format checks appropriate to the changed unit.
 - Browser verification uses `playwright-cli`. Do not start a duplicate server; check ports first and obtain permission before opening a new server under the user's existing preference. Close only agent-owned browser sessions.
@@ -35,12 +39,14 @@ Migrate the current Iluminaconciencia Astro site to the latest stable Next.js 16
 - About 400 authored diff lines per work unit is a planning heuristic, not a cap. Do not split incoherently or minify to fit it.
 
 ## Review workload and delivery
+
 - Imported baseline source is existing product code, not newly authored migration behavior; record it separately from migration diffs.
 - Initial estimate: 3,000–7,000 authored migration diff lines, excluding generated files/lockfile and the imported snapshot. Refine after implementation mapping.
 - Delivery strategy: `single-pr`, explicitly selected by the user after the oversized-delivery menu. Whole future PR scope: this migration and its work-unit commits on the independent history. No chain strategy applies; do not ask again for chaining. Review-load/feedback/rollback risk explained and accepted as a delivery shape, not a repository-policy exception or publication permission.
 - First baseline commit has no parent; later unit comparisons use their preceding boundary. A conventional PR against the old `main` has no shared ancestor and cannot be assumed to work normally.
 
 ## Tasks
+
 - [x] T01 — Prepare and verify the isolated Astro root baseline; commit it without parents. **Complete**.
   - Route: parent Git/state/tracking and mechanical rule copy; delegated verifier for install/check/build.
   - Acceptance: original checkout unchanged; isolated source/assets match agreed baseline except contribution rules and this feature document; baseline check/test/build results observed; root commit identity recorded.
@@ -73,7 +79,9 @@ Migrate the current Iluminaconciencia Astro site to the latest stable Next.js 16
   - Acceptance: check/test/build and approved browser checks observed; differences/limitations documented; work-unit commits recorded; no unapproved publication or deployment. Shared persistent cache behavior must be proved on an authorized multi-instance production path before claiming that requirement complete; local app parity may close separately with the cloud criterion explicitly pending.
 
 ## Progress and evidence
+
 ### T01
+
 - Worktree created with `git worktree add --detach ... 3dc143b...`, followed by `checkout --orphan migration/nextjs16`.
 - Git automatically populated/staged the original tracked source for the initially unborn branch; the authorized root commit now exists.
 - Original checkout still reports only modified `AGENTS.md` and untracked `odd/tasks/info-popover-local-anchor.md`.
@@ -89,6 +97,7 @@ Migrate the current Iluminaconciencia Astro site to the latest stable Next.js 16
 - Work-unit commit: `a4b400fd3e36ffa62fa296b8322479730ef15d7f` — `chore: establish isolated Astro migration baseline`. `parents` is empty; worktree was clean immediately after commit.
 
 ### T02
+
 - Verifier `muvff99i-6-1su8` completed all five authorized read-only registry commands successfully; no application/toolchain migration writes, installs, or build probes.
 - Published versions: Next 16.3.8; SST 4.17.1; OpenNext 4.1.8; @gsap/react 2.1.2; react-map-gl 8.1.3.
 - Released SST v4.17.1 `platform/src/components/aws/nextjs.ts` selects OpenNext 3.9.14 for Next 15+; the explicit adapter version is not yet selected by the user.
@@ -104,6 +113,7 @@ Migrate the current Iluminaconciencia Astro site to the latest stable Next.js 16
 - Parent structural readback/diff check passed. Native assessment against root: passive, 1 path/40 diff lines, `reviewDue: false`, `passive`; structural readback only, no tests/verifier needed. No native approval claimed.
 
 ### T03
+
 - Route: bounded package writer; multi-file toolchain and shell migration. Preserve old Astro source as reference until later cleanup; no hero/map runtime migration in this unit.
 - Pin Next 16.3.8, @gsap/react 2.1.2, react-map-gl 8.1.3 and local OpenNext 4.1.8 build tooling. SST configuration and cloud resources remain T07/explicit clarification.
 - Intermediate Next shell must not be presented as complete page parity; no generic starter content or invented Spanish copy.
@@ -128,6 +138,7 @@ Migrate the current Iluminaconciencia Astro site to the latest stable Next.js 16
 - Status: **Blocked on font strategy and ESLint peer decision**. Source remains uncommitted; no server/browser/cloud actions.
 
 ### T03B
+
 - Scoped read-only verifier `muvhzogf-a-sg3z` confirmed local baseline WOFF2 artifacts but its bounded output did not map faces. Parent spot-check: read refuses the 105.9 KB single HTML line; a read-only Python extraction of font-face blocks established the mapping without editing/rebuilding.
 - Baseline Baskervville italic 400/600 both use `dist/_astro/fonts/2e9b4e94a1956668.woff2`; normal 400/600 both use `7f6f182cac4135c4.woff2`; Ubuntu normal 400 uses `4900cede8328fcb6.woff2`. Declarations use swap/Latin. No baseline 800 or Ubuntu600 face appears; physical axes and visual parity remain unverified.
 - Reusing exact baseline WOFF2 bytes via local font loading is a potential closer-parity option, requiring approved durable source copies, correct licenses/provenance and browser proof. No font strategy or asset copy is approved yet.
@@ -145,10 +156,12 @@ Migrate the current Iluminaconciencia Astro site to the latest stable Next.js 16
 - Work-unit commit: pending.
 
 ## Open decisions and blockers
+
 - User selected the latest OpenNext override and requires shared persistent cache; exact storage/handler infrastructure choices and local/end-to-end Cache Components behavior still need validation. Do not downgrade Next, disable Cache Components, or accept process memory as meeting the cache requirement silently.
 - Oversized delivery shape is resolved as one future PR. Its compatible destination remains a publishing-time decision because the old main has no common ancestor; no PR/push/merge is authorized.
 - AWS region/account/domain, remote cache resources, deployments, and cloud validation are not authorized.
 - Browser baseline/production validation needs explicit server permission if no suitable server is already available.
 
 ## Next action
+
 Launch the bounded T03 Next foundation writer with exact verification and allowed surfaces. The foundation is intermediate and must not claim complete feature parity or shared-cache deployment proof. Stop for any ambiguity/required out-of-scope edits; cache infrastructure choices require later explicit clarification and no AWS mutation is authorized. Reconcile this file, its full Engram mirror (`odd/nextjs-migration/tasks`), and visible TODO projection after every transition.

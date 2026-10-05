@@ -1,19 +1,23 @@
 # Hero layered hills
 
 ## Scope
+
 Implement inline Astro SVG landscape in isolated worktree `hero-layered-hills`, branch `feat/hero-layered-hills`, baseline `c0d4fd2`. Preserve original workspace. No stage, commits, push, dependencies, React, or animation changes authorized.
 
 Nearest profile masks the whole composition, keeping the upper region visible and cutting below. Stack: content, pollution, middle hills, distant hills, stars, black hero background. Hill layers are independently positioned and uniformly scaled; narrow screens crop laterally.
 
 ## Tasks
+
 - [x] 1. Extract inline hill components and inverse mask; reorganize hero layers; eliminate ignored docs build dependency. Route: delegated worker (multi-file write).
 - [x] 2. Below tablet uniformly shrink the same central cropped tablet segment without a minimum width floor; preserve independent layer adjustments. Verify content overlap/scroll indicator and desktop/tablet/mobile framing, scroll, fallback and reduced motion. Route: delegated verification.
 - [x] 3. Run pnpm check, pnpm test, pnpm build; read back changes and review as applicable. Route: delegated verification/native review.
 
 ## Width adjustment
+
 - [ ] 4. User approved centered maximum1920px for entire masked scene, with page-background side gutters on ultrawide; preserve internal content widths and pollution settings. Tune independent hill/mask framing to reference (higher front sides, low central valley, rear hills lower narrow band). Preserve mobile proportional crop. Initial worker blocked before writes on mask-scope decision. User authorized global capped scene; continuation murfb8c9-8-qbz7 in progress; focused tests/check/test/build and browser1920/2560/mobile required. Existing user dev server4321 remains running.
 
 ## Evidence
+
 - Delivery authorized by user: feature work-unit commit `9b1df3fa75a8453e374071a1abc19c5350f7a568`. Native review `review-d1750e8c91a8570b` approved and exact acknowledgement consumed authority. Latest check/test(check alias)/build pass; build chunk warning persists; final browser checks not run under server restriction (user accepted result). Experimental untracked hero test excluded from commit/integration under the no-test-implementation project rule; its stale expectations remain only in the isolated worktree. Local main integration requested; preserve unrelated main dirty files, no stash/reset/push. Dev server remains closed.
 - Corrected extension independently verified offline murtta2o-7-v87f: paint=VP+offset, stage=paint-offset=VP, hilltop=VP+offset-artheight=masktop and upperfillboundary. clipX/visibleY and widthcap preserved. Middlefillneutral950/distantneutral900 emitted CSS, pollutionunchanged. check76zero/test(checkalias)/build/diffcheck pass, chunk>500kB warning. No server/preview/browser started by explicituserrestriction. VisualcontinuationbelowVP andgold-to-blacktransition remain PENDING, not visualpass. Known stale focusedtestfailure notrerun/unresolved; native reviewpending. No commit/stage/push.
 - Lowering verifier murrsz9j-2-kvpb: shared182.5/2400 offset146px at1920/768 and74.1406px at390 confirmed browser4sizes; source scale unchanged, hills/mask aligned, valley nearbottom. check/test(aliascheck)/build pass existingchunkwarning. Focused existingtest2/3 FAIL stale100px assertions from interruptedwriter; not edited further under new no-test-implementation rule. At390x640 content/header and scrollcue/Bortle overlap detected, causality not established; out of shared-landscape shift scope. Server18568( pnpm18552) restored only after portfree, ownbrowserclosed. Implementation remains partial until stale test disposition; user visual acceptance pending, no source follow-up/no commit/stage/push.
