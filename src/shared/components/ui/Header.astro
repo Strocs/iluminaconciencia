@@ -1,0 +1,46 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+import { cn } from '../../utils/cn'
+import BrandStarIcon from './BrandStarIcon.astro'
+
+type HeadingTag = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
+type NativeHeaderProps = Omit<HTMLAttributes<'header'>, 'class' | 'title'>
+
+export interface Props extends NativeHeaderProps {
+  as?: HeadingTag
+  class?: string
+  eyebrow: string
+  subtitle?: string
+  title: string
+  titleId?: string
+}
+
+const { as: Heading = 'h2', class: className, eyebrow, subtitle, title, titleId, ...rest } = Astro.props
+---
+
+<header {...rest} class={cn('mx-auto flex w-full max-w-[73rem] flex-col items-center py-8 text-center', className)}>
+  <div class="flex w-full flex-col items-center gap-4">
+    <p class="font-body text-xs leading-4 font-light tracking-[2px] text-primary uppercase">{eyebrow}</p>
+
+    <div class="flex w-full items-center justify-center gap-4">
+      <span class="h-px min-w-4 flex-1 bg-border max-sm:hidden" aria-hidden="true"></span>
+      <Heading
+        id={titleId}
+        class="max-w-full min-w-0 font-heading text-3xl leading-tight font-bold text-foreground sm:text-[2.5rem] sm:leading-[2.625rem]"
+      >
+        {title}
+      </Heading>
+      <span class="h-px min-w-4 flex-1 bg-border max-sm:hidden" aria-hidden="true"></span>
+    </div>
+  </div>
+
+  {
+    subtitle && (
+      <div class="mt-4 flex max-w-full items-center justify-center gap-2 px-4">
+        <BrandStarIcon class="shrink-0 text-primary" />
+        <p class="font-body text-base leading-[1.618] font-normal text-foreground">{subtitle}</p>
+      </div>
+    )
+  }
+</header>

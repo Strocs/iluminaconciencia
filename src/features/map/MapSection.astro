@@ -1,0 +1,242 @@
+---
+import './styles/map-controls.css'
+import Header from '@shared/components/ui/Header.astro'
+import FilterPanel from './FilterPanel.astro'
+import InstrumentDrawer from './InstrumentDrawer.astro'
+import { loadInstruments } from '@shared/features/instruments'
+
+const instruments = await loadInstruments()
+const instrumentCount = instruments.length
+const countLabel = `${instrumentCount} ${instrumentCount === 1 ? 'punto disponible' : 'puntos disponibles'}`
+---
+
+<section
+  id="explorar"
+  class="relative z-10 flex min-h-[max(100dvh,768px)] w-full flex-col px-4 pb-4 text-foreground sm:px-5 sm:pb-5"
+>
+  <Header data-map-header eyebrow="02 / EXPLORAR" title="Puntos de Medición" subtitle={countLabel} class="shrink-0" />
+
+  <div data-map-workspace data-instruments={JSON.stringify(instruments)} class="group relative mx-auto flex min-h-0 w-full max-w-[90rem] flex-1 gap-4 lg:max-h-160">
+    <FilterPanel />
+
+    <div
+      class="relative min-h-0 min-w-0 flex-1 self-stretch overflow-hidden rounded-xl border border-border bg-background"
+    >
+      <div id="map" class="size-full"></div>
+      <button
+        data-filter-open
+        type="button"
+        class="absolute top-3 left-3 z-10 rounded-full bg-foreground px-4 py-2 text-sm font-bold text-background shadow-lg group-data-[panel-open]:hidden md:hidden"
+        aria-expanded="false">Filtros</button
+      >
+    </div>
+
+    <InstrumentDrawer />
+  </div>
+</section>
+
+<style>
+  /* MapLibre injects this control DOM, so component markup cannot carry Tailwind utilities. */
+  @media (max-width: 767px) {
+    [data-map-workspace][data-panel-open] :global(.maplibregl-ctrl) {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  import { bortleClasses } from '@shared/features/bortle'
+  import type { Instrument } from '@shared/features/instruments'
+  import { createInstrumentDrawer } from './drawer'
+  import { filterByBortle, filterByType } from './filters'
+  import { renderPin } from './pin-view'
+  import { createMaplibreView } from './providers/maplibre'
+
+  const workspace = document.querySelector<HTMLElement>('[data-map-workspace]')
+  const mapEl = document.getElementById('map')
+  const filterPanel = document.querySelector<HTMLElement>('[data-filter-panel]')
+  const drawerEl = document.getElementById('instrument-drawer')
+  const filterOpen = document.querySelector<HTMLButtonElement>('[data-filter-open]')
+  if (!workspace || !mapEl || !filterPanel || !drawerEl || !filterOpen) throw new Error('Map section is incomplete')
+
+  const instruments = JSON.parse(workspace.dataset.instruments ?? '[]') as Instrument[]
+  const types = [...new Set(['SQC', ...instruments.map(({ type }) => type)])].sort()
+  const selectedTypes = new Set(types)
+  const selectedLevels = new Set<number>(bortleClasses.map(({ level }) => level))
+  let selectedId: string | null = null
+  let filterReturnFocus: HTMLElement | undefined
+  const mobileQuery = matchMedia('(max-width: 767px)')
+  const mapRegion = mapEl.parentElement
+  const syncAccessibility = (): void => {
+    const filtersOpen = filterPanel.hasAttribute('data-open')
+    const drawerOpen = drawerEl.hasAttribute('data-open')
+    const mobileOverlayOpen = mobileQuery.matches && (filtersOpen || drawerOpen)
+    filterPanel.inert = mobileQuery.matches && !filtersOpen
+    filterPanel.setAttribute('aria-hidden', String(mobileQuery.matches && !filtersOpen))
+    if (mapRegion) mapRegion.inert = mobileOverlayOpen
+    drawerEl.inert = filtersOpen || !drawerOpen
+  }
+  syncAccessibility()
+
+  const view = await createMaplibreView({ container: mapEl, center: { lat: -30.02, lng: -71.27 }, zoom: 9 })
+
+  const syncWorkspace = (): void => {
+    workspace.toggleAttribute(
+      'data-panel-open',
+      filterPanel.hasAttribute('data-open') || drawerEl.hasAttribute('data-open')
+    )
+    syncAccessibility()
+    requestAnimationFrame(() => view.resize())
+  }
+  const resizeObserver = new ResizeObserver(() => view.resize())
+  resizeObserver.observe(mapEl)
+  const onPanelTransitionEnd = (event: TransitionEvent): void => {
+    if (event.propertyName === 'transform') view.resize()
+  }
+  filterPanel.addEventListener('transitionend', onPanelTransitionEnd)
+  drawerEl.addEventListener('transitionend', onPanelTransitionEnd)
+  const drawer = createInstrumentDrawer(drawerEl, (open) => {
+    syncWorkspace()
+    if (!open && selectedId) {
+      selectedId = null
+      refresh()
+    }
+  })
+  const closeFilters = (restore = true): void => {
+    filterPanel.removeAttribute('data-open')
+    filterOpen.setAttribute('aria-expanded', 'false')
+    syncWorkspace()
+    if (restore) filterReturnFocus?.focus()
+  }
+  filterOpen.addEventListener('click', () => {
+    drawer.close({ restoreFocus: false })
+    filterReturnFocus = filterOpen
+    filterPanel.setAttribute('data-open', '')
+    filterPanel.setAttribute('aria-hidden', 'false')
+    filterOpen.setAttribute('aria-expanded', 'true')
+    syncWorkspace()
+    filterPanel.querySelector<HTMLButtonElement>('[data-filter-close]')?.focus()
+  })
+  document.querySelector<HTMLButtonElement>('[data-filter-close]')?.addEventListener('click', () => closeFilters())
+
+  const typeRoot = document.querySelector<HTMLElement>('[data-type-filters]')!
+  const makeFilter = (label: string, active: () => boolean, toggle: () => void): HTMLButtonElement => {
+    const button = document.createElement('button')
+    button.type = 'button'
+    button.textContent = label
+    button.className =
+      "filter-option h-8 w-full rounded border border-primary bg-primary px-2 text-sm font-semibold leading-none text-background outline-none transition-colors before:content-['✦__'] hover:bg-accent hover:text-foreground focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95 aria-[pressed=false]:border-border aria-[pressed=false]:bg-background aria-[pressed=false]:text-text aria-[pressed=false]:hover:border-primary aria-[pressed=false]:hover:text-primary motion-reduce:transition-none motion-reduce:active:scale-100"
+    const sync = () => button.setAttribute('aria-pressed', String(active()))
+    button.addEventListener('click', () => {
+      toggle()
+      sync()
+      refresh()
+    })
+    sync()
+    return button
+  }
+  typeRoot.replaceChildren(
+    ...types.map((type) =>
+      makeFilter(
+        type,
+        () => selectedTypes.has(type),
+        () => (selectedTypes.has(type) ? selectedTypes.delete(type) : selectedTypes.add(type))
+      )
+    )
+  )
+  document.querySelectorAll<HTMLButtonElement>('[data-bortle-filter]').forEach((button) => {
+    const level = Number(button.dataset.bortleFilter)
+    button.addEventListener('click', () => {
+      if (selectedLevels.has(level)) selectedLevels.delete(level)
+      else selectedLevels.add(level)
+      button.setAttribute('aria-pressed', String(selectedLevels.has(level)))
+      refresh()
+    })
+  })
+  document.querySelector<HTMLButtonElement>('[data-select-all]')?.addEventListener('click', () => {
+    types.forEach((type) => selectedTypes.add(type))
+    bortleClasses.forEach(({ level }) => selectedLevels.add(level))
+    typeRoot.querySelectorAll('button').forEach((button) => button.setAttribute('aria-pressed', 'true'))
+    document.querySelectorAll('[data-bortle-filter]').forEach((button) => button.setAttribute('aria-pressed', 'true'))
+    refresh()
+  })
+
+  function refresh(): void {
+    const filtered = filterByBortle(filterByType(instruments, selectedTypes), selectedLevels)
+    if (selectedId && !filtered.some(({ id }) => id === selectedId)) {
+      selectedId = null
+      drawer.close({ restoreFocus: false })
+    }
+    view.setPins(filtered, (instrument) => renderPin(instrument, instrument.id === selectedId))
+    requestAnimationFrame(() => {
+      mapEl!.querySelectorAll<HTMLElement>('[data-instrument-id]').forEach((pin) => {
+        const instrument = filtered.find(({ id }) => id === pin.dataset.instrumentId)
+        if (instrument) {
+          const open = () => openInstrument(instrument, pin)
+          pin.onpointerup = open
+          pin.onmouseup = open
+          pin.onclick = open
+        }
+      })
+    })
+    const count = filtered.length
+    const subtitle = document.querySelector<HTMLElement>('[data-map-header] p:last-child')
+    if (subtitle) subtitle.textContent = `${count} ${count === 1 ? 'punto disponible' : 'puntos disponibles'}`
+  }
+  function openInstrument(instrument: (typeof instruments)[number], pin: HTMLElement): void {
+    if (filterPanel?.hasAttribute('data-open')) return
+    selectedId = instrument.id
+    drawer.open(instrument, pin)
+    const bortle = bortleClasses.find(({ level }) => level === instrument.bortleLevel)
+    if (bortle) {
+      pin.style.backgroundColor = bortle.color
+      pin.style.color = bortle.textTone === 'dark' ? '#111114' : '#f5f0f2'
+      pin.setAttribute('aria-pressed', 'true')
+    }
+  }
+  const onKeyDown = (event: KeyboardEvent): void => {
+    if (!mobileQuery.matches || !filterPanel.hasAttribute('data-open')) return
+    if (event.key === 'Escape') {
+      event.preventDefault()
+      closeFilters()
+      return
+    }
+    if (event.key !== 'Tab') return
+    const focusable = [
+      ...filterPanel.querySelectorAll<HTMLElement>('button:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])')
+    ].filter((element) => !element.inert)
+    if (focusable.length === 0) return
+    const first = focusable[0]
+    const last = focusable.at(-1)!
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault()
+      last.focus()
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault()
+      first.focus()
+    }
+  }
+  const onFilterPointerDown = (event: PointerEvent): void => {
+    if (mobileQuery.matches && event.target === filterPanel) closeFilters()
+  }
+  const onBreakpointChange = (): void => {
+    if (!mobileQuery.matches && filterPanel.hasAttribute('data-open')) closeFilters(false)
+    syncWorkspace()
+  }
+  document.addEventListener('keydown', onKeyDown)
+  filterPanel.addEventListener('pointerdown', onFilterPointerDown)
+  mobileQuery.addEventListener('change', onBreakpointChange)
+  const cleanup = (): void => {
+    document.removeEventListener('keydown', onKeyDown)
+    filterPanel.removeEventListener('pointerdown', onFilterPointerDown)
+    filterPanel.removeEventListener('transitionend', onPanelTransitionEnd)
+    drawerEl.removeEventListener('transitionend', onPanelTransitionEnd)
+    mobileQuery.removeEventListener('change', onBreakpointChange)
+    resizeObserver.disconnect()
+    drawer.destroy()
+    view.destroy()
+  }
+  window.addEventListener('pagehide', cleanup, { once: true })
+  syncWorkspace()
+  refresh()
+</script>

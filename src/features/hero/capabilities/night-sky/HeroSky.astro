@@ -1,0 +1,19 @@
+---
+import { nightSkyConfig } from './config'
+---
+
+<div data-hero-sky-host class="pointer-events-none absolute inset-0" aria-hidden="true">
+  <img
+    data-hero-sky-fallback
+    data-fallback-src={nightSkyConfig.fallbackImagePath}
+    class="absolute inset-0 size-full object-cover"
+    alt=""
+    aria-hidden="true"
+    hidden
+  />
+  <canvas
+    data-hero-stars
+    style={`opacity: ${nightSkyConfig.starOpacity.initial}`}
+    class="absolute inset-0 size-full"
+    aria-hidden="true"></canvas>
+</div>

@@ -1,0 +1,67 @@
+---
+import HeroNarrative from './capabilities/scenes/HeroNarrative.astro'
+import HeroSky from './capabilities/night-sky/HeroSky.astro'
+import HeroLandscape from './capabilities/landscape/HeroLandscape.astro'
+import HeroFrame from './capabilities/framing/HeroFrame.astro'
+import LightPollution from './capabilities/light-pollution/LightPollution.astro'
+import BortleScale from './capabilities/bortle-scale/BortleScale.astro'
+---
+
+<section id="hero" class="relative min-h-[550dvh]" aria-labelledby="hero-title">
+  <div data-hero-pin-layer class="h-dvh">
+    <HeroFrame>
+      <HeroSky />
+      <HeroLandscape />
+      <div class="pointer-events-none absolute inset-0 z-40">
+        <LightPollution />
+      </div>
+      <div
+        class="hero-content relative z-50 mx-auto flex h-full w-full flex-col items-center justify-center gap-8 pt-32 pb-32 sm:gap-12 [@media(max-height:38rem)]:gap-4 [@media(max-height:38rem)]:pt-24 [@media(max-height:38rem)]:pb-28 max-[639px]:gap-6 max-[639px]:pt-16 max-[639px]:pb-40 max-[639px]:-translate-y-9 [@media(max-height:38rem)_and_(min-width:40rem)]:gap-4 [@media(max-height:38rem)_and_(min-width:40rem)]:pt-8 [@media(max-height:38rem)_and_(min-width:40rem)]:pb-14 [@media(max-height:38rem)_and_(min-width:40rem)]:flex-row"
+      >
+        <HeroNarrative />
+        <BortleScale />
+      </div>
+      <div class="hero-scroll-indicator pointer-events-none absolute inset-x-0 bottom-8 z-50 flex flex-col items-center gap-3 max-[639px]:bottom-36 [@media(max-aspect-ratio:3/4)]:bottom-36 [@media(max-height:38rem)]:bottom-14 [@media(max-height:38rem)]:gap-1">
+        <p class="font-body text-sm tracking-wider text-text">Desliza para descubrir</p>
+        <span class="h-12 w-px bg-linear-to-b from-text to-transparent [@media(max-height:38rem)]:h-6" aria-hidden="true"></span>
+      </div>
+    </HeroFrame>
+  </div>
+</section>
+
+<style>
+  /* Compact the slotted Bortle internals without changing its capability API. */
+  @media (min-width: 40rem) and (max-height: 38rem) {
+    .hero-content > :global(div:first-child) {
+      flex: 1 1 0%;
+      min-width: 0;
+      max-width: none;
+      height: 13rem;
+    }
+
+    .hero-content > :global([data-hero-bortle-scale]) {
+      flex: 0 0 15rem;
+      width: 15rem;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0.5rem;
+      padding-inline: 0;
+    }
+
+    .hero-content :global(.bortle-copy) {
+      min-height: 4.5rem;
+      text-align: center;
+    }
+
+    .hero-content :global(.bortle-presentation) {
+      height: 3rem;
+      margin-inline: auto;
+    }
+  }
+</style>
+
+<script>
+  import { initializeHero } from './runtime/initialize-hero'
+
+  const root = document.querySelector<HTMLElement>('#hero')
+  if (root) initializeHero(root)
+</script>

@@ -1,0 +1,236 @@
+---
+type Size = 'sm' | 'md'
+type Placement = 'top-right' | 'bottom-right' | 'top-left' | 'bottom-left'
+type Variant = 'default' | 'outline'
+
+interface Props {
+  label: string
+  placement?: Placement
+  openOnHover?: boolean
+  size?: Size
+  variant?: Variant
+  class?: string
+}
+
+const {
+  label,
+  placement = 'top-right',
+  openOnHover = true,
+  size = 'md',
+  variant = 'default',
+  class: className
+} = Astro.props
+const panelId = `info-popover-${globalThis.crypto.randomUUID()}`
+
+const triggerSizeClasses: Record<Size, string> = { sm: 'size-5', md: 'size-8' }
+const iconSizeClasses: Record<Size, string> = { sm: 'size-4', md: 'size-6' }
+const variantClasses: Record<Variant, string> = {
+  default: '',
+  outline: 'border border-border'
+}
+---
+
+<info-popover
+  class:list={['relative inline-flex font-body', className]}
+  data-placement={placement}
+  data-open-on-hover={openOnHover ? 'true' : 'false'}
+>
+  <button
+    class:list={[
+      'relative z-20 inline-flex cursor-pointer items-center justify-center rounded-full text-primary outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+      triggerSizeClasses[size],
+      variantClasses[variant]
+    ]}
+    type="button"
+    aria-label={label}
+    aria-controls={panelId}
+  >
+    <svg
+      class={iconSizeClasses[size]}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M9.1 9a3 3 0 1 1 5.8 1c0 2-3 2-3 4"></path>
+      <path d="M12 18h.01"></path>
+    </svg>
+  </button>
+
+  <div
+    id={panelId}
+    class="absolute z-10 box-border w-max max-w-[min(24rem,calc(100vw-1.5rem))] rounded-lg border border-border bg-background p-4 text-sm/relaxed text-foreground shadow-lg"
+    role="dialog"
+    aria-label={label}
+    data-panel
+    data-side="below"
+  >
+    <div data-content class="wrap-break-words">
+      <slot />
+    </div>
+  </div>
+</info-popover>
+
+<script>
+  type Placement = 'top-right' | 'bottom-right' | 'top-left' | 'bottom-left'
+  type Side = 'above' | 'below'
+
+  const oppositeSide: Record<Side, Side> = { above: 'below', below: 'above' }
+
+  class InfoPopoverElement extends HTMLElement {
+    private trigger!: HTMLButtonElement
+    private panel!: HTMLDivElement
+    private cleanupController?: AbortController
+
+    connectedCallback() {
+      if (this.cleanupController) return
+      this.trigger = this.querySelector('button')!
+      this.panel = this.querySelector('[data-panel]')!
+      this.cleanupController = new AbortController()
+      const { signal } = this.cleanupController
+      this.measureAndPlace()
+      window.addEventListener('resize', this.measureAndPlace, { signal })
+      window.addEventListener('scroll', this.measureAndPlace, { capture: true, signal })
+    }
+
+    disconnectedCallback() {
+      this.cleanupController?.abort()
+      this.cleanupController = undefined
+    }
+
+    private measureAndPlace = () => {
+      const triggerRect = this.trigger.getBoundingClientRect()
+      const panelRect = this.panel.getBoundingClientRect()
+      const preferred = this.dataset.placement as Placement
+      const preferredSide: Side = preferred.startsWith('top') ? 'above' : 'below'
+      const aboveSpace = triggerRect.top
+      const belowSpace = window.innerHeight - triggerRect.bottom
+      const panelHeight = panelRect.height
+      const side =
+        (preferredSide === 'above' ? aboveSpace : belowSpace) >= panelHeight ||
+        (preferredSide === 'above' ? aboveSpace >= belowSpace : belowSpace >= aboveSpace)
+          ? preferredSide
+          : oppositeSide[preferredSide]
+
+      const rightAligned = preferred.endsWith('right')
+      const fitsRight = triggerRect.right + 4 + panelRect.width <= window.innerWidth
+      const fitsLeft = triggerRect.left - 4 - panelRect.width >= 0
+      const alignRight = rightAligned ? fitsRight || !fitsLeft : !fitsLeft && fitsRight
+
+      const align: 'left' | 'right' = alignRight ? 'left' : 'right'
+      this.style.setProperty('--hover-card-width', `${panelRect.width}px`)
+      this.style.setProperty('--hover-card-height', `${panelRect.height}px`)
+      this.dataset.side = side
+      this.dataset.align = align
+      this.panel.dataset.side = side
+      this.panel.dataset.align = align
+      this.panel.classList.toggle('top-full', side === 'below')
+      this.panel.classList.toggle('bottom-full', side === 'above')
+      this.panel.classList.toggle('mt-1', side === 'below')
+      this.panel.classList.toggle('mb-1', side === 'above')
+      this.panel.classList.toggle('left-full', alignRight)
+      this.panel.classList.toggle('right-full', !alignRight)
+      this.panel.classList.toggle('ml-1', alignRight)
+      this.panel.classList.toggle('mr-1', !alignRight)
+    }
+  }
+
+  if (!customElements.get('info-popover')) customElements.define('info-popover', InfoPopoverElement)
+</script>
+
+<style>
+  /* These scoped selectors provide local hover/focus behavior without Tailwind group state leaking from ancestors. */
+  info-popover [data-panel] {
+    clip-path: inset(0 100% 100% 0);
+    pointer-events: none;
+    visibility: hidden;
+    transition:
+      clip-path 180ms ease-out,
+      visibility 0s linear 180ms;
+  }
+
+  info-popover [data-panel][data-side='below'][data-align='right'] {
+    clip-path: inset(0 0 100% 100%);
+  }
+
+  info-popover [data-panel][data-side='above'][data-align='left'] {
+    clip-path: inset(100% 100% 0 0);
+  }
+
+  info-popover [data-panel][data-side='above'][data-align='right'] {
+    clip-path: inset(100% 0 0 100%);
+  }
+
+  info-popover [data-content] {
+    opacity: 0;
+    transform: translateY(0.25rem);
+    transition:
+      opacity 120ms ease-out,
+      transform 120ms ease-out;
+  }
+
+  info-popover[data-open-on-hover='true']:hover [data-panel],
+  info-popover:focus-within [data-panel],
+  info-popover[data-open-on-hover='true']:hover [data-panel][data-side='below'][data-align='left'],
+  info-popover:focus-within [data-panel][data-side='below'][data-align='left'],
+  info-popover[data-open-on-hover='true']:hover [data-panel][data-side='below'][data-align='right'],
+  info-popover:focus-within [data-panel][data-side='below'][data-align='right'],
+  info-popover[data-open-on-hover='true']:hover [data-panel][data-side='above'][data-align='left'],
+  info-popover:focus-within [data-panel][data-side='above'][data-align='left'],
+  info-popover[data-open-on-hover='true']:hover [data-panel][data-side='above'][data-align='right'],
+  info-popover:focus-within [data-panel][data-side='above'][data-align='right'] {
+    clip-path: inset(0);
+    pointer-events: auto;
+    visibility: visible;
+    transition-delay: 0s;
+  }
+
+  info-popover[data-open-on-hover='true']:hover [data-content],
+  info-popover:focus-within [data-content] {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 60ms;
+  }
+
+  /* CSS needs measured card bounds to cover the complete trigger/card hover rectangle without changing layout. */
+  info-popover::before {
+    position: absolute;
+    z-index: 9;
+    width: calc(100% + 0.25rem + var(--hover-card-width, 0px));
+    height: calc(100% + 0.25rem + var(--hover-card-height, 0px));
+    pointer-events: auto;
+    content: '';
+    visibility: hidden;
+  }
+
+  info-popover[data-side='below']::before {
+    top: 0;
+  }
+
+  info-popover[data-side='above']::before {
+    bottom: 0;
+  }
+
+  info-popover[data-align='left']::before {
+    left: 0;
+  }
+
+  info-popover[data-align='right']::before {
+    right: 0;
+  }
+
+  info-popover[data-open-on-hover='true']:hover::before,
+  info-popover:focus-within::before {
+    visibility: visible;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    info-popover [data-panel],
+    info-popover [data-content] {
+      transition-duration: 0.01ms;
+    }
+  }
+</style>

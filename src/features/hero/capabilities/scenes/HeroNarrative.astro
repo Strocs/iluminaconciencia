@@ -1,0 +1,10 @@
+---
+import HeroScene from './HeroScene.astro'
+import { heroScenes } from './scenes-data'
+---
+
+<div class="relative z-10 mx-auto h-80 w-full max-w-4xl sm:h-96 [@media(max-height:38rem)]:h-64 max-[639px]:h-[21rem] [@media(max-height:38rem)_and_(min-width:40rem)]:h-52">
+  <div class="relative h-full w-full px-6">
+    {heroScenes.map((scene, index) => <HeroScene scene={scene} index={index} />)}
+  </div>
+</div>
