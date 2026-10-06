@@ -1,0 +1,72 @@
+import { gsap } from 'gsap'
+import { bortleClasses } from '@/_shared/bortle/bortle-classes'
+import { createBortleCapability } from '../capabilities/bortle-scale/bortle'
+import { bortleConfig } from '../capabilities/bortle-scale/config'
+import { createHeroMapTransitionCapability } from '../capabilities/hero-map-transition/hero-map-transition'
+import { heroMapTransitionConfig } from '../capabilities/hero-map-transition/config'
+import { createLightPollutionCapability } from '../capabilities/light-pollution/light-pollution'
+import { lightPollutionConfig } from '../capabilities/light-pollution/config'
+import { createScenesCapability } from '../capabilities/scenes/scenes'
+import { scenesConfig } from '../capabilities/scenes/config'
+import type { HeroCapability, HeroLifecycle } from '../core/contracts'
+import type { HeroSkyCapability } from '../capabilities/night-sky/contracts'
+import { createScrollTimeline } from '../core/scroll-timeline'
+
+const MOTION_QUERIES = {
+  normal: '(prefers-reduced-motion: no-preference)',
+  reduced: '(prefers-reduced-motion: reduce)'
+} as const
+
+function composeHero(root: HTMLElement, sky?: HeroSkyCapability | null): HeroLifecycle {
+  const sceneAttributes = Array.from(root.querySelectorAll<HTMLElement>('[data-hero-scene]'), (scene) => ({
+    scene,
+    ariaHidden: scene.getAttribute('aria-hidden'),
+    inert: scene.hasAttribute('inert')
+  }))
+  const capabilities: readonly HeroCapability[] = [
+    createScenesCapability({ root, config: scenesConfig }),
+    createLightPollutionCapability({ root, config: lightPollutionConfig }),
+    createBortleCapability({ root, classes: bortleClasses, config: bortleConfig }),
+    ...(sky ? [sky] : []),
+    createHeroMapTransitionCapability({ root, config: heroMapTransitionConfig })
+  ]
+  const matchMedia = gsap.matchMedia(root)
+
+  matchMedia.add(MOTION_QUERIES.normal, () => {
+    const scrollTimeline = createScrollTimeline({
+      root,
+      capabilities,
+      onEnter: () => sky?.start(),
+      onEnterBack: () => sky?.start(),
+      onLeave: () => sky?.stop(),
+      onLeaveBack: () => sky?.stop()
+    })
+    sky?.start()
+    return () => {
+      scrollTimeline.destroy()
+      sky?.stop()
+    }
+  })
+  matchMedia.add(MOTION_QUERIES.reduced, () => {
+    capabilities.forEach((capability) => capability.onProgress(0))
+  })
+
+  let destroyed = false
+  return {
+    destroy: () => {
+      if (destroyed) return
+      destroyed = true
+      matchMedia.revert()
+      capabilities.forEach((capability) => capability.destroy())
+      sceneAttributes.forEach(({ scene, ariaHidden, inert }) => {
+        if (ariaHidden === null) scene.removeAttribute('aria-hidden')
+        else scene.setAttribute('aria-hidden', ariaHidden)
+        scene.toggleAttribute('inert', inert)
+      })
+    }
+  }
+}
+
+export function initializeHero(root: HTMLElement, sky?: HeroSkyCapability | null): HeroLifecycle {
+  return composeHero(root, sky)
+}
