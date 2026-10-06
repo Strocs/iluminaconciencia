@@ -3,6 +3,8 @@
 import { useRef, type ReactNode } from 'react'
 import { gsap } from 'gsap'
 import { useGSAP } from '@gsap/react'
+import { nightSkyConfig } from '../capabilities/night-sky/config'
+import { createNightSkyCapability } from '../capabilities/night-sky/night-sky'
 import { initializeHero } from '../runtime/initialize-hero'
 
 gsap.registerPlugin(useGSAP)
@@ -15,8 +17,14 @@ export function HeroRuntime({ children }: { children: ReactNode }) {
       const root = rootRef.current
       if (!root) return
 
-      const lifecycle = initializeHero(root)
-      return () => lifecycle.destroy()
+      const sky = createNightSkyCapability({ root, config: nightSkyConfig })
+      try {
+        const lifecycle = initializeHero(root, sky ?? undefined)
+        return () => lifecycle.destroy()
+      } catch (error) {
+        sky?.destroy()
+        throw error
+      }
     },
     { scope: rootRef }
   )
