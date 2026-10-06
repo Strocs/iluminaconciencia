@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { Ubuntu, Baskervville } from 'next/font/google'
-import { Header } from '@/_shared/shell/header'
+import { Header } from '@/_shared/header'
 import '@/_styles/globals.css'
 
 const ubuntuSans = Ubuntu({
