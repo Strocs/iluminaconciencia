@@ -1,5 +1,62 @@
 # Next.js Migration
 
+## Active plan — simplified scaffold (2026-10-05)
+
+This section supersedes the architecture, tasks, blockers and next action in the historical record below. Preserve that record as evidence, not current implementation instructions.
+
+### Scope and constraints
+- Continue from the user-created Next scaffold on `migration/nextjs16`; original Astro checkout is read-only reference.
+- Route-oriented colocation: route-only code stays local; subtree reuse moves to the nearest common ancestor; only genuinely separate app areas justify shared code.
+- Place the home route at `src/app/(home)/page.tsx`, preserving URL `/`. Root `src/app/layout.tsx` owns the global shell. Do not add a group layout or empty private directories without a concrete need.
+- Keep current Google font declarations and scaffold dependencies/configuration. Historical font-weight parity and ESLint 10 investigation are superseded by the user scaffold.
+- SST/OpenNext, deployment and durable cache infrastructure are deferred. Do not enable Cache Components as an incidental migration edit.
+- Preserve Spanish UI and existing visual language. No new automated test suite; compilation/build and applicable playwright-cli checks provide evidence.
+- No staging, commits, push, PR, merge, installs or server startup in the first bounded unit. Current authorization is implementation, not delivery.
+
+### Active tasks
+- [x] S01 — Reconcile the plan and isolate the home route. **Implemented, functionally verified and natively reviewed; left unstaged under repository policy**.
+  - Move the unchanged placeholder to `(home)/page.tsx`; set root Spanish language and exact baseline site metadata, retaining fonts and shell classes.
+  - Delegate source edits to one bounded writer; no stylesheet, dependencies, feature migration or invented content.
+  - Verify lint, typecheck, build and formatting of changed files. Report missing `check`/`test` scripts, do not invent aliases or test results.
+  - No meaningful RED for a mechanical route move/metadata update and no applicable existing deterministic tests; do not add tests.
+  - Browser parity is not established by this unit. Native review follows the actual switch and candidate consent.
+- [ ] S02 — Migrate visual foundations, assets and Header/Background at their actual ownership boundary. **In progress: S02A implemented/code-verified/native-approved; human visual acceptance and S02B Header pending**.
+  - S02A: route-local `src/app/(home)/_components/Background.tsx`, home composition and existing global CSS aliases. Preserve accepted root fonts and existing color tokens; use utilities, no new CSS file or dependencies. Preserve placeholder content until sections migrate.
+  - S02B: complete Header, local UI support and logo; keep observer/hash navigation behavior coherent. Source mapping estimates foundations 35–60 lines and Header 260–360, so review them separately rather than combine into an oversized unit.
+  - Source closure confirms root Next exposes `--font-baskerville` (not Astro spelling) and `--font-ubuntu`; add heading/body aliases referencing actual variables without changing font loaders. HeaderBoundary remains deferred until real Hero integration.
+  - S02A writer `muvuf792-8-1ch4` running with exact three-file edit surface. Functional commands: lint, typecheck, build, targeted format and diff check; no new tests.
+  - Human selected `defer_s02a_visual_servers` and clarified that they will perform visual verification after each completed stage. Agent owns code checks/native stage review; no visual server/browser startup. Report human visual acceptance separately and keep it pending until feedback.
+  - User authorized continuing after S01 approval. Scout `muvu7mkt-6-f4iu` mapped base tokens/background and boundary-driven Header behavior. Its dependency closure was incomplete; follow-up `muvuafmv-7-02ir` reads only omitted layout/UI dependencies, exact target surfaces and coherent-unit estimate before a delegated writer.
+  - HeaderBoundary is a home-composition marker after Hero, not the Header itself. No fake Hero or invented section content to simulate the final boundary.
+  - Preserve accepted fonts, current scaffold and route colocation; no infrastructure, unrelated features or premature shared extraction. Browser/server permission must be evaluated for this unit, not inherited from S01's regeneration-only grant.
+- [ ] S03 — Migrate Hero and animation lifecycle, retaining pure engines and colocated code.
+- [ ] S04 — Migrate News and local data beside its consuming route.
+- [ ] S05 — Migrate Map, controls and data; add only dependencies required by this unit after deliberate review.
+- [ ] S06 — Reconcile obsolete Astro remnants and migration-facing documentation without unrelated cleanup.
+- [ ] S07 — Verify responsive, navigation, animation, map and metadata parity using applicable static/build and browser checks.
+
+### Active evidence
+- User confirmed S02A visuals ("Todo perfecto") and explicitly authorized committing all current migration-worktree changes, including their metadata edits without further verification. Current metadata is user-authored `IluminAconciencia` and Coquimbo project description; preserve it. Prior native approval covers the earlier frozen candidate, not these later user edits. Commit S01+S02A as one current foundation work unit, then continue S02B; no publication authorized.
+- S02A writer `muvuf792-8-1ch4` implemented only Background, home wrapper and heading/body aliases (estimated 58 lines), preserving root fonts/color tokens/placeholder. Lint/typecheck/build(static `/`)/targeted format/diff passed; parent Background readback and diff check passed. `check`/`test` scripts unavailable, no tests added. No servers/browser or out-of-scope generated changes.
+- Native S02A review `review-83bf020437c34a32`, medium tier, one reliability lens, approved without corrections; exact acknowledgement confirmed authority burned for target `sha256:2e8995c52fc919303e87053948c349ee69cb70baf327fa6b376f8a6be30958db`. Provider workspace projection includes earlier unstaged S01 and task documentation as well as S02A (121 frozen lines total); it is not a source-only stage diff. Human visual checking remains pending. Post-review tracking is bookkeeping outside frozen candidate; no stage/commit/publish.
+- Fresh native review `review-c0e644e60e5effec` created successfully for S01, medium tier, 57 diff lines, one consolidated reliability lens. Capture returned approved; exact native acknowledgement returned `native-approved-acknowledgement-completed` and authority burned for target `sha256:0e6afd82b2e6f69bdcda08e6003452546c9bf54d93ec0354425485b8369d4f81`. No source corrections required. This bookkeeping update is post-review documentation, not part of the frozen candidate. No Git commit/stage or delivery authorized by review.
+- Verifier `muvsv9v1-5-kh1s` regenerated dev types with authorized localhost Next dev and GET `/` (HTTP 200); stopped its own process before production build and confirmed no server/listener remained. Typecheck, build (static `/`), lint, targeted formatting and diff check all passed. No unexpected tracked/generated changes. Parent spot-check confirmed metadata/language diff, unchanged placeholder and diff check.
+- Native assessment was unassessable because intended untracked source required declaration; independent verifier already provided the conservative checks. Inspect declared `src/app/(home)/page.tsx` and returned ready. START returned `consent-binding-expired`, `lineage_created: false`, `mutation_performed: false`; no native approval exists. Native review remains pending fresh consent/selection reconciliation, not a functional-check failure. No stale binding was resubmitted.
+- `pnpm check`/`pnpm test` are unavailable in the user scaffold; no test suite added. Full browser/visual parity is deferred to feature migration. No staging or commit performed.
+- Verifier `muvsce4s-4-oo4t` confirmed stale development validators and no active Next server/listener. Production validators already map `(home)/page` to `/`. Installed `next typegen` only refreshes production types, so it cannot fix the stale dev tree. No regeneration/checks run in this diagnostic pass. Prior build failure cause remains unconfirmed because installed build implementation filters dev types.
+- Human explicitly authorized temporary Next dev regeneration and verification (`authorize_temporary_dev_regeneration`). Verifier continuation `muvsv9v1-5-kh1s` must recheck ports, bind localhost, stop only its own process before build and rerun checks. No cache deletion or source/config workaround authorized.
+- S01 continuation `muvsa5s1-3-dxhp` moved the page byte-for-byte and applied Spanish language/baseline metadata, preserving fonts/classes. Lint, targeted formatting and diff check passed. Typecheck/build failed on generated `.next/dev/types/validator.ts` references to the old page; S01 remains partial.
+- Dedicated verifier `muvsce4s-4-oo4t` is diagnosing generated-state ownership and documented type regeneration. No source/config workaround, destructive cache cleanup or server mutation authorized.
+- S01 writer `muvs7jzl-2-8bl4` made no source edits: it treated route relocation as prohibited deletion. Parent confirmed original page present and destination absent; resumed with non-overwriting `mv`, not deletion, as task `muvsa5s1-3-dxhp`.
+- Pre-change scaffold lint/typecheck/build and diff check passed. Targeted Prettier check failed because the destination file did not yet exist. These are baseline results, not S01 completion evidence; all checks must rerun after implementation.
+- Scaffold review: placeholder home, starter metadata and minimal runtime dependencies; no scaffold checks executed during review.
+- Parent observed a clean migration worktree before starting S01.
+- Current fonts explicitly accepted by the user; `(home)` route group explicitly accepted.
+- Work-unit commit: not authorized in this resumed unit; changes will remain unstaged.
+
+## Historical plan and evidence (superseded)
+
+
 ## Objective and rationale
 
 Migrate the current Iluminaconciencia Astro site to the latest stable Next.js 16+ while preserving Spanish content, visual identity, routes, data, GSAP/WebGL behavior, and the MapLibre experience. Keep execution recoverable and changes reviewable in independent work units.
