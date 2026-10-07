@@ -39,7 +39,7 @@ export function createBortleCapability({
   const nodes = Array.from(component.querySelectorAll<HTMLElement>('[data-hero-bortle-node]'))
   const connectors = Array.from(component.querySelectorAll<HTMLElement>('[data-hero-bortle-connector]'))
   const baseConnectors = Array.from(component.querySelectorAll<HTMLElement>('[data-hero-bortle-base-connector]'))
-  const dots = Array.from(component.querySelectorAll<HTMLElement>('.bortle-dot'))
+  const dots = Array.from(component.querySelectorAll<HTMLElement>('[data-hero-bortle-dot]'))
   const labels = nodes.map((node) => node.lastElementChild).filter((label): label is Element => label !== null)
   const track = component.querySelector<HTMLElement>('[data-hero-bortle-track]')
 
@@ -71,7 +71,7 @@ export function createBortleCapability({
       const active = index === visualIndex
       node.toggleAttribute('data-active', active)
       gsap.set(node, { opacity: opacityAtDistance(Math.abs(index - visualPosition)) })
-      const dot = node.querySelector<HTMLElement>('.bortle-dot')
+      const dot = node.querySelector<HTMLElement>('[data-hero-bortle-dot]')
       const label = node.lastElementChild
       if (dot) {
         const arriving = index === nextIndex && arrivalProgress > 0
