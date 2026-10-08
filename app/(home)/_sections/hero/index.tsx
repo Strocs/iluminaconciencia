@@ -15,7 +15,7 @@ export function Hero() {
         <div className="pointer-events-none absolute inset-0 z-40">
           <LightPollution />
         </div>
-        <div className="relative z-50 mx-auto flex size-full -translate-y-9 flex-col items-center justify-center gap-6 py-32 pt-16 pb-40 sm:translate-y-0 sm:gap-12 sm:py-32 [@media(max-height:38rem)]:gap-4 [@media(max-height:38rem)]:pt-24 [@media(max-height:38rem)]:pb-28 [@media(max-height:38rem)_and_(min-width:40rem)]:flex-row [@media(max-height:38rem)_and_(min-width:40rem)]:gap-4 [@media(max-height:38rem)_and_(min-width:40rem)]:pt-8 [@media(max-height:38rem)_and_(min-width:40rem)]:pb-14">
+        <div className="relative z-50 mx-auto flex size-full -translate-y-9 flex-col items-center justify-center gap-6 py-32 pt-16 sm:translate-y-0 sm:gap-12 sm:py-32 [@media(max-height:38rem)]:gap-4 [@media(max-height:38rem)]:pt-24 [@media(max-height:38rem)_and_(min-width:40rem)]:flex-row [@media(max-height:38rem)_and_(min-width:40rem)]:gap-4 [@media(max-height:38rem)_and_(min-width:40rem)]:pt-8">
           <HeroNarrative />
           <BortleScale />
         </div>
