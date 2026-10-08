@@ -21,4 +21,4 @@ User explicitly authorized committing the sky changes together with the subseque
 One narrow fix, forecast under 120 authored lines; ask-on-risk.
 
 ## Next step
-This fix's intent is preserved by the subsequent static 16:9 sample (see hero-static-sky-sample.md), whose browser verification passed. Permanent test files were removed at the user's request; results above are historical internal evidence. Commit identity will be recorded after creation; publishing remains unauthorized.
+This fix's intent is preserved by the subsequent static 16:9 sample (see hero-static-sky-sample.md), whose browser verification passed. Permanent test files were removed at the user's request; results above are historical internal evidence. Implementation commit: ca3b807b3917837e5d9f2eec539b8fedb9f6faaa (`perf(hero): persist a fixed 16:9 night sky sample`). Publishing remains unauthorized.
