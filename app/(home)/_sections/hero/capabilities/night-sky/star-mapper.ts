@@ -1,5 +1,6 @@
 import type { StarCatalogRecord } from './star-catalog'
-import { REGION_BBOX } from './sky-crop'
+// @ts-expect-error Native Node TypeScript tests require an explicit extension.
+import { projectStar, REGION_BBOX, STAR_MAGNITUDE_RANGE } from './sky-reference.ts'
 
 /**
  * Star catalog -> GPU-ready mapper.
@@ -22,14 +23,6 @@ export interface MappedStarData {
   /** x4 per star: [r, g, b, a=1], each 0..1. */
   readonly colors: Float32Array
 }
-
-/** Tangent point of the stereographic projection: the approved window center. */
-const PROJECTION = {
-  /** RA of the tangent point, in decimal hours (9.75h). */
-  raHours: 9.75,
-  /** Dec of the tangent point, in decimal degrees (-7.5 deg). */
-  decDegrees: -7.5
-} as const
 
 const SIZE = {
   /** Minimum star size in CSS px: the faint-end floor, always visible. */
@@ -58,8 +51,6 @@ const HASH = {
   /** Speed hash: produces 0.5 + [0, 1.5) -> [0.5, 2.0). */
   speed: 0.41421356237
 } as const
-
-const DEG_TO_RAD = Math.PI / 180
 
 const clamp = (value: number, minimum: number, maximum: number): number => Math.min(maximum, Math.max(minimum, value))
 
@@ -98,46 +89,14 @@ export function mapStarCatalog(records: readonly StarCatalogRecord[]): MappedSta
   const stars = new Float32Array(count * 4)
   const colors = new Float32Array(count * 4)
 
-  // Data-relative magnitude normalization: the catalog's actual magnitude range
-  // maps to t 0..1 (brightest = 1), the same principle as the projection
-  // normalization. The faintest stars still land on the size/alpha floor, so
-  // the sky reads dense instead of being dominated by sub-pixel dots.
-  let magMin = Number.POSITIVE_INFINITY
-  let magMax = Number.NEGATIVE_INFINITY
-  for (const record of records) {
-    if (record.mag < magMin) magMin = record.mag
-    if (record.mag > magMax) magMax = record.mag
-  }
-  const magSpan = Math.max(magMax - magMin, Number.EPSILON)
-
-  // Stereographic (conformal) projection onto the tangent plane at the window
-  // center, then each axis normalized to [0, 1] against the fixed window D
-  // region bbox and y inverted so 0 = top.
-  const ra0 = PROJECTION.raHours * 15 * DEG_TO_RAD
-  const dec0 = PROJECTION.decDegrees * DEG_TO_RAD
-  const sinDec0 = Math.sin(dec0)
-  const cosDec0 = Math.cos(dec0)
+  // Stable source-catalog calibration: filtering must not rescale retained stars.
+  const magSpan = STAR_MAGNITUDE_RANGE.max - STAR_MAGNITUDE_RANGE.min
   const projectedX = new Float64Array(count)
   const projectedY = new Float64Array(count)
-
   for (let index = 0; index < count; index += 1) {
-    const record = records[index]
-    const ra = record.ra * 15 * DEG_TO_RAD
-    const dec = record.dec * DEG_TO_RAD
-    const sinDec = Math.sin(dec)
-    const cosDec = Math.cos(dec)
-    const deltaRa = ra - ra0
-    const cosC = sinDec0 * sinDec + cosDec0 * cosDec * Math.cos(deltaRa)
-    // k = 2 / (1 + cos c) is the stereographic scale factor; the tangent point
-    // itself (cosC == 1) projects to (0, 0), well inside the fixed region bbox.
-    const scale = 2 / (1 + cosC)
-    projectedX[index] = scale * cosDec * Math.sin(deltaRa)
-    projectedY[index] = scale * (cosDec0 * sinDec - sinDec0 * cosDec * Math.cos(deltaRa))
-  }
-
-  // Mirror the projected x-axis so east appears on the left of the viewport.
-  for (let index = 0; index < count; index += 1) {
-    projectedX[index] = -projectedX[index]
+    const [x, y] = projectStar(records[index])
+    projectedX[index] = x
+    projectedY[index] = y
   }
 
   const normalizedX = new Float32Array(count)
@@ -157,7 +116,7 @@ export function mapStarCatalog(records: readonly StarCatalogRecord[]): MappedSta
 
     // Data-relative magnitude -> size (CSS px, final): brightness t 0..1 raised
     // to the rarity exponent, scaled between the visible floor and ceiling.
-    const brightness = clamp((magMax - record.mag) / magSpan, 0, 1)
+    const brightness = clamp((STAR_MAGNITUDE_RANGE.max - record.mag) / magSpan, 0, 1)
     const sizePx = SIZE.min + Math.pow(brightness, SIZE.exponent) * (SIZE.max - SIZE.min)
 
     // Magnitude -> alpha along the same normalized scale.
