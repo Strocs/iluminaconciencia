@@ -1,4 +1,4 @@
-import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from 'react'
+import type { ComponentPropsWithRef, ReactNode } from 'react'
 import { tv, type VariantProps } from 'tailwind-variants'
 import { cn } from '@/_utils/cn'
 import { ArrowIcon } from './icons/Arrow'
@@ -10,27 +10,28 @@ type CommonProps = LinkButtonVariantProps & {
   className?: string
 }
 type LinkProps = CommonProps &
-  Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'aria-disabled' | 'className' | 'href'> & {
+  Omit<ComponentPropsWithRef<'a'>, 'aria-disabled' | 'className' | 'href'> & {
     as?: 'link'
     href: string
   }
 type ButtonProps = CommonProps &
-  Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'className' | 'disabled' | 'type'> & {
+  Omit<ComponentPropsWithRef<'button'>, 'className' | 'disabled' | 'type'> & {
     as: 'btn'
     type?: 'button' | 'submit' | 'reset'
   }
 type Props = LinkProps | ButtonProps
 
 const linkButtonVariants = tv({
-  base: 'group inline-flex items-center justify-center rounded border font-body transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background motion-reduce:transition-none',
+  base: 'group/link-button inline-flex items-center justify-center rounded border font-body transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background motion-reduce:transition-none',
   variants: {
     size: {
-      sm: 'px-4 py-1 text-sm',
-      md: 'gap-2.5 px-5 py-2'
+      sm: 'gap-1.5 px-4 py-1 text-sm',
+      md: 'gap-2 px-5 py-2'
     },
     variant: {
       default: 'border-border bg-transparent text-primary',
-      important: 'border-primary bg-primary text-background'
+      important: 'border-primary bg-primary text-background',
+      neutral: 'border-foreground bg-transparent text-foreground'
     },
     disabled: {
       true: 'cursor-not-allowed opacity-50',
@@ -56,14 +57,6 @@ const linkButtonVariants = tv({
     disabled: false
   }
 })
-
-function arrowClass(disabled: boolean) {
-  return cn(
-    'size-4 shrink-0',
-    !disabled &&
-      'transition-transform duration-200 ease-out group-hover:-rotate-45 motion-reduce:transform-none motion-reduce:transition-none'
-  )
-}
 
 export function LinkButton(props: Props) {
   const { as = 'link', children, className, disabled = false, size, variant, ...rest } = props
@@ -94,7 +87,13 @@ export function LinkButton(props: Props) {
       className={classNames}
     >
       <span>{children}</span>
-      <ArrowIcon className={arrowClass(disabled)} />
+      <ArrowIcon
+        size={size === 'sm' ? 16 : 20}
+        className={cn(
+          !disabled &&
+            'transition-transform duration-200 ease-out group-hover/link-button:-rotate-45 motion-reduce:transform-none motion-reduce:transition-none'
+        )}
+      />
     </a>
   )
 }

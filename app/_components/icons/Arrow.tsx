@@ -1,10 +1,13 @@
-interface ArrowIconProps extends React.SVGProps<SVGSVGElement> {
-  size?: number | string
+import { cn } from '@/_utils/cn'
+
+interface ArrowIconProps extends Omit<React.SVGProps<SVGSVGElement>, 'viewBox' | 'width' | 'height'> {
+  size?: number
 }
-export function ArrowIcon({ size = 24, ...props }: ArrowIconProps) {
+export function ArrowIcon({ size = 24, className, ...props }: ArrowIconProps) {
   return (
     <svg
-      viewBox={`0 0 ${size} ${size}`}
+      {...props}
+      viewBox="0 0 24 24"
       width={size}
       height={size}
       fill="none"
@@ -13,9 +16,8 @@ export function ArrowIcon({ size = 24, ...props }: ArrowIconProps) {
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"
-      {...props}
+      className={cn('shrink-0', className)}
     >
-      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
       <path d="M5 12l14 0" />
       <path d="M13 18l6 -6" />
       <path d="M13 6l6 6" />
