@@ -3,8 +3,11 @@ import Link from 'next/link'
 import logo from '@/_assets/images/logo.png'
 import { BrandStarIcon } from '@/_components/BrandStarIcon'
 import { LinkButton } from '@/_components/LinkButton'
+import { HeaderBoundary } from './HeaderBoundary'
 import { HeaderRuntime } from './components/HeaderRuntime'
 import { navigationItems } from './data/navigation'
+
+export { HeaderBoundary }
 
 export function Header() {
   return (

@@ -1,6 +1,7 @@
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from 'react'
 import { tv, type VariantProps } from 'tailwind-variants'
 import { cn } from '@/_utils/cn'
+import { ArrowIcon } from './icons/Arrow'
 
 type LinkButtonVariantProps = VariantProps<typeof linkButtonVariants>
 
@@ -21,7 +22,7 @@ type ButtonProps = CommonProps &
 type Props = LinkProps | ButtonProps
 
 const linkButtonVariants = tv({
-  base: 'group inline-flex items-center justify-center rounded-full border font-body font-medium transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background motion-reduce:transition-none',
+  base: 'group inline-flex items-center justify-center rounded border font-body transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background motion-reduce:transition-none',
   variants: {
     size: {
       sm: 'px-4 py-1 text-sm',
@@ -93,19 +94,7 @@ export function LinkButton(props: Props) {
       className={classNames}
     >
       <span>{children}</span>
-      <svg
-        className={arrowClass(disabled)}
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        aria-hidden="true"
-      >
-        <path d="M5 12h14" />
-        <path d="m14 7 5 5-5 5" />
-      </svg>
+      <ArrowIcon className={arrowClass(disabled)} />
     </a>
   )
 }

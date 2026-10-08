@@ -1,0 +1,18 @@
+# Mobile-first responsive normalization
+
+## Authorization and constraints
+User authorized all nextjs16 authored responsive styling: mobile base styles and upward width breakpoints. Preserve current visuals, thresholds, animations, interactions, concurrent human edits, architecture and dependencies. Original Astro is read-only. No new tests, staging or commits authorized. JavaScript breakpoint behavior is not part of this styling change. Height/aspect-ratio queries are separate conditions: preserve semantics rather than mechanically invert them.
+
+## Tasks
+- [x] MF01: Captured baseline and normalized shared heading/news/simple Bortle styles. Browser geometry parity passed all requested widths/short heights; separator parity verified. Initial formatting failure and 17 class-order warnings corrected; independent strict ESLint, Prettier, TypeScript and diff checks now pass. No commit authorized.
+- [x] MF02: Normalized Map panel/drawer and control visibility. User-authorized drawer opening focus uses `preventScroll: true`; source comparison did not establish a normalization-caused defect. Independent fresh-load physical/keyboard checks passed at 390/639/767/768/1024px: Close visible/focused, horizontal scroll zero, Escape/Close restore marker focus. Mobile/desktop filtering 37→23→37, control restoration, breakpoint closure and reduced motion passed. Authorized static MapCanvas import passed production build/static page generation and browser loading with no observed hydration errors. Strict Map ESLint, Prettier, TypeScript and diff checks passed. Full baseline parity and native approval are not claimed. No commit authorized.
+- [ ] MF03 (in progress): Four Hero files normalized; integer breakpoint Hero/Bortle geometry checks, formatting, TypeScript and production build passed. Strict lint failed on equivalent `sm:pt-32`/`sm:pb-32` shorthand; correction delegated. News card measurement mismatch and resize horizontal overflow remain unattributed: read-only selector/fresh-load causal diagnosis underway, no speculative visual fix. Fractional 639–640px behavior remains a disclosed difference, not verified parity. Native assessment remains blocked by intended-untracked scope.
+
+## Acceptance
+No downward width variants in authored layout styling unless a concrete unavoidable exception is documented. Equivalent behavior at 639/640, 767/768, 1023/1024 and 1279/1280px; preserve compound height/aspect conditions. Browser baseline comparison, overlay open/close/control restoration and reduced-motion checks. Full strict ESLint, types, Prettier, diff check and build. No test script currently exists. Existing servers reused; owned browsers closed.
+
+## Baseline captured before source writes
+Verifier muyu90b8-g-t8p0 reused server PID 7249 and closed owned browser. Captured 639/640/767/768/1023/1024/1279/1280x900 and 390x844, 390x700, 768x600. Bortle height 168px below sm versus 96px above; news first card 133px at639, 125px at640/767, 168px at768+. Existing concerns are not authorized fixes: mobile filter panel capped at192px; reduced-motion panel transition still0.2s; transient zero canvas width at768 needs follow-up. Drawer baseline physical marker click failed due interception. MF01 writer limited to shared SectionHeading, NewsArticleCard and simple Bortle max-sm variants.
+
+## Evidence
+Read-only inventory identified shared SectionHeading, NewsArticleCard, hero Bortle/scenes/root, Map FilterPanel/InstrumentDrawer/MapCanvas. Header already uses upward lg variants. Tailwind docs snapshot unavailable; use official documentation when needed. Native review remains scope-blocked by concurrent changes/intended-untracked declaration; no approval inferred.

@@ -29,21 +29,21 @@ export function SectionHeading({
         <p className="font-body text-xs leading-4 font-light tracking-[2px] text-primary uppercase">{eyebrow}</p>
 
         <div className="flex w-full items-center justify-center gap-4">
-          <span className="h-px min-w-4 flex-1 bg-border max-sm:hidden" aria-hidden="true" />
+          <span className="hidden h-px min-w-4 flex-1 bg-border sm:flex" aria-hidden="true" />
           <Heading
             id={titleId}
             className="max-w-full min-w-0 font-heading text-3xl leading-tight font-bold text-foreground sm:text-[2.5rem] sm:leading-10.5"
           >
             {title}
           </Heading>
-          <span className="h-px min-w-4 flex-1 bg-border max-sm:hidden" aria-hidden="true" />
+          <span className="hidden h-px min-w-4 flex-1 bg-border sm:flex" aria-hidden="true" />
         </div>
       </div>
 
       {subtitle && (
         <div className="mt-4 flex max-w-full items-center justify-center gap-2 px-4">
           <BrandStarIcon className="shrink-0 text-primary" />
-          <p className="font-body text-base leading-section-subtitle font-normal text-foreground">{subtitle}</p>
+          <p className="font-body text-base leading-relaxed font-normal text-foreground">{subtitle}</p>
         </div>
       )}
     </header>

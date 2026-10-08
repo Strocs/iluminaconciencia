@@ -10,9 +10,9 @@ export function BortleScale() {
     <section
       data-hero-bortle-scale
       aria-label="Escala de Bortle"
-      className="z-20 mx-auto grid w-[calc(100%-3rem)] max-w-lg grid-cols-[208px_208px] items-center gap-18 px-0 font-body text-white max-sm:w-full max-sm:grid-cols-1 max-sm:gap-4 max-sm:px-6 max-sm:text-center [@media(max-height:38rem)]:gap-2 [@media(max-height:38rem)_and_(min-width:40rem)]:w-60 [@media(max-height:38rem)_and_(min-width:40rem)]:flex-[0_0_15rem] [@media(max-height:38rem)_and_(min-width:40rem)]:grid-cols-[minmax(0,1fr)] [@media(max-height:38rem)_and_(min-width:40rem)]:gap-2 [@media(max-height:38rem)_and_(min-width:40rem)]:px-0 [@media(max-width:639px)_and_(max-height:38rem)]:gap-y-1"
+      className="z-20 mx-auto grid w-full max-w-lg grid-cols-1 items-center gap-4 px-6 text-center font-body text-white sm:w-[calc(100%-3rem)] sm:grid-cols-[208px_208px] sm:gap-18 sm:px-0 sm:text-start [@media(max-height:38rem)]:gap-2 [@media(max-height:38rem)]:gap-y-1 [@media(max-height:38rem)_and_(min-width:40rem)]:w-60 [@media(max-height:38rem)_and_(min-width:40rem)]:flex-[0_0_15rem] [@media(max-height:38rem)_and_(min-width:40rem)]:grid-cols-[minmax(0,1fr)] [@media(max-height:38rem)_and_(min-width:40rem)]:gap-2 [@media(max-height:38rem)_and_(min-width:40rem)]:gap-y-2 [@media(max-height:38rem)_and_(min-width:40rem)]:px-0"
     >
-      <div className="relative min-h-24 text-right max-sm:min-h-22 max-sm:text-center [@media(max-height:38rem)_and_(min-width:40rem)]:min-h-18 [@media(max-height:38rem)_and_(min-width:40rem)]:text-center [@media(max-width:639px)_and_(max-height:38rem)]:min-h-15">
+      <div className="relative min-h-22 text-center sm:min-h-24 sm:text-right [@media(max-height:38rem)]:min-h-15 [@media(max-height:38rem)_and_(min-width:40rem)]:min-h-18 [@media(max-height:38rem)_and_(min-width:40rem)]:text-center">
         {bortleClasses.map((bortleClass, index) => (
           <div
             key={bortleClass.level}
@@ -31,7 +31,7 @@ export function BortleScale() {
       </div>
 
       <div
-        className="relative h-16 w-52 max-sm:mx-auto [@media(max-height:38rem)_and_(min-width:40rem)]:mx-auto [@media(max-height:38rem)_and_(min-width:40rem)]:h-12 [@media(max-width:639px)_and_(max-height:38rem)]:h-12"
+        className="relative mx-auto h-16 w-52 sm:mx-0 [@media(max-height:38rem)]:h-12 [@media(max-height:38rem)_and_(min-width:40rem)]:mx-auto [@media(max-height:38rem)_and_(min-width:40rem)]:h-12"
         aria-hidden="true"
       >
         <div className="absolute inset-x-0 inset-y-[-30px] overflow-hidden">
@@ -64,7 +64,7 @@ export function BortleScale() {
               >
                 <span
                   data-hero-bortle-dot
-                  className="block size-[18px] scale-(--scale-bortle-dot) rounded-full bg-[#616268] will-change-transform"
+                  className="block size-4.5 scale-60 rounded-full bg-[#616268] will-change-transform"
                 />
                 <span className="mt-2 text-xs leading-none text-[#87888d]">{bortleClass.level}</span>
               </div>

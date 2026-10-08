@@ -1,0 +1,648 @@
+{
+  "dataset": "IluminAConCiencia public development mock snapshot",
+  "description": "Locally captured public homepage station summaries and station dashboard observations. Coordinates come from map markers/centers shown on public dashboards; they are approximate placements, not surveyed sensor positions.",
+  "capturedAt": "2026-10-01T02:19:53.834461+00:00",
+  "homepageSourceUrl": "https://iluminaconciencia.userena.digital/",
+  "homepageServerResponseDate": "Thu, 01 Oct 2026 02:19:54 GMT",
+  "homepageTablePeriod": "Aug 2026",
+  "stationRouteCount": 37,
+  "capturedStationCount": 37,
+  "failedOrMismatchedRoutes": [],
+  "notes": [
+    "Dashboard values are a point-in-time public rendering and may be stale or absent for inactive nodes.",
+    "Empty table/chart values are preserved as null or empty arrays, not treated as zero.",
+    "Coordinate values are taken from public page map markers when possible; the displayed map location can be approximate and is not claimed to be the exact sensor placement.",
+    "Original display values are retained in rawValues alongside normalized numeric values."
+  ],
+  "stations": [
+    {
+      "id": "stars1344",
+      "name": "Sherpa Expediciones",
+      "sourceUrl": "https://iluminaconciencia.userena.digital/dashboard/tessw/stars1344/",
+      "homepageSummary": {
+        "instrumentCode": "W",
+        "bortleLevel": 6,
+        "meanMagnitude": 18.95,
+        "dataCount": 9000,
+        "dataPercent": 100,
+        "period": "Aug 2026"
+      },
+      "location": {
+        "latitude": -31.633073,
+        "longitude": -71.165429
+      }
+    },
+    {
+      "id": "stars1006",
+      "name": "Escuela Clemencia Villarroel",
+      "sourceUrl": "https://iluminaconciencia.userena.digital/dashboard/tessw/stars1006/",
+      "homepageSummary": {
+        "instrumentCode": "W",
+        "bortleLevel": 4,
+        "meanMagnitude": 20.96,
+        "dataCount": 9000,
+        "dataPercent": 100,
+        "period": "Aug 2026"
+      },
+      "location": {
+        "latitude": -31.590408,
+        "longitude": -71.066628
+      }
+    },
+    {
+      "id": "stars1005",
+      "name": "Astrocamping Viento Sur",
+      "sourceUrl": "https://iluminaconciencia.userena.digital/dashboard/tessw/stars1005/",
+      "homepageSummary": {
+        "instrumentCode": "W",
+        "bortleLevel": 2,
+        "meanMagnitude": 21.65,
+        "dataCount": 9000,
+        "dataPercent": 100,
+        "period": "Aug 2026"
+      },
+      "location": {
+        "latitude": -30.569483,
+        "longitude": -71.641165
+      }
+    },
+    {
+      "id": "stars1007",
+      "name": "Colegio Seminario Conciliar",
+      "sourceUrl": "https://iluminaconciencia.userena.digital/dashboard/tessw/stars1007/",
+      "homepageSummary": {
+        "instrumentCode": "W",
+        "bortleLevel": 8,
+        "meanMagnitude": 16.95,
+        "dataCount": 8990,
+        "dataPercent": 99.89,
+        "period": "Aug 2026"
+      },
+      "location": {
+        "latitude": -29.905293,
+        "longitude": -71.242337
+      }
+    },
+    {
+      "id": "stars1143",
+      "name": "Escuela Cardenal José María Caro",
+      "sourceUrl": "https://iluminaconciencia.userena.digital/dashboard/tessw/stars1143/",
+      "homepageSummary": {
+        "instrumentCode": "W",
+        "bortleLevel": 8,
+        "meanMagnitude": 16.8,
+        "dataCount": 8990,
+        "dataPercent": 99.89,
+        "period": "Aug 2026"
+      },
+      "location": {
+        "latitude": -29.967303,
+        "longitude": -71.339108
+      }
+    },
+    {
+      "id": "stars1341",
+      "name": "Organización Astroturismo",
+      "sourceUrl": "https://iluminaconciencia.userena.digital/dashboard/tessw/stars1341/",
+      "homepageSummary": {
+        "instrumentCode": "W",
+        "bortleLevel": 4,
+        "meanMagnitude": 20.81,
+        "dataCount": 8960,
+        "dataPercent": 99.56,
+        "period": "Aug 2026"
+      },
+      "location": {
+        "latitude": -31.60066,
+        "longitude": -71.055395
+      }
+    },
+    {
+      "id": "stars1139",
+      "name": "Escuela Los Maitenes",
+      "sourceUrl": "https://iluminaconciencia.userena.digital/dashboard/tessw/stars1139/",
+      "homepageSummary": {
+        "instrumentCode": "W",
+        "bortleLevel": 2,
+        "meanMagnitude": 21.7,
+        "dataCount": 8790,
+        "dataPercent": 97.67,
+        "period": "Aug 2026"
+      },
+      "location": {
+        "latitude": -30.357937,
+        "longitude": -70.699842
+      }
+    },
+    {
+      "id": "stars1342",
+      "name": "Estación Retorno",
+      "sourceUrl": "https://iluminaconciencia.userena.digital/dashboard/tessw/stars1342/",
+      "homepageSummary": {
+        "instrumentCode": "W",
+        "bortleLevel": 3,
+        "meanMagnitude": 21.56,
+        "dataCount": 8780,
+        "dataPercent": 97.56,
+        "period": "Aug 2026"
+      },
+      "location": {
+        "latitude": -32.083518,
+        "longitude": -71.163766
+      }
+    },
+    {
+      "id": "stars1140",
+      "name": "Astronomía Canela",
+      "sourceUrl": "https://iluminaconciencia.userena.digital/dashboard/tessw/stars1140/",
+      "homepageSummary": {
+        "instrumentCode": "W",
+        "bortleLevel": 6,
+        "meanMagnitude": 19.06,
+        "dataCount": 8700,
+        "dataPercent": 96.67,
+        "period": "Aug 2026"
+      },
+      "location": {
+        "latitude": -31.385908,
+        "longitude": -71.381058
+      }
+    },
+    {
+      "id": "stars1002",
+      "name": "Escuela José Miguel Carrera",
+      "sourceUrl": "https://iluminaconciencia.userena.digital/dashboard/tessw/stars1002/",
+      "homepageSummary": {
+        "instrumentCode": "W",
+        "bortleLevel": 8,
+        "meanMagnitude": 17.09,
+        "dataCount": 8420,
+        "dataPercent": 93.56,
+        "period": "Aug 2026"
+      },
+      "location": {
+        "latitude": -28.469842,
+        "longitude": -71.218991
+      }
+    },
+    {
+      "id": "stars1152",
+      "name": "Observatorio Cruz del Sur",
+      "sourceUrl": "https://iluminaconciencia.userena.digital/dashboard/tessw/stars1152/",
+      "homepageSummary": {
+        "instrumentCode": "W",
+        "bortleLevel": 4,
+        "meanMagnitude": 20.84,
+        "dataCount": 8090,
+        "dataPercent": 89.89,
+        "period": "Aug 2026"
+      },
+      "location": {
+        "latitude": -31.20118,
+        "longitude": -71.000633
+      }
+    },
+    {
+      "id": "stars1004",
+      "name": "Escuela Violeta Parra",
+      "sourceUrl": "https://iluminaconciencia.userena.digital/dashboard/tessw/stars1004/",
+      "homepageSummary": {
+        "instrumentCode": "W",
+        "bortleLevel": 1,
+        "meanMagnitude": 21.77,
+        "dataCount": 8060,
+        "dataPercent": 89.56,
+        "period": "Aug 2026"
+      },
+      "location": {
+        "latitude": -31.233601,
+        "longitude": -71.232111
+      }
+    },
+    {
+      "id": "stars1008",
+      "name": "Estancia Yerba Buena",
+      "sourceUrl": "https://iluminaconciencia.userena.digital/dashboard/tessw/stars1008/",
+      "homepageSummary": {
+        "instrumentCode": "W",
+        "bortleLevel": 2,
+        "meanMagnitude": 21.63,
+        "dataCount": 7800,
+        "dataPercent": 86.67,
+        "period": "Aug 2026"
+      },
+      "location": {
+        "latitude": -29.573511,
+        "longitude": -71.300164
+      }
+    },
+    {
+      "id": "stars1135",
+      "name": "Humedal Río Maipo",
+      "sourceUrl": "https://iluminaconciencia.userena.digital/dashboard/tessw/stars1135/",
+      "homepageSummary": {
+        "instrumentCode": "W",
+        "bortleLevel": 6,
+        "meanMagnitude": 19.09,
+        "dataCount": 7780,
+        "dataPercent": 86.44,
+        "period": "Aug 2026"
+      },
+      "location": {
+        "latitude": -33.624001,
+        "longitude": -71.626995
+      }
+    },
+    {
+      "id": "stars1339",
+      "name": "Cañas de Michio",
+      "sourceUrl": "https://iluminaconciencia.userena.digital/dashboard/tessw/stars1339/",
+      "homepageSummary": {
+        "instrumentCode": "W",
+        "bortleLevel": 4,
+        "meanMagnitude": 21.18,
+        "dataCount": 7760,
+        "dataPercent": 86.22,
+        "period": "Aug 2026"
+      },
+      "location": {
+        "latitude": -31.639744,
+        "longitude": -71.114081
+      }
+    },
+    {
+      "id": "stars1009",
+      "name": "Colegio Pedro Pablo Muñoz",
+      "sourceUrl": "https://iluminaconciencia.userena.digital/dashboard/tessw/stars1009/",
+      "homepageSummary": {
+        "instrumentCode": "W",
+        "bortleLevel": 5,
+        "meanMagnitude": 20.27,
+        "dataCount": 7550,
+        "dataPercent": 83.89,
+        "period": "Aug 2026"
+      },
+      "location": {
+        "latitude": -29.510798,
+        "longitude": -71.203133
+      }
+    },
+    {
+      "id": "stars1141",
+      "name": "Observatorio Polvo de Estrellas",
+      "sourceUrl": "https://iluminaconciencia.userena.digital/dashboard/tessw/stars1141/",
+      "homepageSummary": {
+        "instrumentCode": "W",
+        "bortleLevel": 6,
+        "meanMagnitude": 18.75,
+        "dataCount": 4180,
+        "dataPercent": 46.44,
+        "period": "Aug 2026"
+      },
+      "location": {
+        "latitude": -30.027004,
+        "longitude": -70.724348
+      }
+    },
+    {
+      "id": "stars1138",
+      "name": "Universidad de Concepción",
+      "sourceUrl": "https://iluminaconciencia.userena.digital/dashboard/tessw/stars1138/",
+      "homepageSummary": {
+        "instrumentCode": "W",
+        "bortleLevel": 7,
+        "meanMagnitude": 18.38,
+        "dataCount": 3330,
+        "dataPercent": 37,
+        "period": "Aug 2026"
+      },
+      "location": {
+        "latitude": -36.832675,
+        "longitude": -73.033357
+      }
+    },
+    {
+      "id": "stars1343",
+      "name": "Hotel del Valle Quilimarí",
+      "sourceUrl": "https://iluminaconciencia.userena.digital/dashboard/tessw/stars1343/",
+      "homepageSummary": {
+        "instrumentCode": "W",
+        "bortleLevel": 5,
+        "meanMagnitude": 19.84,
+        "dataCount": 1280,
+        "dataPercent": 14.22,
+        "period": "Aug 2026"
+      },
+      "location": {
+        "latitude": -32.113876,
+        "longitude": -71.504797
+      }
+    },
+    {
+      "id": "stars1146",
+      "name": "Liceo Bicentenario Mercedes Fritis Mackenney",
+      "sourceUrl": "https://iluminaconciencia.userena.digital/dashboard/tessw/stars1146/",
+      "homepageSummary": {
+        "instrumentCode": "W",
+        "bortleLevel": 8,
+        "meanMagnitude": 12.75,
+        "dataCount": 1190,
+        "dataPercent": 13.22,
+        "period": "Aug 2026"
+      },
+      "location": {
+        "latitude": -27.369967,
+        "longitude": -70.32535
+      }
+    },
+    {
+      "id": "stars1137",
+      "name": "Escuela San Lorenzo",
+      "sourceUrl": "https://iluminaconciencia.userena.digital/dashboard/tessw/stars1137/",
+      "homepageSummary": {
+        "instrumentCode": "W",
+        "bortleLevel": 8,
+        "meanMagnitude": 0,
+        "dataCount": 120,
+        "dataPercent": 1.33,
+        "period": "Aug 2026"
+      },
+      "location": {
+        "latitude": -30.246181,
+        "longitude": -71.081201
+      }
+    },
+    {
+      "id": "stars1145",
+      "name": "Observatorio Nómade Tess-W",
+      "sourceUrl": "https://iluminaconciencia.userena.digital/dashboard/tessw/stars1145/",
+      "homepageSummary": {
+        "instrumentCode": "W",
+        "bortleLevel": 4,
+        "meanMagnitude": 21.15,
+        "dataCount": 10,
+        "dataPercent": 0.11,
+        "period": "Aug 2026"
+      },
+      "location": {
+        "latitude": -30.216455,
+        "longitude": -70.496292
+      }
+    },
+    {
+      "id": "stars1345",
+      "name": "Pircas de Arboleda",
+      "sourceUrl": "https://iluminaconciencia.userena.digital/dashboard/tessw/stars1345/",
+      "homepageSummary": {
+        "instrumentCode": "W",
+        "bortleLevel": 8,
+        "meanMagnitude": 7.71,
+        "dataCount": 10,
+        "dataPercent": 0.11,
+        "period": "Aug 2026"
+      },
+      "location": {
+        "latitude": -31.737447,
+        "longitude": -70.959565
+      }
+    },
+    {
+      "id": "stars1150",
+      "name": "Parque Fray Jorge",
+      "sourceUrl": "https://iluminaconciencia.userena.digital/dashboard/tessw/stars1150/",
+      "homepageSummary": {
+        "instrumentCode": "W",
+        "bortleLevel": 8,
+        "meanMagnitude": 0,
+        "dataCount": 10,
+        "dataPercent": 0.11,
+        "period": "Aug 2026"
+      },
+      "location": {
+        "latitude": -30.658225,
+        "longitude": -71.664438
+      }
+    },
+    {
+      "id": "stars1144",
+      "name": "Observatorio Solaris",
+      "sourceUrl": "https://iluminaconciencia.userena.digital/dashboard/tessw/stars1144/",
+      "homepageSummary": {
+        "instrumentCode": "W",
+        "bortleLevel": 8,
+        "meanMagnitude": 0,
+        "dataCount": 10,
+        "dataPercent": 0.11,
+        "period": "Aug 2026"
+      },
+      "location": {
+        "latitude": -29.985083,
+        "longitude": -70.546736
+      }
+    },
+    {
+      "id": "stars1142",
+      "name": "Observatorio Valle del Sol",
+      "sourceUrl": "https://iluminaconciencia.userena.digital/dashboard/tessw/stars1142/",
+      "homepageSummary": {
+        "instrumentCode": "W",
+        "bortleLevel": 8,
+        "meanMagnitude": 0,
+        "dataCount": 10,
+        "dataPercent": 0.11,
+        "period": "Aug 2026"
+      },
+      "location": {
+        "latitude": -30.851124,
+        "longitude": -70.771375
+      }
+    },
+    {
+      "id": "stars1136",
+      "name": "Colegio Pichasca",
+      "sourceUrl": "https://iluminaconciencia.userena.digital/dashboard/tessw/stars1136/",
+      "homepageSummary": {
+        "instrumentCode": "W",
+        "bortleLevel": 8,
+        "meanMagnitude": 8.93,
+        "dataCount": 10,
+        "dataPercent": 0.11,
+        "period": "Aug 2026"
+      },
+      "location": {
+        "latitude": -30.394167,
+        "longitude": -70.871024
+      }
+    },
+    {
+      "id": "stars1003",
+      "name": "Colegio Ambrosio O'Higgins",
+      "sourceUrl": "https://iluminaconciencia.userena.digital/dashboard/tessw/stars1003/",
+      "homepageSummary": {
+        "instrumentCode": "W",
+        "bortleLevel": 8,
+        "meanMagnitude": 0,
+        "dataCount": 10,
+        "dataPercent": 0.11,
+        "period": "Aug 2026"
+      },
+      "location": {
+        "latitude": -28.586288,
+        "longitude": -70.749378
+      }
+    },
+    {
+      "id": "stars1494",
+      "name": "Universidad de Atacama - Centro de Investigaciones Costeras",
+      "sourceUrl": "https://iluminaconciencia.userena.digital/dashboard/tess4c/stars1494/",
+      "homepageSummary": {
+        "instrumentCode": "4C",
+        "bortleLevel": 5,
+        "meanMagnitude": 20.2,
+        "dataCount": 9000,
+        "dataPercent": 100,
+        "period": "Aug 2026"
+      },
+      "location": {
+        "latitude": -27.13719,
+        "longitude": -70.906171
+      }
+    },
+    {
+      "id": "stars1496",
+      "name": "Universidad de Atacama - Astronomía",
+      "sourceUrl": "https://iluminaconciencia.userena.digital/dashboard/tess4c/stars1496/",
+      "homepageSummary": {
+        "instrumentCode": "4C",
+        "bortleLevel": 7,
+        "meanMagnitude": 18.1,
+        "dataCount": 9000,
+        "dataPercent": 100,
+        "period": "Aug 2026"
+      },
+      "location": {
+        "latitude": -27.356622,
+        "longitude": -70.353476
+      }
+    },
+    {
+      "id": "stars1485",
+      "name": "Universidad de La Serena",
+      "sourceUrl": "https://iluminaconciencia.userena.digital/dashboard/tess4c/stars1485/",
+      "homepageSummary": {
+        "instrumentCode": "4C",
+        "bortleLevel": 8,
+        "meanMagnitude": 16.92,
+        "dataCount": 8470,
+        "dataPercent": 94.11,
+        "period": "Aug 2026"
+      },
+      "location": {
+        "latitude": -29.915774,
+        "longitude": -71.241866
+      }
+    },
+    {
+      "id": "stars1489",
+      "name": "Observatorio Mamalluca Tess-4C",
+      "sourceUrl": "https://iluminaconciencia.userena.digital/dashboard/tess4c/stars1489/",
+      "homepageSummary": {
+        "instrumentCode": "4C",
+        "bortleLevel": 4,
+        "meanMagnitude": 21.24,
+        "dataCount": 6450,
+        "dataPercent": 71.67,
+        "period": "Aug 2026"
+      },
+      "location": {
+        "latitude": -29.990158,
+        "longitude": -70.685307
+      }
+    },
+    {
+      "id": "stars1493",
+      "name": "Laguna Santa Rosa",
+      "sourceUrl": "https://iluminaconciencia.userena.digital/dashboard/tess4c/stars1493/",
+      "homepageSummary": {
+        "instrumentCode": "4C",
+        "bortleLevel": 1,
+        "meanMagnitude": 21.88,
+        "dataCount": 6300,
+        "dataPercent": 70,
+        "period": "Aug 2026"
+      },
+      "location": {
+        "latitude": -27.080324,
+        "longitude": -69.175829
+      }
+    },
+    {
+      "id": "stars1487",
+      "name": "Observatorio Chakana",
+      "sourceUrl": "https://iluminaconciencia.userena.digital/dashboard/tess4c/stars1487/",
+      "homepageSummary": {
+        "instrumentCode": "4C",
+        "bortleLevel": 3,
+        "meanMagnitude": 21.32,
+        "dataCount": 630,
+        "dataPercent": 7,
+        "period": "Aug 2026"
+      },
+      "location": {
+        "latitude": -30.126105,
+        "longitude": -70.503157
+      }
+    },
+    {
+      "id": "stars1488",
+      "name": "Estero Derecho",
+      "sourceUrl": "https://iluminaconciencia.userena.digital/dashboard/tess4c/stars1488/",
+      "homepageSummary": {
+        "instrumentCode": "4C",
+        "bortleLevel": 4,
+        "meanMagnitude": 20.62,
+        "dataCount": 10,
+        "dataPercent": 0.11,
+        "period": "Aug 2026"
+      },
+      "location": {
+        "latitude": -30.384081,
+        "longitude": -70.412849
+      }
+    },
+    {
+      "id": "stars1490",
+      "name": "Observatorio Nómade Tess-4C",
+      "sourceUrl": "https://iluminaconciencia.userena.digital/dashboard/tess4c/stars1490/",
+      "homepageSummary": {
+        "instrumentCode": "4C",
+        "bortleLevel": 8,
+        "meanMagnitude": 10.9,
+        "dataCount": 10,
+        "dataPercent": 0.11,
+        "period": "Aug 2026"
+      },
+      "location": {
+        "latitude": -30.216455,
+        "longitude": -70.496292
+      }
+    },
+    {
+      "id": "stars1495",
+      "name": "Observatorio Desierto Cósmico",
+      "sourceUrl": "https://iluminaconciencia.userena.digital/dashboard/tess4c/stars1495/",
+      "homepageSummary": {
+        "instrumentCode": "4C",
+        "bortleLevel": 8,
+        "meanMagnitude": 7.51,
+        "dataCount": 10,
+        "dataPercent": 0.11,
+        "period": "Aug 2026"
+      },
+      "location": {
+        "latitude": -27.565572,
+        "longitude": -70.011712
+      }
+    }
+  ]
+}

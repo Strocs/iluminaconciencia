@@ -30,11 +30,11 @@ export const newsItems: NewsItem[] = [
   {
     date: '25 AGO 2025',
     description:
-      'Científicos chilenos desarrollan un software que permitirá evaluar los niveles de luz artificial, con el objetivo de contrarrestar...',
+      'Científicos chilenos desarrollan un software que permitirá evaluar los niveles de luz artificial, con el objetivo de contrarrestar. Científicos chilenos desarrollan un software que permitirá evaluar los niveles de luz artificial, con el objetivo de contrarrestar Científicos chilenos desarrollan un software que permitirá evaluar los niveles de luz artificial, con el objetivo de contrarrestar  Científicos chilenos desarrollan un software que permitirá evaluar los niveles de luz artificial, con el objetivo de contrarrestar',
     href: 'https://iluminaconciencia.userena.digital/news_item/30/',
     image: '/images/news/contaminacion-luminica.jpg',
     imageAlt: 'Vista nocturna de una ciudad de la Región de Coquimbo iluminada',
-    title: 'Contaminación lumínica amenaza a los cielos chilenos: Esta es la...'
+    title: 'Contaminación lumínica amenaza a los cielos chilenos: Chile Circular de NTV: Región de Coquimbo'
   },
   {
     date: '24 JUL 2025',
@@ -60,7 +60,8 @@ export const articleItems: ArticleItem[] = [
   {
     category: 'Investigación',
     date: 'ENERO 2024',
-    description: 'Publicación científica - Revista de Astronomía',
+    description:
+      'Publicación científica - Revista de Astronomía. Publicación científica - Revista de Astronomía.Publicación científica - Revista de AstronomíaPublicación científica - Revista de AstronomíaPublicación científica - Revista de AstronomíaPublicación científica - Revista de AstronomíaPublicación científica - Revista de Astronomía',
     href: 'https://iopscience.iop.org/article/10.3847/1538-3881/ad165c',
     title:
       'Toward a Spectrophotometric Characterization of the Chilean Night Sky. A First Quantitative Assessment of ALAN across the Coquimbo Region'

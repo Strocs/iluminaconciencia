@@ -19,10 +19,6 @@
   --color-bortle-8: #f2edf5;
   --color-bortle-9: #f2edf5;
 
-  --scale-bortle-dot: 0.56;
-  --leading-section-subtitle: 1.618;
-  --stroke-width-icon: 1.75;
-
   --font-heading: var(--font-baskerville);
   --font-body: var(--font-ubuntu);
   --font-serif: var(--font-baskerville), Georgia, Cambria, 'Times New Roman', Times, serif;

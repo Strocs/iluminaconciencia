@@ -7,6 +7,7 @@ type Props = Omit<SVGProps<SVGSVGElement>, 'aria-hidden' | 'aria-label' | 'class
 }
 
 export function BrandStarIcon({ className, label, ...props }: Props) {
+  //TODO: El SVG Debe representar este caracter de manera más fiel: ✦
   return (
     <svg
       {...props}
