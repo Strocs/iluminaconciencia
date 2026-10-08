@@ -20,7 +20,7 @@ export function NewsArticleCard({ href, image, date, title, category, descriptio
   return (
     <article
       className={cn(
-        'group relative min-h-0 items-start border-b border-border/40 py-5 sm:min-h-auto sm:items-stretch sm:py-4 md:h-42 md:max-h-42'
+        'group relative min-h-0 items-start border-b border-border/40 py-5 sm:h-42 sm:min-h-auto sm:items-stretch sm:py-4'
       )}
     >
       <Link
@@ -28,10 +28,10 @@ export function NewsArticleCard({ href, image, date, title, category, descriptio
         target="_blank"
         rel="noreferrer"
         aria-label={`Leer ${title}`}
-        className="relative flex h-fit gap-4 md:h-full md:min-h-0"
+        className="relative flex h-fit flex-col gap-4 sm:h-full sm:flex-row md:min-h-0"
       >
         {image.src && (
-          <div className="aspect-square h-full shrink-0 overflow-hidden rounded border border-border md:h-full">
+          <div className="aspect-video h-full shrink-0 overflow-hidden rounded border border-border sm:aspect-square sm:h-full">
             <Image
               className="size-full object-cover transition-transform duration-200 group-hover:scale-110 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
               src={image.src}
@@ -61,7 +61,7 @@ export function NewsArticleCard({ href, image, date, title, category, descriptio
         </div>
         <ArrowIcon
           size={24}
-          className="my-auto text-primary transition-transform duration-200 group-hover:-rotate-45 motion-reduce:transition-none motion-reduce:group-hover:rotate-0"
+          className="my-auto hidden text-primary transition-transform duration-200 group-hover:-rotate-45 motion-reduce:transition-none motion-reduce:group-hover:rotate-0 sm:block"
         />
       </Link>
     </article>
