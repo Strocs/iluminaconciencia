@@ -1,7 +1,7 @@
 import 'server-only'
 
 import mockInstruments from './instruments.mock.json'
-import type { MapInstrument } from './types'
+import type { MapMark } from './types'
 
 interface InstrumentRecord {
   id: string
@@ -40,11 +40,11 @@ interface SnapshotDocument {
   stations: SnapshotStation[]
 }
 
-function projectInstrument(instrument: InstrumentRecord): MapInstrument {
+function projectMark(instrument: InstrumentRecord): MapMark {
   return {
     id: instrument.id,
     name: instrument.name,
-    type: instrument.type,
+    instrumentType: instrument.type,
     position: instrument.position,
     bortleLevel: instrument.bortleLevel,
     mag: instrument.mag,
@@ -56,7 +56,7 @@ function projectInstrument(instrument: InstrumentRecord): MapInstrument {
   }
 }
 
-function mapSnapshotStations(stations: SnapshotStation[]): MapInstrument[] {
+function mapSnapshotStations(stations: SnapshotStation[]): MapMark[] {
   return stations.map((station) => {
     const instrumentCode = station.homepageSummary.instrumentCode
     const type = instrumentCode === 'W' ? 'TESS-W' : instrumentCode === '4C' ? 'TESS-4C' : null
@@ -66,7 +66,7 @@ function mapSnapshotStations(stations: SnapshotStation[]): MapInstrument[] {
     return {
       id: station.id,
       name: station.name,
-      type,
+      instrumentType: type,
       position: { lat: station.location.latitude, lng: station.location.longitude },
       bortleLevel: station.homepageSummary.bortleLevel,
       mag: station.homepageSummary.meanMagnitude,
@@ -79,11 +79,11 @@ function mapSnapshotStations(stations: SnapshotStation[]): MapInstrument[] {
   })
 }
 
-export async function loadMapInstruments(): Promise<MapInstrument[]> {
+export async function loadMapMarks(): Promise<MapMark[]> {
   if (process.env.NODE_ENV === 'development') {
     const { default: snapshot } = await import('./instruments.snapshot.json')
     return mapSnapshotStations((snapshot as SnapshotDocument).stations)
   }
 
-  return (mockInstruments as InstrumentRecord[]).map(projectInstrument)
+  return (mockInstruments as InstrumentRecord[]).map(projectMark)
 }

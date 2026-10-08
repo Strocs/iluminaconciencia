@@ -1,13 +1,12 @@
 'use client'
 
-import { useCallback, useId, useRef, useState, type KeyboardEvent } from 'react'
-import type { MapInstrument } from '../data/types'
+import { useCallback, useId, useRef, useState } from 'react'
+import type { MapMark } from '../data/types'
 import { useMapMobile } from './useMapMobile'
-
-const FOCUSABLE_SELECTOR = 'button:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])'
 
 export function useMapOverlays() {
   const [selectedId, setSelectedId] = useState<string | null>(null)
+  const [drawerMark, setDrawerMark] = useState<MapMark | null>(null)
   const [filtersOpen, setFiltersOpen] = useState(false)
   const panelRef = useRef<HTMLElement>(null)
   const drawerCloseRef = useRef<HTMLButtonElement>(null)
@@ -25,8 +24,8 @@ export function useMapOverlays() {
   const mobileOverlayOpen = mobile && (filtersOpen || drawerOpen)
 
   const onFiltersChanged = useCallback(
-    (nextInstruments: MapInstrument[]) => {
-      if (selectedId && !nextInstruments.some(({ id }) => id === selectedId)) {
+    (nextMarks: MapMark[]) => {
+      if (selectedId && !nextMarks.some(({ id }) => id === selectedId)) {
         setSelectedId(null)
         returnFocusRef.current = null
       }
@@ -46,10 +45,11 @@ export function useMapOverlays() {
   }, [])
 
   const openDrawer = useCallback(
-    (instrument: MapInstrument, trigger: HTMLButtonElement) => {
+    (mark: MapMark, trigger: HTMLElement) => {
       if (filtersOpen) return
       returnFocusRef.current = trigger
-      setSelectedId(instrument.id)
+      setSelectedId(mark.id)
+      setDrawerMark(mark)
       requestAnimationFrame(() => drawerCloseRef.current?.focus({ preventScroll: true }))
     },
     [filtersOpen]
@@ -73,57 +73,9 @@ export function useMapOverlays() {
     returnFocusRef.current = null
   }, [])
 
-  const handleFilterKeyDown = useCallback(
-    (event: KeyboardEvent<HTMLElement>) => {
-      if (!mobile || !filtersOpen) return
-      if (event.key === 'Escape') {
-        event.preventDefault()
-        closeFilters()
-        return
-      }
-      if (event.key !== 'Tab') return
-      const focusable = [...(panelRef.current?.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR) ?? [])].filter(
-        (element) => !element.inert
-      )
-      if (focusable.length === 0) return
-      const first = focusable[0]
-      const last = focusable.at(-1)!
-      if (event.shiftKey && document.activeElement === first) {
-        event.preventDefault()
-        last.focus()
-      } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault()
-        first.focus()
-      }
-    },
-    [closeFilters, filtersOpen, mobile]
-  )
-
-  const handleDrawerKeyDown = useCallback(
-    (event: KeyboardEvent<HTMLElement>) => {
-      if (event.key === 'Escape') {
-        event.preventDefault()
-        closeDrawer()
-        return
-      }
-      if (!mobile || event.key !== 'Tab') return
-      const focusable = [...event.currentTarget.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)]
-      if (!focusable.length) return
-      const first = focusable[0]
-      const last = focusable.at(-1)!
-      if (event.shiftKey && document.activeElement === first) {
-        event.preventDefault()
-        last.focus()
-      } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault()
-        first.focus()
-      }
-    },
-    [closeDrawer, mobile]
-  )
-
   return {
     selectedId,
+    drawerMark,
     drawerOpen,
     filtersOpen,
     mobile,
@@ -137,8 +89,6 @@ export function useMapOverlays() {
     openDrawer,
     openFilters,
     closeDrawer,
-    closeFilters,
-    handleFilterKeyDown,
-    handleDrawerKeyDown
+    closeFilters
   }
 }

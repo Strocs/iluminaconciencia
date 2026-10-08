@@ -1,9 +1,9 @@
 'use client'
 
-import { useCallback, type KeyboardEvent, type RefObject } from 'react'
+import { useCallback, type RefObject } from 'react'
 import { LinkButton } from '@/_components/LinkButton'
 import { getBortleClass } from '@/_shared/bortle/lookup'
-import type { MapInstrument } from '../data/types'
+import type { MapMark } from '../data/types'
 
 const MONTHS: Record<string, string> = {
   jan: 'enero',
@@ -31,69 +31,58 @@ function formatSummaryPeriod(period: string) {
   return new Intl.DateTimeFormat('es-CL', { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(date)
 }
 
-interface MapInstrumentDrawerProps {
-  instrument: MapInstrument | null
+interface MapMarkDrawerProps {
+  mark: MapMark | null
+  open: boolean
   mobile: boolean
   inert: boolean
   closeButtonRef: RefObject<HTMLButtonElement | null>
   onClose: () => void
-  onKeyDown: (event: KeyboardEvent<HTMLElement>) => void
 }
 
-export function MapInstrumentDrawer({
-  instrument,
-  mobile,
-  inert,
-  closeButtonRef,
-  onClose,
-  onKeyDown
-}: MapInstrumentDrawerProps) {
+export function MapMarkDrawer({ mark, open, mobile, inert, closeButtonRef, onClose }: MapMarkDrawerProps) {
   const closeButtonContainerRef = useCallback(
     (node: HTMLElement | null) => {
       closeButtonRef.current = node?.querySelector<HTMLButtonElement>('[data-drawer-close]') ?? null
     },
     [closeButtonRef]
   )
-  const open = instrument !== null
-  const bortle = getBortleClass(instrument?.bortleLevel)
-  const equipment = instrument
+  const bortle = getBortleClass(mark?.bortleLevel)
+  const equipment = mark
     ? [
-        instrument.type,
-        instrument.dataCount == null ? undefined : `${instrument.dataCount.toLocaleString('es-CL')} mediciones`,
-        instrument.mag == null
-          ? undefined
-          : `${instrument.mag.toLocaleString('es-CL', { minimumFractionDigits: 2 })} mag/arcsec²`
+        mark.instrumentType,
+        mark.dataCount == null ? undefined : `${mark.dataCount.toLocaleString('es-CL')} mediciones`,
+        mark.mag == null ? undefined : `${mark.mag.toLocaleString('es-CL', { minimumFractionDigits: 2 })} mag/arcsec²`
       ]
         .filter(Boolean)
         .join(' · ')
     : ''
-  const summary = instrument
+  const summary = mark
     ? [
-        instrument.summaryPeriod ? formatSummaryPeriod(instrument.summaryPeriod) : undefined,
-        instrument.dataPercent == null
+        mark.summaryPeriod ? formatSummaryPeriod(mark.summaryPeriod) : undefined,
+        mark.dataPercent == null
           ? undefined
-          : `${instrument.dataPercent.toLocaleString('es-CL', { maximumFractionDigits: 2 })}% de datos`
+          : `${mark.dataPercent.toLocaleString('es-CL', { maximumFractionDigits: 2 })}% de datos`
       ]
         .filter(Boolean)
         .join(' · ')
     : ''
-  const weather = instrument?.weather?.trim() ?? ''
+  const weather = mark?.weather?.trim() ?? ''
 
   return (
     <aside
-      id="instrument-drawer"
+      id="mark-drawer"
       ref={closeButtonContainerRef}
-      aria-label={instrument?.name ?? 'Detalle del punto de medición'}
+      aria-label={mark?.name ?? 'Detalle del punto de medición'}
       role={mobile && open ? 'dialog' : undefined}
       aria-hidden={!open}
       aria-modal={mobile && open ? true : undefined}
       inert={inert}
       data-open={open ? '' : undefined}
-      className="absolute inset-0 z-20 flex min-h-0 w-full shrink-0 translate-x-full flex-col self-stretch bg-background p-5 opacity-0 transition-transform duration-200 ease-in-out data-open:translate-x-0 data-open:opacity-100 motion-reduce:transition-none md:static md:inset-auto md:z-auto md:w-0 md:translate-x-2 md:bg-transparent md:p-0 md:pt-0 md:pl-0 md:transition-[width,padding,transform,opacity] md:data-open:w-55 md:data-open:translate-x-0 md:data-open:pt-8 md:data-open:pl-4 md:data-open:opacity-100"
-      onKeyDown={onKeyDown}
+      className="pointer-events-none absolute inset-y-0 right-0 left-auto z-20 flex min-h-0 w-full max-w-3/4 shrink-0 translate-x-full flex-col self-stretch overflow-hidden rounded-lg border border-border bg-background p-4 transition-[translate] duration-200 ease-in-out data-open:pointer-events-auto data-open:translate-x-0 motion-reduce:transition-none motion-reduce:duration-0 md:w-54 md:max-w-none md:rounded-none md:border-0 md:bg-transparent md:data-open:translate-x-0"
     >
       <div className="border-b border-border pb-4">
-        <h3 className="font-body text-base leading-tight font-bold text-primary">{instrument?.name}</h3>
+        <h3 className="font-body text-base leading-tight font-bold text-primary">{mark?.name}</h3>
       </div>
       <dl className="grid gap-3 border-b border-border py-4 text-sm/relaxed">
         {weather && (
@@ -136,21 +125,11 @@ export function MapInstrumentDrawer({
           </div>
         </div>
       )}
-      <div className="mt-auto space-y-4">
-        <LinkButton
-          href={instrument?.detailUrl ?? '#'}
-          size="sm"
-          className="h-8 w-full rounded-sm border border-primary bg-transparent py-1 text-primary hover:bg-transparent"
-        >
+      <div className="mt-auto space-y-2">
+        <LinkButton href={mark?.detailUrl ?? '#'} variant="important" size="sm" className="w-full">
           Más información
         </LinkButton>
-        <LinkButton
-          as="btn"
-          size="sm"
-          className="h-8 w-full rounded-sm border border-foreground bg-transparent py-1 text-foreground hover:bg-transparent"
-          onClick={onClose}
-          data-drawer-close
-        >
+        <LinkButton as="btn" size="sm" onClick={onClose} data-drawer-close className="w-full">
           Cerrar
         </LinkButton>
       </div>

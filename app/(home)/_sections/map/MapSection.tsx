@@ -1,25 +1,23 @@
 import { MapFilterProvider } from './context/MapFilterContext'
 import { MapExplorer } from './components/MapExplorer'
-import { loadMapInstruments } from './data/instruments'
+import { loadMapMarks } from './data/marks'
 import { SectionHeading } from '@/_components/SectionHeading'
 
 export async function MapSection() {
-  const instruments = await loadMapInstruments()
+  const marks = await loadMapMarks()
   return (
     <section
       id="explorar"
-      className="relative z-10 flex min-h-[max(100dvh,768px)] w-full flex-col px-4 pb-4 text-foreground sm:px-5 sm:pb-5"
+      className="relative z-10 flex h-dvh w-full flex-col px-4 text-foreground sm:px-5 lg:max-h-220"
     >
       <SectionHeading
         eyebrow="02 / EXPLORAR"
         title="Puntos de Medición"
-        subtitle={`${instruments.length} ${instruments.length === 1 ? 'punto disponible' : 'puntos disponibles'}`}
+        subtitle={`${marks.length} ${marks.length === 1 ? 'punto disponible' : 'puntos disponibles'}`}
       />
-      <MapFilterProvider instruments={instruments}>
+      <MapFilterProvider marks={marks}>
         <MapExplorer />
       </MapFilterProvider>
     </section>
   )
 }
-
-export type { MapInstrument } from './data/types'

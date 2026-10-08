@@ -5,7 +5,7 @@ import { bortleClasses } from '@/_shared/bortle/bortle-classes'
 import { InfoPopover } from '@/_components/InfoPopover'
 import { MapFilteredCount } from './FilteredCount'
 import { useMapFilters } from '../hooks/useMapFilters'
-import type { MapInstrument } from '../data/types'
+import type { MapMark } from '../data/types'
 import { BrandStarIcon } from '@/_components/BrandStarIcon'
 
 interface FilterPanelProps {
@@ -14,8 +14,7 @@ interface FilterPanelProps {
   panelId: string
   mobile: boolean
   filtersOpen: boolean
-  onFiltersChanged: (instruments: MapInstrument[]) => void
-  onKeyDown: (event: React.KeyboardEvent<HTMLElement>) => void
+  onFiltersChanged: (marks: MapMark[]) => void
   onClose: () => void
 }
 
@@ -26,15 +25,15 @@ export function FilterPanel({
   mobile,
   filtersOpen,
   onFiltersChanged,
-  onKeyDown,
   onClose
 }: FilterPanelProps) {
   const selectedLevels = useMapFilters((state) => state.selectedLevels)
-  const selectedTypes = useMapFilters((state) => state.selectedTypes)
-  const types = useMapFilters((state) => state.types)
+  const selectedInstrumentTypes = useMapFilters((state) => state.selectedInstrumentTypes)
+  const instrumentTypes = useMapFilters((state) => state.instrumentTypes)
   const toggleLevel = useMapFilters((state) => state.toggleLevel)
-  const toggleType = useMapFilters((state) => state.toggleType)
+  const toggleInstrumentType = useMapFilters((state) => state.toggleInstrumentType)
   const selectAll = useMapFilters((state) => state.selectAll)
+
   return (
     <aside
       ref={panelRef}
@@ -43,9 +42,8 @@ export function FilterPanel({
       aria-labelledby={titleId}
       aria-hidden={mobile && !filtersOpen}
       inert={mobile && !filtersOpen}
-      className="absolute inset-0 z-20 flex min-h-0 w-full max-w-48 shrink-0 -translate-x-full flex-col gap-4 self-stretch bg-background p-4 transition-transform duration-200 ease-in-out data-open:translate-x-0 motion-reduce:transition-none md:static md:inset-auto md:z-20 md:w-auto md:translate-x-0! md:bg-transparent md:px-0 md:transition-none"
+      className="absolute inset-0 z-20 flex min-h-0 w-full max-w-3/4 shrink-0 -translate-x-full flex-col gap-4 self-stretch rounded-lg border border-border bg-background p-4 transition-transform duration-200 ease-in-out data-open:translate-x-0 motion-reduce:transition-none md:static md:inset-auto md:max-w-54 md:translate-x-0! md:border-0 md:bg-transparent md:px-0 md:transition-none"
       data-open={filtersOpen ? '' : undefined}
-      onKeyDown={onKeyDown}
       onPointerDown={(event) => {
         if (mobile && event.target === event.currentTarget) onClose()
       }}
@@ -117,15 +115,15 @@ export function FilterPanel({
           </InfoPopover>
         </legend>
         <div className="flex flex-col gap-2">
-          {types.map((type) => (
+          {instrumentTypes.map((instrumentType) => (
             <button
-              key={type}
+              key={instrumentType}
               type="button"
               className="h-8 w-full min-w-0 rounded border border-primary bg-primary px-2 py-0 text-sm leading-none font-semibold text-background transition-colors outline-none hover:bg-accent hover:text-foreground focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95 aria-[pressed=false]:border-border aria-[pressed=false]:bg-background aria-[pressed=false]:text-text aria-[pressed=false]:hover:border-primary aria-[pressed=false]:hover:text-primary motion-reduce:transition-none motion-reduce:active:scale-100"
-              aria-pressed={selectedTypes.has(type)}
-              onClick={() => onFiltersChanged(toggleType(type))}
+              aria-pressed={selectedInstrumentTypes.has(instrumentType)}
+              onClick={() => onFiltersChanged(toggleInstrumentType(instrumentType))}
             >
-              {type}
+              {instrumentType}
             </button>
           ))}
         </div>

@@ -7,11 +7,11 @@ import { createMapFilterStore } from '../store/MapFilterStore'
 export const MapFilterStoreContext = createContext<MapFilterStore | null>(null)
 
 interface MapFilterProviderProps {
-  instruments: MapFilterState['instruments']
+  marks: MapFilterState['marks']
   children: ReactNode
 }
 
-export function MapFilterProvider({ instruments, children }: MapFilterProviderProps) {
-  const [store] = useState(() => createMapFilterStore(instruments))
+export function MapFilterProvider({ marks, children }: MapFilterProviderProps) {
+  const [store] = useState(() => createMapFilterStore(marks))
   return <MapFilterStoreContext.Provider value={store}>{children}</MapFilterStoreContext.Provider>
 }

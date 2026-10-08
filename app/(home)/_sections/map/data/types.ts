@@ -1,7 +1,7 @@
-export interface MapInstrument {
+export interface MapMark {
   id: string
   name: string
-  type: string
+  instrumentType: string
   position: {
     lat: number
     lng: number
