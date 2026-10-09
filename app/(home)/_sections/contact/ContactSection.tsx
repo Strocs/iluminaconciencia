@@ -1,3 +1,4 @@
+import { LinkButton } from '@/_components/LinkButton'
 import { SectionHeading } from '@/_components/SectionHeading'
 
 export function ContactSection() {
@@ -15,12 +16,9 @@ export function ContactSection() {
 
             <div className="space-y-2">
               <h3 className="leading-4 font-light tracking-wider text-primary uppercase">CORREO</h3>
-              <a
-                className="inline-flex rounded-sm tracking-wider text-foreground underline decoration-primary underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
-                href="mailto:iluminaconciencia@userena.cl"
-              >
+              <LinkButton className="tracking-wider" variant="text" href="mailto:iluminaconciencia@userena.cl">
                 iluminaconciencia@userena.cl
-              </a>
+              </LinkButton>
             </div>
           </div>
 
