@@ -1,4 +1,5 @@
 import { LinkButton } from '@/_components/LinkButton'
+import { cn } from '@/_utils/cn'
 import type { HeroScene as HeroSceneData } from './scenes-data'
 
 type Props = {
@@ -9,7 +10,10 @@ type Props = {
 export function HeroScene({ scene, index }: Props) {
   return (
     <article
-      className={`absolute inset-0 flex flex-col items-center justify-center p-3 text-center sm:p-10 [@media(max-height:34rem)]:p-3 ${index === 0 ? 'opacity-100' : 'opacity-0'}`}
+      className={cn(
+        'absolute inset-0 flex flex-col items-center justify-center p-3 text-center sm:p-10 [@media(max-height:34rem)]:p-3',
+        index === 0 ? 'opacity-100' : 'opacity-0'
+      )}
       data-hero-scene={scene.id}
       aria-hidden={index === 0 ? undefined : true}
       inert={index === 0 ? undefined : true}

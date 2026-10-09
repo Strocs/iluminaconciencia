@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useId, useRef, useState, type CSSProperties, type ReactNode } from 'react'
+import { cn } from '@/_utils/cn'
 
 type Size = 'sm' | 'md'
 type Placement = 'top-right' | 'bottom-right' | 'top-left' | 'bottom-left'
@@ -99,7 +100,12 @@ export function InfoPopover({
   return (
     <div
       ref={setRootRef}
-      className={`group/popover relative inline-flex font-body before:pointer-events-auto before:invisible before:absolute before:z-9 before:h-[calc(100%+0.25rem+var(--hover-card-height))] before:w-[calc(100%+0.25rem+var(--hover-card-width))] before:content-[\'\'] focus-within:before:visible ${bridge} data-[align=left]:before:left-0 data-[align=right]:before:right-0 data-[side=above]:before:bottom-0 data-[side=below]:before:top-0 ${className ?? ''}`}
+      className={cn(
+        "group/popover relative inline-flex font-body before:pointer-events-auto before:invisible before:absolute before:z-9 before:h-[calc(100%+0.25rem+var(--hover-card-height))] before:w-[calc(100%+0.25rem+var(--hover-card-width))] before:content-[\'\'] focus-within:before:visible",
+        bridge,
+        'data-[align=left]:before:left-0 data-[align=right]:before:right-0 data-[side=above]:before:bottom-0 data-[side=below]:before:top-0',
+        className
+      )}
       style={
         {
           '--hover-card-width': `${measured.panelWidth}px`,
@@ -117,7 +123,11 @@ export function InfoPopover({
         type="button"
         aria-label={label}
         aria-controls={panelId}
-        className={`relative z-20 inline-flex cursor-pointer items-center justify-center rounded-full text-primary outline-none group-hover/popover:bg-primary group-hover/popover:text-background focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background ${triggerSizeClasses[size]} ${variantClasses[variant]}`}
+        className={cn(
+          'relative z-20 inline-flex cursor-pointer items-center justify-center rounded-full text-primary outline-none group-hover/popover:bg-primary group-hover/popover:text-background focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+          triggerSizeClasses[size],
+          variantClasses[variant]
+        )}
       >
         <svg
           className={iconSizeClasses[size]}
