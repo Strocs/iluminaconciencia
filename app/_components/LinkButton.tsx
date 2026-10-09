@@ -95,7 +95,7 @@ export function LinkButton(props: Props) {
         size={size === 'sm' ? 16 : 20}
         className={cn(
           !disabled &&
-            'pointer-events-none transition-transform duration-200 ease-out group-hover/link-button:-rotate-45 motion-reduce:transform-none motion-reduce:transition-none'
+            'pointer-events-none transition-transform duration-200 group-hover/link-button:-rotate-45 motion-reduce:transform-none motion-reduce:transition-none'
         )}
       />
     </a>
