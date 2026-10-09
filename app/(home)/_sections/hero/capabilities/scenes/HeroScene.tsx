@@ -28,9 +28,7 @@ export function HeroScene({ scene, index }: Props) {
             {scene.copy}
           </p>
         )}
-        <LinkButton variant="important" href={scene.cta.href}>
-          {scene.cta.label}
-        </LinkButton>
+        <LinkButton href={scene.cta.href}>{scene.cta.label}</LinkButton>
       </div>
     </article>
   )

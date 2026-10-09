@@ -22,14 +22,14 @@ type ButtonProps = CommonProps &
 type Props = LinkProps | ButtonProps
 
 const linkButtonVariants = tv({
-  base: 'group/link-button inline-flex items-center justify-center rounded border font-body transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background motion-reduce:transition-none',
+  base: 'group/link-button inline-flex items-center justify-center rounded border font-body transition-colors focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background motion-reduce:transition-none',
   variants: {
     size: {
       sm: 'gap-1.5 px-4 py-1 text-sm',
       md: 'gap-2 px-5 py-2'
     },
     variant: {
-      default: 'border-border bg-transparent text-primary',
+      default: 'border-primary bg-transparent text-primary',
       important: 'border-primary bg-primary text-background',
       neutral: 'border-foreground bg-transparent text-foreground'
     },
@@ -42,13 +42,17 @@ const linkButtonVariants = tv({
     {
       variant: 'default',
       disabled: false,
-      class:
-        'hover:border-primary hover:bg-primary hover:text-background active:scale-95 motion-reduce:active:scale-100'
+      class: 'hover:bg-primary hover:text-background active:scale-95 motion-reduce:active:scale-100'
     },
     {
       variant: 'important',
       disabled: false,
-      class: 'hover:border-accent hover:bg-accent hover:text-foreground active:scale-95 motion-reduce:active:scale-100'
+      class: 'hover:bg-accent hover:text-foreground active:scale-95 motion-reduce:active:scale-100'
+    },
+    {
+      variant: 'neutral',
+      disabled: false,
+      class: 'hover:bg-foreground hover:text-background active:scale-95 motion-reduce:active:scale-100'
     }
   ],
   defaultVariants: {
@@ -71,7 +75,7 @@ export function LinkButton(props: Props) {
         disabled={disabled}
         className={classNames}
       >
-        <span>{children}</span>
+        {children}
       </button>
     )
   }
@@ -86,12 +90,12 @@ export function LinkButton(props: Props) {
       tabIndex={disabled ? -1 : anchorProps.tabIndex}
       className={classNames}
     >
-      <span>{children}</span>
+      {children}
       <ArrowIcon
         size={size === 'sm' ? 16 : 20}
         className={cn(
           !disabled &&
-            'transition-transform duration-200 ease-out group-hover/link-button:-rotate-45 motion-reduce:transform-none motion-reduce:transition-none'
+            'pointer-events-none transition-transform duration-200 ease-out group-hover/link-button:-rotate-45 motion-reduce:transform-none motion-reduce:transition-none'
         )}
       />
     </a>
