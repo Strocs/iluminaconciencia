@@ -70,69 +70,74 @@ export function MapMarkDrawer({ mark, open, mobile, inert, closeButtonRef, onClo
   const weather = mark?.weather?.trim() ?? ''
 
   return (
-    <aside
-      id="mark-drawer"
-      ref={closeButtonContainerRef}
-      aria-label={mark?.name ?? 'Detalle del punto de medición'}
-      role={mobile && open ? 'dialog' : undefined}
+    <div
       aria-hidden={!open}
-      aria-modal={mobile && open ? true : undefined}
-      inert={inert}
       data-open={open ? '' : undefined}
-      className="pointer-events-none absolute inset-y-0 right-0 left-auto z-20 flex min-h-0 w-full max-w-3/4 shrink-0 translate-x-full flex-col self-stretch overflow-hidden rounded-lg border border-border bg-background p-4 transition-[translate] duration-200 ease-in-out data-open:pointer-events-auto data-open:translate-x-0 motion-reduce:transition-none motion-reduce:duration-0 md:w-54 md:max-w-none md:rounded-none md:border-0 md:bg-transparent md:data-open:translate-x-0"
+      className="pointer-events-none absolute inset-y-0 right-0 left-auto z-20 w-full md:static md:inset-auto md:z-auto md:flex md:w-0 md:flex-none md:justify-end md:overflow-hidden md:transition-[width] md:duration-200 md:ease-in-out md:data-open:w-[calc(var(--drawer-width)+var(--drawer-gap))] md:motion-reduce:transition-none md:motion-reduce:duration-0"
     >
-      <div className="border-b border-border pb-4">
-        <h3 className="font-body text-base leading-tight font-bold text-primary">{mark?.name}</h3>
-      </div>
-      <dl className="grid gap-3 border-b border-border py-4 text-sm/relaxed">
-        {weather && (
+      <aside
+        id="mark-drawer"
+        ref={closeButtonContainerRef}
+        aria-label={mark?.name ?? 'Detalle del punto de medición'}
+        role={mobile && open ? 'dialog' : undefined}
+        aria-modal={mobile && open ? true : undefined}
+        inert={inert}
+        data-open={open ? '' : undefined}
+        className="pointer-events-none absolute inset-y-0 right-0 left-auto flex min-h-0 w-full max-w-3/4 shrink-0 translate-x-full flex-col self-stretch overflow-hidden rounded-lg border border-border bg-background p-4 transition-[translate] duration-200 ease-in-out data-open:pointer-events-auto data-open:translate-x-0 motion-reduce:transition-none motion-reduce:duration-0 md:static md:w-(--drawer-width) md:max-w-none md:translate-x-0 md:rounded-none md:border-0 md:bg-transparent md:px-0 md:transition-none"
+      >
+        <div className="border-b border-border pb-4">
+          <h3 className="font-body text-base leading-tight font-bold text-primary">{mark?.name}</h3>
+        </div>
+        <dl className="grid gap-3 border-b border-border py-4 text-sm/relaxed">
+          {weather && (
+            <div>
+              <dt className="text-sm/relaxed font-semibold text-foreground">Clima</dt>
+              <dd>{weather}</dd>
+            </div>
+          )}
           <div>
-            <dt className="text-sm/relaxed font-semibold text-foreground">Clima</dt>
-            <dd>{weather}</dd>
+            <dt className="text-sm/relaxed font-semibold text-foreground">Equipo y mediciones</dt>
+            <dd>{equipment}</dd>
+          </div>
+          {summary && (
+            <div>
+              <dt className="text-sm/relaxed font-semibold text-foreground">Resumen</dt>
+              <dd>{summary}</dd>
+            </div>
+          )}
+        </dl>
+        {bortle && (
+          <div className="min-h-28 border-b border-border py-3 text-sm/relaxed">
+            <div className="flex items-center gap-3">
+              <span className="rotate-180 text-xs font-semibold text-foreground [writing-mode:vertical-rl]">
+                Nivel de Bortle
+              </span>
+              <div className="flex flex-col items-center justify-center gap-1">
+                <span className="font-body text-6xl leading-none font-bold text-foreground">{bortle.label}</span>
+                <span
+                  aria-hidden="true"
+                  className="size-3 shrink-0 rounded-full"
+                  style={{ backgroundColor: bortle.color }}
+                />
+              </div>
+              <div className="min-w-0">
+                <p className="font-semibold text-foreground">{bortle.name}</p>
+                <p className="mt-1 text-xs leading-relaxed text-text">
+                  SQM <span>{bortle.sqmRange}</span> mag/arcsec²
+                </p>
+              </div>
+            </div>
           </div>
         )}
-        <div>
-          <dt className="text-sm/relaxed font-semibold text-foreground">Equipo y mediciones</dt>
-          <dd>{equipment}</dd>
+        <div className="mt-auto space-y-2">
+          <LinkButton href={mark?.detailUrl ?? '#'} variant="important" size="sm" className="w-full">
+            Más información
+          </LinkButton>
+          <LinkButton as="btn" size="sm" onClick={onClose} data-drawer-close className="w-full">
+            Cerrar
+          </LinkButton>
         </div>
-        {summary && (
-          <div>
-            <dt className="text-sm/relaxed font-semibold text-foreground">Resumen</dt>
-            <dd>{summary}</dd>
-          </div>
-        )}
-      </dl>
-      {bortle && (
-        <div className="min-h-28 border-b border-border py-3 text-sm/relaxed">
-          <div className="flex items-center gap-3">
-            <span className="rotate-180 text-xs font-semibold text-foreground [writing-mode:vertical-rl]">
-              Nivel de Bortle
-            </span>
-            <div className="flex flex-col items-center justify-center gap-1">
-              <span className="font-body text-6xl leading-none font-bold text-foreground">{bortle.label}</span>
-              <span
-                aria-hidden="true"
-                className="size-3 shrink-0 rounded-full"
-                style={{ backgroundColor: bortle.color }}
-              />
-            </div>
-            <div className="min-w-0">
-              <p className="font-semibold text-foreground">{bortle.name}</p>
-              <p className="mt-1 text-xs leading-relaxed text-text">
-                SQM <span>{bortle.sqmRange}</span> mag/arcsec²
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
-      <div className="mt-auto space-y-2">
-        <LinkButton href={mark?.detailUrl ?? '#'} variant="important" size="sm" className="w-full">
-          Más información
-        </LinkButton>
-        <LinkButton as="btn" size="sm" onClick={onClose} data-drawer-close className="w-full">
-          Cerrar
-        </LinkButton>
-      </div>
-    </aside>
+      </aside>
+    </div>
   )
 }

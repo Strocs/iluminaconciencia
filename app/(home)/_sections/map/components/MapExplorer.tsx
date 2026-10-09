@@ -44,9 +44,9 @@ export function MapExplorer() {
         onFiltersChanged={onFiltersChanged}
       />
 
-      <div className="@container relative min-h-0 min-w-0 flex-1 self-stretch">
+      <div className="@container relative flex min-h-0 min-w-0 flex-1 self-stretch [--drawer-gap:1rem] [--drawer-width:13.5rem]">
         <div
-          className="relative size-full min-w-0 overflow-hidden rounded-xl border border-border bg-background transition-[width] duration-200 ease-in-out motion-reduce:transition-none motion-reduce:duration-0 md:group-data-drawer-open:w-[calc(100cqw-13.5rem)]"
+          className="relative min-h-0 min-w-0 flex-1 overflow-hidden rounded-xl border border-border bg-background"
           inert={mobileOverlayOpen}
           aria-hidden={mobileOverlayOpen}
         >
