@@ -21,9 +21,7 @@ export function createLandscapeCapability({
   const hills = root.querySelectorAll<SVGPathElement>(`${distantSelector}, ${middleSelector}`)
 
   hills.forEach((hill) => {
-    const endFill = hill.matches(distantSelector)
-      ? landscapeConfig.endFill.distant
-      : landscapeConfig.endFill.middle
+    const endFill = hill.matches(distantSelector) ? landscapeConfig.endFill.distant : landscapeConfig.endFill.middle
 
     timeline.to(
       hill,

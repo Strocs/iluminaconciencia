@@ -13,7 +13,7 @@ export function Hero() {
         <div className="pointer-events-none absolute inset-0 z-0">
           <HeroSky />
         </div>
-        <div className="pointer-events-none absolute inset-0 z-[1]">
+        <div className="pointer-events-none absolute inset-0 z-1">
           <LightPollution />
         </div>
         <HeroLandscape />
@@ -23,10 +23,7 @@ export function Hero() {
         </div>
         <div className="pointer-events-none absolute inset-x-0 bottom-[max(4rem,env(safe-area-inset-bottom))] z-50 flex flex-col items-center gap-1 sm:gap-3">
           <p className="font-body text-sm tracking-wider text-text">Desliza para descubrir</p>
-          <span
-            className="h-6 w-px bg-linear-to-b from-text to-transparent sm:h-12"
-            aria-hidden="true"
-          />
+          <span className="h-6 w-px bg-linear-to-b from-text to-transparent sm:h-12" aria-hidden="true" />
         </div>
       </HeroFrame>
     </HeroRuntime>

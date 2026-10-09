@@ -13,15 +13,17 @@ const referenceWidthPx = 1920
 const referenceHeightPx = 1080
 // Shader quads reach size * twinkle at their corners: max 9px * 1.06 = 9.54px.
 const conservativeHaloCssPx = 10
-const projectedMarginX = conservativeHaloCssPx * SKY_REFERENCE.width / referenceWidthPx
-const projectedMarginY = conservativeHaloCssPx * SKY_REFERENCE.height / referenceHeightPx
+const projectedMarginX = (conservativeHaloCssPx * SKY_REFERENCE.width) / referenceWidthPx
+const projectedMarginY = (conservativeHaloCssPx * SKY_REFERENCE.height) / referenceHeightPx
 
 const source = await readFile(backupPath, 'utf8')
 const actualHash = createHash('sha256').update(source).digest('hex')
 if (actualHash !== expectedBackupSha256) throw new Error(`Backup SHA-256 mismatch: ${actualHash}`)
-const literalPattern = /\{\s*ra:\s*(-?(?:\d+\.?\d*|\.\d+)),\s*dec:\s*(-?(?:\d+\.?\d*|\.\d+)),\s*mag:\s*(-?(?:\d+\.?\d*|\.\d+)),\s*bv:\s*(-?(?:\d+\.?\d*|\.\d+))\s*\}/g
+const literalPattern =
+  /\{\s*ra:\s*(-?(?:\d+\.?\d*|\.\d+)),\s*dec:\s*(-?(?:\d+\.?\d*|\.\d+)),\s*mag:\s*(-?(?:\d+\.?\d*|\.\d+)),\s*bv:\s*(-?(?:\d+\.?\d*|\.\d+))\s*\}/g
 const rows = [...source.matchAll(literalPattern)]
-if (rows.length !== expectedSourceRows) throw new Error(`Expected ${expectedSourceRows} source records; parsed ${rows.length}`)
+if (rows.length !== expectedSourceRows)
+  throw new Error(`Expected ${expectedSourceRows} source records; parsed ${rows.length}`)
 const parsed = rows.map((match) => ({
   literal: match[0],
   record: { ra: Number(match[1]), dec: Number(match[2]), mag: Number(match[3]), bv: Number(match[4]) }
@@ -34,10 +36,14 @@ const selected = []
 let centerInsideCount = 0
 for (const row of parsed) {
   const [x, y] = projectStar(row.record)
-  const centerInside = x >= SKY_REFERENCE.x0 && x <= SKY_REFERENCE.x0 + SKY_REFERENCE.width &&
-    y >= SKY_REFERENCE.y0 && y <= SKY_REFERENCE.y0 + SKY_REFERENCE.height
+  const centerInside =
+    x >= SKY_REFERENCE.x0 &&
+    x <= SKY_REFERENCE.x0 + SKY_REFERENCE.width &&
+    y >= SKY_REFERENCE.y0 &&
+    y <= SKY_REFERENCE.y0 + SKY_REFERENCE.height
   if (centerInside) centerInsideCount += 1
-  const intersectsHalo = x >= SKY_REFERENCE.x0 - projectedMarginX &&
+  const intersectsHalo =
+    x >= SKY_REFERENCE.x0 - projectedMarginX &&
     x <= SKY_REFERENCE.x0 + SKY_REFERENCE.width + projectedMarginX &&
     y >= SKY_REFERENCE.y0 - projectedMarginY &&
     y <= SKY_REFERENCE.y0 + SKY_REFERENCE.height + projectedMarginY
@@ -75,4 +81,18 @@ if (checkOnly) {
 } else {
   await writeFile(outputPath, generated)
 }
-console.log(JSON.stringify({ mode: checkOnly ? 'check' : 'write', sourceRows: rows.length, selectedRows: selected.length, centerInsideCount, haloOnlyCount: selected.length - centerInsideCount, projectedMarginX, projectedMarginY }, null, 2))
+console.log(
+  JSON.stringify(
+    {
+      mode: checkOnly ? 'check' : 'write',
+      sourceRows: rows.length,
+      selectedRows: selected.length,
+      centerInsideCount,
+      haloOnlyCount: selected.length - centerInsideCount,
+      projectedMarginX,
+      projectedMarginY
+    },
+    null,
+    2
+  )
+)

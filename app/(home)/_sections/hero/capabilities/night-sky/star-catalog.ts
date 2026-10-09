@@ -4684,5 +4684,5 @@ export const starCatalog: readonly StarCatalogRecord[] = [
   { ra: 17.4184, dec: -24.2436, mag: 6.19, bv: 1.1 },
   { ra: 17.4395, dec: -24.1753, mag: 4.17, bv: 0.28 },
   { ra: 17.4487, dec: -25.9433, mag: 6.44, bv: -0.06 },
-  { ra: 17.5236, dec: -23.9628, mag: 4.81, bv: 0.0 },
+  { ra: 17.5236, dec: -23.9628, mag: 4.81, bv: 0.0 }
 ]

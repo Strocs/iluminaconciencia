@@ -30,7 +30,11 @@ export function computeSkyCrop(aspect: number): SkyCrop {
     width = height * aspect
     const referenceCenterX = SKY_REFERENCE.x0 + SKY_REFERENCE.width / 2
     const desiredCenterX = aspect < 1 ? PORTRAIT_GROUP.gcx : referenceCenterX
-    const centerX = clamp(desiredCenterX, SKY_REFERENCE.x0 + width / 2, SKY_REFERENCE.x0 + SKY_REFERENCE.width - width / 2)
+    const centerX = clamp(
+      desiredCenterX,
+      SKY_REFERENCE.x0 + width / 2,
+      SKY_REFERENCE.x0 + SKY_REFERENCE.width - width / 2
+    )
     x0 = centerX - width / 2
     y0 = SKY_REFERENCE.y0
   } else {

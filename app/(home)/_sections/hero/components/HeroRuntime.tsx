@@ -31,9 +31,7 @@ export function HeroRuntime({ children }: { children: ReactNode }) {
 
   return (
     <section id="hero" ref={rootRef} className="relative min-h-[550dvh]" aria-labelledby="hero-title">
-      <div className="h-dvh motion-safe:sticky motion-safe:top-0">
-        {children}
-      </div>
+      <div className="h-dvh motion-safe:sticky motion-safe:top-0">{children}</div>
     </section>
   )
 }
