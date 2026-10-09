@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react'
+import { landscapeConfig } from './config'
 import { hillPaths } from './svg-path'
 
 const hill = hillPaths.distant
@@ -21,8 +22,14 @@ export function DistantHills() {
       }
       aria-hidden="true"
     >
-      <svg viewBox="0 0 2400 1700" preserveAspectRatio="xMidYMax meet" className="size-full" aria-hidden="true">
-        <path d={hill.d} className="fill-neutral-900" />
+      <svg viewBox="0 0 1920 1360" preserveAspectRatio="xMidYMax meet" className="size-full" aria-hidden="true">
+        <path
+          transform="scale(0.8)"
+          data-hero-landscape-distant
+          fill={landscapeConfig.initialFill.distant}
+          opacity={landscapeConfig.initialOpacity.distant}
+          d={hill.d}
+        />
       </svg>
     </div>
   )

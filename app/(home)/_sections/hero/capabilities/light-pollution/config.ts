@@ -3,7 +3,7 @@ export const lightPollutionConfig = {
     source: '#F6A967'
   },
   horizon: {
-    initialOpacity: 0.72,
+    initialOpacity: 1,
     startProgress: 0,
     endProgress: 0.8
   }

@@ -6,6 +6,7 @@ import { createHeroMapTransitionCapability } from '../capabilities/hero-map-tran
 import { heroMapTransitionConfig } from '../capabilities/hero-map-transition/config'
 import { createLightPollutionCapability } from '../capabilities/light-pollution/light-pollution'
 import { lightPollutionConfig } from '../capabilities/light-pollution/config'
+import { createLandscapeCapability } from '../capabilities/landscape/landscape'
 import { createScenesCapability } from '../capabilities/scenes/scenes'
 import { scenesConfig } from '../capabilities/scenes/config'
 import type { HeroCapability, HeroLifecycle } from '../core/contracts'
@@ -23,9 +24,11 @@ function composeHero(root: HTMLElement, sky?: HeroSkyCapability | null): HeroLif
     ariaHidden: scene.getAttribute('aria-hidden'),
     inert: scene.hasAttribute('inert')
   }))
+  const horizonTiming = lightPollutionConfig.horizon
   const capabilities: readonly HeroCapability[] = [
     createScenesCapability({ root, config: scenesConfig }),
-    createLightPollutionCapability({ root, config: lightPollutionConfig }),
+    createLightPollutionCapability({ root, config: { ...lightPollutionConfig, horizon: horizonTiming } }),
+    createLandscapeCapability({ root, timing: horizonTiming }),
     createBortleCapability({ root, classes: bortleClasses, config: bortleConfig }),
     ...(sky ? [sky] : []),
     createHeroMapTransitionCapability({ root, config: heroMapTransitionConfig })
