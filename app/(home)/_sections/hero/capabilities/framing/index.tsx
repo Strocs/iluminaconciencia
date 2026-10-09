@@ -22,7 +22,7 @@ export function HeroFrame({ children }: Props) {
           } as CSSProperties
         }
       >
-        <div className="relative" style={{ height: 'calc(100% - var(--hero-art-offset-y))' }}>
+        <div className="relative h-full motion-safe:fixed motion-safe:inset-x-0 motion-safe:top-0 motion-safe:mx-auto motion-safe:h-dvh motion-safe:w-full motion-safe:max-w-480">
           {children}
         </div>
       </div>
