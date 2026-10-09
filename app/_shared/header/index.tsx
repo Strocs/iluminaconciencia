@@ -29,7 +29,12 @@ export function Header() {
             href="/"
             aria-label="Iluminaconciencia, inicio"
           >
-            <Image className="size-12 object-contain lg:size-14" src={logo} alt="" />
+            <Image
+              className="size-12 object-contain lg:size-14"
+              src={logo}
+              alt="Logo del proyecto Iluminaconciencia"
+              loading="eager"
+            />
           </Link>
 
           <nav className="hidden items-center justify-center gap-4 lg:flex" aria-label="Navegación principal">
