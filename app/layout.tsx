@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Ubuntu, Baskervville } from 'next/font/google'
 import { Header } from '@/_shared/header'
+import { NavUSerena } from '@/_shared/uls/nav-userena/NavUSerena'
 import '@/_styles/globals.css'
 
 const ubuntuSans = Ubuntu({
@@ -25,6 +26,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
     <html lang="es" className={`${ubuntuSans.variable} ${baskervilleSerif.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col">
+        <NavUSerena />
         <Header />
         {children}
       </body>

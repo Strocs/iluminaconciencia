@@ -29,26 +29,41 @@ export function createScrollTimeline({
     paused: true,
     onUpdate: () => broadcast(playhead.progress)
   })
+  const syncFrameFixedState = (scroll: number, start: number): void => {
+    if (scroll >= start) root.setAttribute('data-frame-fixed', 'true')
+    else root.removeAttribute('data-frame-fixed')
+  }
   const trigger = ScrollTrigger.create({
     trigger: root,
     start: coreConfig.scroll.start,
     end: coreConfig.scroll.end,
     animation: timeline.to(playhead, { progress: 1, duration: coreConfig.duration, ease: 'none' }, 0),
     scrub: true,
-    onEnter,
-    onEnterBack,
-    onLeave,
-    onLeaveBack
+    onEnter: () => {
+      root.setAttribute('data-frame-fixed', 'true')
+      onEnter?.()
+    },
+    onEnterBack: () => {
+      root.setAttribute('data-frame-fixed', 'true')
+      onEnterBack?.()
+    },
+    onLeave: () => onLeave?.(),
+    onLeaveBack: () => {
+      root.removeAttribute('data-frame-fixed')
+      onLeaveBack?.()
+    },
+    onRefresh: (self) => syncFrameFixedState(self.scroll(), self.start)
   })
 
-  // Set the initial state on mount. ScrollTrigger's onEnter only fires when the
-  // element enters from below, not when it's already visible at load.
+  // Keep the frame synchronized when the hero is already at or beyond its start.
+  syncFrameFixedState(trigger.scroll(), trigger.start)
   broadcast(trigger.progress)
 
   return {
     destroy: () => {
       trigger.kill()
       timeline.kill()
+      root.removeAttribute('data-frame-fixed')
     }
   }
 }
