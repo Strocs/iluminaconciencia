@@ -1,7 +1,6 @@
 import 'server-only'
-
-import snapshot from './instruments.snapshot.json'
-import type { MapMark } from '../_sections/map/data/types'
+import snapshot from './data/instruments.snapshot.json'
+import { Point } from './types'
 
 interface SnapshotStation {
   id: string
@@ -22,7 +21,7 @@ interface SnapshotDocument {
   stations: SnapshotStation[]
 }
 
-function mapSnapshotStations(stations: SnapshotStation[]): MapMark[] {
+function mapSnapshotStations(stations: SnapshotStation[]): Point[] {
   return stations.map((station) => {
     const instrumentCode = station.homepageSummary.instrumentCode
     const type = instrumentCode === 'W' ? 'TESS-W' : instrumentCode === '4C' ? 'TESS-4C' : null
@@ -45,6 +44,6 @@ function mapSnapshotStations(stations: SnapshotStation[]): MapMark[] {
   })
 }
 
-export async function getPoints(): Promise<MapMark[]> {
+export async function getPoints(): Promise<Point[]> {
   return mapSnapshotStations((snapshot as SnapshotDocument).stations)
 }

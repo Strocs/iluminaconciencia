@@ -5,7 +5,7 @@ import { AttributionControl, Map, Marker, NavigationControl } from 'react-map-gl
 import { setWorkerUrl } from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import { getBortleClass } from '@/_shared/bortle/lookup'
-import type { MapMark } from '../data/types'
+import type { MapMark } from '../types'
 import { useMapFilters } from '../hooks/useMapFilters'
 import { cn } from '@/_utils/cn'
 

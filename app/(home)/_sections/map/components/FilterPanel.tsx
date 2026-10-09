@@ -5,7 +5,7 @@ import { bortleClasses } from '@/_shared/bortle/bortle-classes'
 import { InfoPopover } from '@/_components/InfoPopover'
 import { MapFilteredCount } from './FilteredCount'
 import { useMapFilters } from '../hooks/useMapFilters'
-import type { MapMark } from '../data/types'
+import type { MapMark } from '../types'
 import { BrandStarIcon } from '@/_components/BrandStarIcon'
 
 interface FilterPanelProps {

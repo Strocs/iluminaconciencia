@@ -1,6 +1,6 @@
 import { createStore } from 'zustand/vanilla'
 import { bortleClasses } from '@/_shared/bortle/bortle-classes'
-import type { MapMark } from '../data/types'
+import { MapMark } from '../types'
 
 const ALL_BORTLE_LEVELS = bortleClasses.map(({ level }) => level)
 

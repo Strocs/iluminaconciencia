@@ -1,4 +1,4 @@
-export interface MapMark {
+export interface Point {
   id: string
   name: string
   instrumentType: string

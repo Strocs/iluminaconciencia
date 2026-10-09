@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useId, useRef, useState } from 'react'
-import type { MapMark } from '../data/types'
+import type { MapMark } from '../types'
 import { useMapMobile } from './useMapMobile'
 
 export function useMapOverlays() {

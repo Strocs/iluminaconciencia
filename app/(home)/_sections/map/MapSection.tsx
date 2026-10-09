@@ -1,10 +1,11 @@
 import { MapFilterProvider } from './context/MapFilterContext'
 import { MapExplorer } from './components/MapExplorer'
-import { getPoints } from '../../_dal/getPoints'
+import { getPoints } from '@/_dal/points/getPoints'
 import { SectionHeading } from '@/_components/SectionHeading'
 
 export async function MapSection() {
   const marks = await getPoints()
+
   return (
     <section
       id="explorar"
