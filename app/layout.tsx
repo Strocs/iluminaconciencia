@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Ubuntu, Baskervville } from 'next/font/google'
 import { Header } from '@/_shared/header'
+import { Footer } from '@/_shared/uls/footer/Footer'
 import { NavUSerena } from '@/_shared/uls/nav-userena/NavUSerena'
 import '@/_styles/globals.css'
 
@@ -29,6 +30,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
         <NavUSerena />
         <Header />
         {children}
+        <Footer />
       </body>
     </html>
   )
