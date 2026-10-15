@@ -4,6 +4,7 @@ import { Header } from '@/_shared/header'
 import { Footer } from '@/_shared/uls/footer/Footer'
 import { NavUSerena } from '@/_shared/uls/nav-userena/NavUSerena'
 import '@/_styles/globals.css'
+import { Background } from './_components/Background'
 
 const ubuntuSans = Ubuntu({
   variable: '--font-ubuntu',
@@ -26,7 +27,8 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
     <html lang="es" className={`${ubuntuSans.variable} ${baskervilleSerif.variable} h-full antialiased`}>
-      <body className="flex min-h-full flex-col">
+      <body className="relative isolate flex min-h-dvh flex-col font-body">
+        <Background />
         <NavUSerena />
         <Header />
         {children}

@@ -7,8 +7,8 @@ export function ContactSection() {
       <div className="mx-auto w-full max-w-360">
         <SectionHeading titleId="contacto-title" eyebrow="05 / CONTACTO" title="Contáctanos" />
 
-        <div className="grid gap-10 space-y-16 md:grid-cols-2 md:gap-16">
-          <div className="space-y-8 justify-self-end text-end">
+        <div className="grid gap-10 md:grid-cols-2 md:gap-16">
+          <div className="space-y-8 justify-self-center text-center md:justify-self-end md:text-end">
             <div className="space-y-2">
               <h3 className="leading-4 font-light tracking-wider text-primary uppercase">DIRECCIÓN</h3>
               <p className="tracking-wider text-foreground">Benavente 980 - La Serena - Chile</p>
@@ -22,7 +22,7 @@ export function ContactSection() {
             </div>
           </div>
 
-          <div className="max-w-prose space-y-6 font-light text-balance text-foreground">
+          <div className="max-w-prose space-y-6 text-center font-light text-foreground sm:text-start">
             <p>
               Si tienes interés en formar parte de nuestra red de monitoreo, te invitamos a ponerte en contacto con
               nosotros. En Iluminaconciencia, estamos listos para ofrecerte todo el apoyo necesario en el proceso de
