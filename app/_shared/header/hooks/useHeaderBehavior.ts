@@ -5,6 +5,8 @@ import { useCallback } from 'react'
 
 const DIRECTION_THRESHOLD = 6
 
+type HeaderMode = 'solid' | 'hero'
+
 function handleAnchorClick(event: MouseEvent) {
   if (
     event.defaultPrevented ||
@@ -45,7 +47,7 @@ function handleAnchorClick(event: MouseEvent) {
   }
 }
 
-export function useHeaderBehavior() {
+export function useHeaderBehavior(mode: HeaderMode) {
   const pathname = usePathname()
 
   return useCallback((header: HTMLElement | null) => {
@@ -53,10 +55,10 @@ export function useHeaderBehavior() {
 
     header.addEventListener('click', handleAnchorClick)
     header.dataset.headerPathname = pathname
-    header.dataset.region = 'hero'
+    header.dataset.region = mode === 'hero' ? 'hero' : 'post-hero'
     header.dataset.hidden = 'false'
 
-    const boundary = document.querySelector<HTMLElement>('[data-header-boundary]')
+    const boundary = mode === 'hero' ? document.querySelector<HTMLElement>('[data-header-boundary]') : null
     const banner = document.querySelector<HTMLElement>('[data-site-banner]')
     const menuToggle = header.querySelector<HTMLInputElement>('[data-menu-toggle]')
     let frameId: number | null = null
@@ -78,15 +80,19 @@ export function useHeaderBehavior() {
     window.addEventListener('scroll', handleScrollOffset, { passive: true })
     menuToggle?.addEventListener('change', handleMenuChange)
 
-    if (!boundary || typeof IntersectionObserver === 'undefined') {
-      return () => {
-        resizeObserver?.disconnect()
-        window.removeEventListener('resize', handleResize)
-        window.removeEventListener('scroll', handleScrollOffset)
-        menuToggle?.removeEventListener('change', handleMenuChange)
-        header.removeEventListener('click', handleAnchorClick)
-        delete header.dataset.headerPathname
-      }
+    const cleanupBase = () => {
+      resizeObserver?.disconnect()
+      window.removeEventListener('resize', handleResize)
+      window.removeEventListener('scroll', handleScrollOffset)
+      menuToggle?.removeEventListener('change', handleMenuChange)
+      header.removeEventListener('click', handleAnchorClick)
+      delete header.dataset.headerPathname
+      if (frameId !== null) window.cancelAnimationFrame(frameId)
+    }
+
+    if (mode === 'solid' || !boundary || typeof IntersectionObserver === 'undefined') {
+      header.dataset.region = 'post-hero'
+      return cleanupBase
     }
 
     let hasPassedRelease = boundary.getBoundingClientRect().top < window.innerHeight
@@ -140,16 +146,10 @@ export function useHeaderBehavior() {
     window.addEventListener('scroll', handleScroll, { passive: true })
 
     return () => {
-      resizeObserver?.disconnect()
       releaseObserver.disconnect()
       centerObserver.disconnect()
       window.removeEventListener('scroll', handleScroll)
-      window.removeEventListener('scroll', handleScrollOffset)
-      window.removeEventListener('resize', handleResize)
-      menuToggle?.removeEventListener('change', handleMenuChange)
-      header.removeEventListener('click', handleAnchorClick)
-      delete header.dataset.headerPathname
-      if (frameId !== null) window.cancelAnimationFrame(frameId)
+      cleanupBase()
     }
-  }, [pathname])
+  }, [mode, pathname])
 }

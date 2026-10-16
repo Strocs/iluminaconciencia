@@ -6,10 +6,10 @@ export function ContactSection() {
     <section
       id="contacto"
       tabIndex={-1}
-      className="relative z-10 scroll-mt-20 px-4 text-foreground outline-none sm:px-5"
+      className="relative scroll-mt-20 px-4 text-foreground outline-none sm:px-5"
       aria-labelledby="contacto-title"
     >
-      <div className="mx-auto w-full max-w-360">
+      <div className="container mx-auto w-full">
         <SectionHeading titleId="contacto-title" eyebrow="05 / CONTACTO" title="Contáctanos" />
 
         <div className="grid gap-10 md:grid-cols-2 md:gap-16">

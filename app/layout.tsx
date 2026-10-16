@@ -1,10 +1,12 @@
 import type { Metadata } from 'next'
 import { Ubuntu, Baskervville } from 'next/font/google'
-import { Header } from '@/_shared/header'
-import { Footer } from '@/_shared/uls/footer/Footer'
-import { NavUSerena } from '@/_shared/uls/nav-userena/NavUSerena'
+import { Footer as UserenaFooter } from '@/_shared/userena/footer/Footer'
+import { ProjectFooter } from '@/_shared/footer/ProjectFooter'
+import { NavUSerena } from '@/_shared/userena/nav-userena/NavUSerena'
 import '@/_styles/globals.css'
 import { Background } from './_components/Background'
+import { Separator } from './_components/Separator'
+import { cn } from './_utils/cn'
 
 const ubuntuSans = Ubuntu({
   variable: '--font-ubuntu',
@@ -26,13 +28,16 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
-    <html lang="es" className={`${ubuntuSans.variable} ${baskervilleSerif.variable} h-full antialiased`}>
+    <html lang="es" className={cn('h-full antialiased', ubuntuSans.variable, baskervilleSerif.variable)}>
       <body className="relative isolate flex min-h-dvh flex-col font-body">
         <Background />
         <NavUSerena />
-        <Header />
         {children}
-        <Footer />
+        <Separator />
+        <footer>
+          <ProjectFooter />
+          <UserenaFooter />
+        </footer>
       </body>
     </html>
   )

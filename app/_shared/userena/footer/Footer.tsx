@@ -49,7 +49,7 @@ const footerLogos = [
 
 export function Footer() {
   return (
-    <footer className="ulsFooter" aria-label="Pie de página institucional de la Universidad de La Serena">
+    <div className="ulsFooter" aria-label="Pie de página institucional de la Universidad de La Serena">
       <div className="ulsFooter__socialBand">
         <div className="ulsFooter__socialInner">
           <nav className="ulsFooter__socialLinks" aria-label="Redes sociales">
@@ -140,6 +140,6 @@ export function Footer() {
           ))}
         </div>
       </div>
-    </footer>
+    </div>
   )
 }

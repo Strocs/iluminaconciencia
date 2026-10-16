@@ -1,4 +1,7 @@
+'use client'
+
 import { LinkButton } from '@/_components/LinkButton'
+import { ArrowIcon } from '@/_components/icons/Arrow'
 import { cn } from '@/_utils/cn'
 import type { HeroScene as HeroSceneData } from './scenes-data'
 
@@ -32,7 +35,23 @@ export function HeroScene({ scene, index }: Props) {
             {scene.copy}
           </p>
         )}
-        <LinkButton href={scene.cta.href}>{scene.cta.label}</LinkButton>
+        {scene.cta.section ? (
+          <LinkButton
+            as="btn"
+            onClick={() => {
+              const target = document.getElementById(scene.cta.section!)
+              if (!target) return
+              const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+              target.scrollIntoView({ behavior: reducedMotion ? 'instant' : 'smooth', block: 'start' })
+              target.focus({ preventScroll: true })
+            }}
+          >
+            {scene.cta.label}
+            <ArrowIcon size={20} className="pointer-events-none transition-transform duration-200 group-hover/link-button:-rotate-45 motion-reduce:transform-none motion-reduce:transition-none" />
+          </LinkButton>
+        ) : (
+          <LinkButton href={scene.cta.href}>{scene.cta.label}</LinkButton>
+        )}
       </div>
     </article>
   )

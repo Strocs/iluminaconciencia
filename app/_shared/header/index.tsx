@@ -5,14 +5,16 @@ import { BrandStarIcon } from '@/_components/BrandStarIcon'
 import { LinkButton } from '@/_components/LinkButton'
 import { HeaderBehaviorSentinel } from './components/HeaderBehaviorSentinel'
 import { HeaderRuntime } from './components/HeaderRuntime'
-import { navigationItems } from './data/navigation'
-import { NavLink } from './components/NavLink'
+import { NavLink } from './navigation/NavLink'
+import { navigationItems } from './navigation/navigation'
 
 export { HeaderBehaviorSentinel }
 
-export function Header() {
+export type HeaderMode = 'solid' | 'hero'
+
+export function Header({ mode = 'solid' }: { mode?: HeaderMode }) {
   return (
-    <HeaderRuntime>
+    <HeaderRuntime mode={mode}>
       <input id="site-menu-toggle" data-menu-toggle className="peer sr-only lg:hidden" type="checkbox" />
 
       <div
@@ -39,8 +41,8 @@ export function Header() {
           </Link>
 
           <nav className="hidden items-center justify-center gap-4 lg:flex" aria-label="Navegación principal">
-            {navigationItems.map(({ label, href }) => (
-              <NavLink key={href} href={href}>
+            {navigationItems.map(({ label, href, section }) => (
+              <NavLink key={label} href={href} section={section}>
                 {label}
               </NavLink>
             ))}
@@ -77,8 +79,8 @@ export function Header() {
 
       <div className="pointer-events-none invisible absolute inset-x-0 top-24 z-10 h-[calc(100dvh-6rem)] overflow-y-auto transition-[visibility] duration-600 group-data-[region=post-hero]:top-20 group-data-[region=post-hero]:h-[calc(100dvh-5rem)] peer-checked:pointer-events-auto peer-checked:visible motion-reduce:transition-none lg:hidden">
         <nav className="flex h-full flex-col items-center justify-center gap-6" aria-label="Navegación móvil">
-          {navigationItems.map(({ label, href }) => (
-            <NavLink key={href} href={href} variant="mobile">
+          {navigationItems.map(({ label, href, section }) => (
+            <NavLink key={label} href={href} section={section} variant="mobile">
               {label}
             </NavLink>
           ))}

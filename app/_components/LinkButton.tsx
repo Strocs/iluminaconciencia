@@ -1,7 +1,7 @@
 import type { ComponentPropsWithRef, ReactNode } from 'react'
 import { tv, type VariantProps } from 'tailwind-variants'
 import { cn } from '@/_utils/cn'
-import { HomeSectionLink } from '@/_shared/home-navigation/HomeSectionNavigation'
+import Link from 'next/link'
 import { ArrowIcon } from './icons/Arrow'
 
 type LinkButtonVariantProps = VariantProps<typeof linkButtonVariants>
@@ -89,7 +89,7 @@ export function LinkButton(props: Props) {
 
   const { href, type, ...anchorProps } = rest as Omit<LinkProps, keyof CommonProps | 'as'>
   return (
-    <HomeSectionLink
+    <Link
       {...anchorProps}
       href={disabled ? '#' : href}
       type={type}
@@ -105,6 +105,6 @@ export function LinkButton(props: Props) {
             'pointer-events-none transition-transform duration-200 group-hover/link-button:-rotate-45 motion-reduce:transform-none motion-reduce:transition-none'
         )}
       />
-    </HomeSectionLink>
+    </Link>
   )
 }

@@ -11,6 +11,7 @@ export interface HeroScene {
   cta: {
     label: string
     href: string
+    section?: 'explorar'
   }
 }
 
@@ -51,7 +52,8 @@ export const heroScenes = [
     copy: 'Nuestra red de medición transforma observaciones del territorio en información para orientar decisiones.',
     cta: {
       label: 'Explorar el mapa',
-      href: '/explorar'
+      href: '/',
+      section: 'explorar'
     }
   }
 ] as const satisfies readonly HeroScene[]
