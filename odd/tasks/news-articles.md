@@ -23,8 +23,8 @@ Branch: main (repository policy). Delivery: local commit per step, no push/PR. F
 - T1 [S1] — Extract the 31 news and seven publications. Route: completed extraction unit. Status: done. Commits: d1a2feb, e480269.
 - T2 [S10, S11] — Commit the pending source-guide removal and full implementation tracking. Route: inline cleanup. Status: done. Commit: 65bc48ffb26a943acaccc5621c58344578aa362c (`chore(dal): remove extraction source guide`).
 - T3 [S1-S3, S9, S11] — Add server-only DAL types and getNews summaries, getNewsBySlug details, getArticles. Route: worker, measured runtime context backstop. Status: done. Commit: ba0c7448a71897994a448b959542beceb65af3c4 (`feat(dal): add news and article queries`).
-- T4a [S9, S11, S13] — Add known point params to the existing measurement route for Cache Components compatibility. Route: inline minimal authorized fix. Status: in_progress. Commit: pending (`fix(measurement): prerender known point routes`).
-- T4 [S2, S8-S9, S11] — Implement /noticias/[slug] with direct DAL lookup, 404, static params, inline presentation and available content/media. Route: worker, context backstop. Status: pending (page implemented; build/HTTP proof follows T4a). Commit: pending (`feat(news): add news detail pages`).
+- T4a [S9, S11, S13] — Add known point params to the existing measurement route for Cache Components compatibility. Route: inline minimal authorized fix. Status: done. Commit: 536cd43121e66205bd0c8254df6e77faef99c1fa (`fix(measurement): prerender known point routes`).
+- T4 [S2, S8-S9, S11] — Implement /noticias/[slug] with direct DAL lookup, 404, static params, inline presentation and available content/media. Route: worker, context backstop. Status: in_progress (build and HTTP checks passed; closing commit). Commit: pending (`feat(news): add news detail pages`).
 - T5 [S4, S6, S9, S11] — Install nuqs, add the App Router adapter and a small reusable URL pagination hook. Route: worker plus parent-managed dependency installation; independent verification for dependency risk item 5. Status: pending. Commit: pending (`feat(pagination): add nuqs-backed pagination`).
 - T6 [S1, S4-S6, S11] — Replace the news placeholder with its own paginated listing, controls and internal news links. Route: worker, context backstop. Status: pending. Commit: pending (`feat(news): add paginated news listing`).
 - T7 [S1, S4-S7, S11] — Replace the article placeholder with its own paginated listing, controls and external Ver publicación links. Route: worker, context backstop. Status: pending. Commit: pending (`feat(articles): add paginated publication listing`).
@@ -83,3 +83,9 @@ bien comienza con la implementación
 lo autorizo
 
 - Authorization resolves the external T4 blocker. Add known measurement IDs through generateStaticParams, keep global configuration/header unchanged, then rebuild and verify both measurement and news routes. This additive route export has no meaningful test-first suite under the repository's no-tests policy.
+
+### L8 — Build and route verification passed
+
+- Build/probe job-2 exited 0. Production HTTP verified all 31 news detail routes and all 37 measurement routes with expected titles/names, both video-only news embeds, and 404 responses for unknown news/point IDs. The temporary server was terminated. No visual/browser verification was performed.
+- T4a committed as `536cd43121e66205bd0c8254df6e77faef99c1fa`. Exact committed-range native ASSESS: medium, reviewDue false (under_budget). Risk: none; additive params enumeration, existing measurement rendering preserved.
+- T4 typegen, types, focused ESLint, Prettier, production build and HTTP checks are passed; its source is staged for its own commit. No HTML renderer, presentation component or React cache was added.
