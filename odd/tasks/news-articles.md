@@ -27,8 +27,8 @@ Branch: main (repository policy). Delivery: local commit per step, no push/PR. F
 - T4 [S2, S8-S9, S11] — Implement /noticias/[slug] with direct DAL lookup, 404, static params, inline presentation and available content/media. Route: worker, context backstop. Status: done. Commit: 443f9327df6b7755e2eba71012e0497cbba7048b (`feat(news): add news detail pages`).
 - T5 [S4, S6, S9, S11] — Install nuqs, add the App Router adapter and a small reusable URL pagination hook. Route: worker plus parent-managed dependency installation; independent verification for dependency risk item 5 passed. Status: done. Commit: 2628883dd0dd7846bb8239a848857bade2b8fbbd (`feat(pagination): add nuqs-backed pagination`).
 - T6 [S1, S4-S6, S11] — Replace the news placeholder with its own paginated listing, controls and internal news links. Route: worker, context backstop. Status: done. Commit: ac0e5b97ae3272d81b834dc3b76687672df42e26 (`feat(news): add paginated news listing`).
-- T7 [S1, S4-S7, S11] — Replace the article placeholder with its own paginated listing, controls and external Ver publicación links. Route: worker, context backstop. Status: in_progress. Commit: pending (`feat(articles): add paginated publication listing`).
-- T8 [S1, S3-S5, S7-S11] — Load the home from DAL, remove old content mocks, preserve the existing home composition and complete integrated verification. Route: worker, context backstop. Status: pending. Commit: pending (`feat(home): load news and articles from dal`).
+- T7 [S1, S4-S7, S11] — Replace the article placeholder with its own paginated listing, controls and external Ver publicación links. Route: worker, context backstop. Status: done. Commit: 6b8cc1f4222bd38178d2d5a6f1d2232732b21a27 (`feat(articles): add paginated publication listing`).
+- T8 [S1, S3-S5, S7-S11] — Load the home from DAL, remove old content mocks, preserve the existing home composition and complete integrated verification. Route: worker, context backstop. Status: in_progress. Commit: pending (`feat(home): load news and articles from dal`).
 
 ## Log
 
@@ -111,4 +111,11 @@ lo autorizo
 
 - Article page and its necessary client list use their own presentation/controls and the same proven request boundary, with only the pagination hook shared. All seven publication URLs remain external resources; no article detail route or invented category/abstract was added.
 - Worker typegen/typecheck/focused ESLint/Prettier passed; parent typecheck passed. Build/probe job-7 exited 0. HTTP verified first page (six), second/final (one), oversized/zero/negative/invalid query handling, exact resource URLs, target blank plus noopener/noreferrer, no download attributes and correct optional-image presence.
-- Ready for the T7 commit. Risk: none. Visual/Playwright checks were not run under repository policy.
+- T7 committed as `6b8cc1f4222bd38178d2d5a6f1d2232732b21a27`; exact-range ASSESS medium, reviewDue false (under_budget). Risk: none. Visual/Playwright checks were not run under repository policy.
+
+### L12 — T8 implementation and final verification in progress
+
+- Home now loads getNews/getArticles concurrently and renders first three of each inline, preserving section IDs, headings, compact two-column composition and More buttons. News links are internal; publication resources use Ver publicación/new tabs/no download. No fake article category/abstract or new generic presentation abstraction remains.
+- Worker passed typecheck, full-project lint and formatting. Its deletion guard left two unreferenced legacy modules in place; parent confirmed no remaining consumers or human edits, removed exactly news/data/news-data.ts and components/NewsArticleCard.tsx, then reran typecheck, full lint and whitespace checks successfully.
+- Final production build and integrated HTTP checks passed (job-8 exit 0): home 3+3 records/destinations/section IDs; all 31 news across six rendered listing pages; seven publication resources across two pages with new-tab/no-download attributes; all31 detail titles and both video-only embeds; all37 existing measurement routes; unknown news/measurement/article-detail URLs return404. No archival fields leak into summary payloads; obsolete modules are absent. Temporary server terminated.
+- Full typecheck, full lint and whitespace checks passed after legacy deletion. No tests or browser/visual verification were added. Ready for the final source commit. Risk: none for this home unit (requested home behavior only; no unrelated shared helpers/contracts changed).
