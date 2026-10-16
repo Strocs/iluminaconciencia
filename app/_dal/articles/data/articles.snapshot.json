@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-10-16T21:29:43.874Z",
+  "sourceUrl": "https://iluminaconciencia.userena.digital/#articles",
+  "sourcePageSha256": "d96e710de8dc204e9da44238f00dc70e5e953ba75bd76d5dec0061f09c2436cd",
+  "count": 7,
+  "notes": [
+    "All publications are extracted from the raw homepage articles section, in its original order.",
+    "The source has no publication IDs; synthetic IDs are derived from the absolute resource URL, independently of position.",
+    "Dates retain source precision (year or month); no day or timezone is fabricated.",
+    "Missing images remain null. The source does not provide publication descriptions or categories.",
+    "Resource URLs point directly to the external publication or PDF; target documents are not downloaded or transcribed."
+  ],
+  "items": [
+    {
+      "id": "article-18fd9e4896ee",
+      "title": "Contaminación Lumínica, una realidad sobre nuestros cielos",
+      "publishedAt": "2023-06",
+      "publishedAtLabel": "Junio, 2023",
+      "datePrecision": "month",
+      "resourceUrl": "https://vipuls.userena.digital/divulgacion/boletin/4/",
+      "image": {
+        "url": "https://iluminaconciencia.userena.digital/static/images/revista.jpg",
+        "alt": null
+      },
+      "sourceUrl": "https://iluminaconciencia.userena.digital/#articles",
+      "sourcePosition": 1
+    },
+    {
+      "id": "article-79def9b58aef",
+      "title": "Toward a Spectrophotometric Characterization of the Chilean Night Sky. A First Quantitative Assessment of ALAN across the Coquimbo Region",
+      "publishedAt": "2024-01",
+      "publishedAtLabel": "Enero, 2024",
+      "datePrecision": "month",
+      "resourceUrl": "https://iopscience.iop.org/article/10.3847/1538-3881/ad165c",
+      "image": null,
+      "sourceUrl": "https://iluminaconciencia.userena.digital/#articles",
+      "sourcePosition": 2
+    },
+    {
+      "id": "article-6011b1a9ed38",
+      "title": "IluminAconCiencia: Caracterización y cuidado de los cielos nocturnos de la región de Coquimbo",
+      "publishedAt": "2023-10",
+      "publishedAtLabel": "Octubre, 2023",
+      "datePrecision": "month",
+      "resourceUrl": "https://iluminaconciencia.userena.digital/static/docs/poster_jaqueRAAA65.pdf",
+      "image": null,
+      "sourceUrl": "https://iluminaconciencia.userena.digital/#articles",
+      "sourcePosition": 3
+    },
+    {
+      "id": "article-de9942be38b3",
+      "title": "Norma de emisión de luminosidad artificial generada por alumbrados de exteriores",
+      "publishedAt": "2023-10",
+      "publishedAtLabel": "Octubre, 2023",
+      "datePrecision": "month",
+      "resourceUrl": "https://iluminaconciencia.userena.digital/static/docs/diario_oficial_18_10_2023.pdf",
+      "image": null,
+      "sourceUrl": "https://iluminaconciencia.userena.digital/#articles",
+      "sourcePosition": 4
+    },
+    {
+      "id": "article-ee78bf4f049d",
+      "title": "Decreto 2: Declara áreas con valor científico y de investigación para la observación astronómica",
+      "publishedAt": "2023-06",
+      "publishedAtLabel": "Junio, 2023",
+      "datePrecision": "month",
+      "resourceUrl": "https://iluminaconciencia.userena.digital/static/docs/decreto_2_27_06_2023.pdf",
+      "image": null,
+      "sourceUrl": "https://iluminaconciencia.userena.digital/#articles",
+      "sourcePosition": 5
+    },
+    {
+      "id": "article-087330f7e27a",
+      "title": "Modelando la contaminación lumínica cerca de los grandes observatorios",
+      "publishedAt": "2023-02",
+      "publishedAtLabel": "Febrero, 2023",
+      "datePrecision": "month",
+      "resourceUrl": "https://ui.adsabs.harvard.edu/abs/2023MNRAS.519...26F/abstract",
+      "image": null,
+      "sourceUrl": "https://iluminaconciencia.userena.digital/#articles",
+      "sourcePosition": 6
+    },
+    {
+      "id": "article-e6d8dd4dc55e",
+      "title": "A First Quantitative Characterization of Colombian Night Sky Through All-Sky Photometry",
+      "publishedAt": "2025",
+      "publishedAtLabel": "2025",
+      "datePrecision": "year",
+      "resourceUrl": "https://www.astroscu.unam.mx/rmaa/RMxAA..61-1/PDF/RMxAA..61-1_juchima-X.pdf",
+      "image": null,
+      "sourceUrl": "https://iluminaconciencia.userena.digital/#articles",
+      "sourcePosition": 7
+    }
+  ]
+}
