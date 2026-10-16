@@ -11,3 +11,12 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 ## Module exports
 
 Use named exports and named imports for owned application code. Keep external package APIs unchanged; framework-required default exports (such as Next.js pages/layouts and configs) and default imports for assets are exempt.
+
+## Genneral Rules
+
+DONT write tests.
+DONT create branches for new features, just commit to main.
+DONT do visual verification with playwright unless user tells you to do so.
+
+## Styles
+For conditional classes use cn() utility function. DONT use template strings.
