@@ -20,8 +20,8 @@ Branch: main (repository policy). Delivery: local commit per step, no push/PR. F
 ## Tasks
 
 - T1 [S1] — Extract the 31 news and seven publications. Route: completed extraction unit. Status: done. Commits: d1a2feb, e480269.
-- T2 [S10, S11] — Commit the pending source-guide removal and full implementation tracking. Route: inline cleanup. Status: in_progress. Commit: pending (`chore(dal): remove extraction source guide`).
-- T3 [S1-S3, S9, S11] — Add server-only DAL types and getNews summaries, getNewsBySlug details, getArticles. Route: worker, measured runtime context backstop. Status: pending. Commit: pending (`feat(dal): add news and article queries`).
+- T2 [S10, S11] — Commit the pending source-guide removal and full implementation tracking. Route: inline cleanup. Status: done. Commit: 65bc48ffb26a943acaccc5621c58344578aa362c (`chore(dal): remove extraction source guide`).
+- T3 [S1-S3, S9, S11] — Add server-only DAL types and getNews summaries, getNewsBySlug details, getArticles. Route: worker, measured runtime context backstop. Status: in_progress. Commit: pending (`feat(dal): add news and article queries`).
 - T4 [S2, S8-S9, S11] — Implement /noticias/[slug] with direct DAL lookup, 404, static params, inline presentation and available content/media. Route: worker, context backstop. Status: pending. Commit: pending (`feat(news): add news detail pages`).
 - T5 [S4, S6, S9, S11] — Install nuqs, add the App Router adapter and a small reusable URL pagination hook. Route: worker plus parent-managed dependency installation; independent verification for dependency risk item 5. Status: pending. Commit: pending (`feat(pagination): add nuqs-backed pagination`).
 - T6 [S1, S4-S6, S11] — Replace the news placeholder with its own paginated listing, controls and internal news links. Route: worker, context backstop. Status: pending. Commit: pending (`feat(news): add paginated news listing`).
