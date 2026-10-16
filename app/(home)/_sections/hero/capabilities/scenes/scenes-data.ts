@@ -25,7 +25,7 @@ export const heroScenes = [
     copy: 'Generamos una red que mide la contaminación lumínica en tiempo real para apoyar la toma de decisiones.',
     cta: {
       label: 'Quiénes somos',
-      href: '#'
+      href: '/equipo'
     }
   },
   {
@@ -38,7 +38,7 @@ export const heroScenes = [
     copy: 'La contaminación lumínica altera progresivamente la oscuridad natural del territorio y afecta a las personas, la biodiversidad y el uso eficiente de la energía.',
     cta: {
       label: 'Qué hacemos',
-      href: '#'
+      href: '/medicion'
     }
   },
   {
@@ -50,8 +50,8 @@ export const heroScenes = [
     },
     copy: 'Nuestra red de medición transforma observaciones del territorio en información para orientar decisiones.',
     cta: {
-      label: 'Saber más',
-      href: '#'
+      label: 'Explorar el mapa',
+      href: '/explorar'
     }
   }
 ] as const satisfies readonly HeroScene[]

@@ -135,14 +135,7 @@ export function FilterPanel({
         <LinkButton as="btn" size="sm" className="w-full" onClick={() => onFiltersChanged(selectAll())}>
           Seleccionar todo
         </LinkButton>
-        <LinkButton
-          href="#"
-          variant="important"
-          disabled
-          size="sm"
-          className="w-full"
-          aria-label="Tabla de datos no disponible"
-        >
+        <LinkButton href="/medicion/tabla-de-datos" variant="important" size="sm" className="w-full">
           Tabla de datos
         </LinkButton>
       </div>

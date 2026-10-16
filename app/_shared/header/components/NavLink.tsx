@@ -1,9 +1,9 @@
 import { BrandStarIcon } from '@/_components/BrandStarIcon'
 import { cn } from '@/_utils/cn'
-import Link from 'next/link'
 import type { ComponentProps } from 'react'
+import { HomeSectionLink } from '@/_shared/home-navigation/HomeSectionNavigation'
 
-type Props = ComponentProps<typeof Link> & {
+type Props = ComponentProps<typeof HomeSectionLink> & {
   active?: boolean
   disabled?: boolean
   variant?: 'desktop' | 'mobile'
@@ -29,7 +29,7 @@ export function NavLink({
   )
 
   return (
-    <Link
+    <HomeSectionLink
       {...props}
       data-nav-link
       href={disabled ? '#' : href}
@@ -51,6 +51,6 @@ export function NavLink({
           )}
         />
       </span>
-    </Link>
+    </HomeSectionLink>
   )
 }

@@ -130,7 +130,7 @@ export function MapMarkDrawer({ mark, open, mobile, inert, closeButtonRef, onClo
           </div>
         )}
         <div className="mt-auto space-y-2">
-          <LinkButton href={mark?.detailUrl ?? '#'} variant="important" size="sm" className="w-full">
+          <LinkButton href={mark ? `/medicion/${encodeURIComponent(mark.id)}` : '/medicion'} variant="important" size="sm" className="w-full">
             Más información
           </LinkButton>
           <LinkButton as="btn" size="sm" onClick={onClose} data-drawer-close className="w-full">

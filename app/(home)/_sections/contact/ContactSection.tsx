@@ -3,7 +3,12 @@ import { SectionHeading } from '@/_components/SectionHeading'
 
 export function ContactSection() {
   return (
-    <section id="contacto" className="relative z-10 px-4 text-foreground sm:px-5" aria-labelledby="contacto-title">
+    <section
+      id="contacto"
+      tabIndex={-1}
+      className="relative z-10 scroll-mt-20 px-4 text-foreground outline-none sm:px-5"
+      aria-labelledby="contacto-title"
+    >
       <div className="mx-auto w-full max-w-360">
         <SectionHeading titleId="contacto-title" eyebrow="05 / CONTACTO" title="Contáctanos" />
 

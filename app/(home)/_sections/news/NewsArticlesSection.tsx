@@ -33,9 +33,7 @@ export function NewsArticlesSection() {
 
           <div className="mt-8 text-center">
             <LinkButton
-              href="https://iluminaconciencia.userena.digital/#news"
-              target="_blank"
-              rel="noreferrer"
+              href="/noticias"
               variant="important"
             >
               Más Noticias
@@ -70,9 +68,7 @@ export function NewsArticlesSection() {
 
           <div className="mt-8 text-center">
             <LinkButton
-              href="https://iluminaconciencia.userena.digital/#articles"
-              target="_blank"
-              rel="noreferrer"
+              href="/articulos"
               variant="important"
             >
               Más Artículos
