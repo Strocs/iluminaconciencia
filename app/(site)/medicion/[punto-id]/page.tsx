@@ -2,6 +2,12 @@ import { notFound } from 'next/navigation'
 import { getPoints } from '@/_dal/points/getPoints'
 import { SectionPage } from '@/_components/SectionPage'
 
+export async function generateStaticParams() {
+  const points = await getPoints()
+
+  return points.map(({ id }) => ({ 'punto-id': id }))
+}
+
 export default async function PuntoPage({ params }: PageProps<'/medicion/[punto-id]'>) {
   const { 'punto-id': pointId } = await params
   const points = await getPoints()

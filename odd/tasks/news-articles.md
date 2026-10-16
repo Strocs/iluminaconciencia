@@ -16,13 +16,15 @@ Branch: main (repository policy). Delivery: local commit per step, no push/PR. F
 - S10 — "no es relevante no lo dejes co nel código" Do not recreate the removed DAL source Markdown guide.
 - S11 — "Suiero que lo armes y cada paso termina con sus commits correpsondientes"
 - S12 — "bien comienza con la implementación"
+- S13 — "lo autorizo" Authorization for the proposed minimal generateStaticParams adjustment to `/medicion/[punto-id]`, using getPoints without changing global config.
 
 ## Tasks
 
 - T1 [S1] — Extract the 31 news and seven publications. Route: completed extraction unit. Status: done. Commits: d1a2feb, e480269.
 - T2 [S10, S11] — Commit the pending source-guide removal and full implementation tracking. Route: inline cleanup. Status: done. Commit: 65bc48ffb26a943acaccc5621c58344578aa362c (`chore(dal): remove extraction source guide`).
-- T3 [S1-S3, S9, S11] — Add server-only DAL types and getNews summaries, getNewsBySlug details, getArticles. Route: worker, measured runtime context backstop. Status: in_progress. Commit: pending (`feat(dal): add news and article queries`).
-- T4 [S2, S8-S9, S11] — Implement /noticias/[slug] with direct DAL lookup, 404, static params, inline presentation and available content/media. Route: worker, context backstop. Status: pending. Commit: pending (`feat(news): add news detail pages`).
+- T3 [S1-S3, S9, S11] — Add server-only DAL types and getNews summaries, getNewsBySlug details, getArticles. Route: worker, measured runtime context backstop. Status: done. Commit: ba0c7448a71897994a448b959542beceb65af3c4 (`feat(dal): add news and article queries`).
+- T4a [S9, S11, S13] — Add known point params to the existing measurement route for Cache Components compatibility. Route: inline minimal authorized fix. Status: in_progress. Commit: pending (`fix(measurement): prerender known point routes`).
+- T4 [S2, S8-S9, S11] — Implement /noticias/[slug] with direct DAL lookup, 404, static params, inline presentation and available content/media. Route: worker, context backstop. Status: pending (page implemented; build/HTTP proof follows T4a). Commit: pending (`feat(news): add news detail pages`).
 - T5 [S4, S6, S9, S11] — Install nuqs, add the App Router adapter and a small reusable URL pagination hook. Route: worker plus parent-managed dependency installation; independent verification for dependency risk item 5. Status: pending. Commit: pending (`feat(pagination): add nuqs-backed pagination`).
 - T6 [S1, S4-S6, S11] — Replace the news placeholder with its own paginated listing, controls and internal news links. Route: worker, context backstop. Status: pending. Commit: pending (`feat(news): add paginated news listing`).
 - T7 [S1, S4-S7, S11] — Replace the article placeholder with its own paginated listing, controls and external Ver publicación links. Route: worker, context backstop. Status: pending. Commit: pending (`feat(articles): add paginated publication listing`).
@@ -62,3 +64,22 @@ bien comienza con la implementación
 - Query summaries must not expose archival HTML/full bodies to client listings. Unknown slug returns undefined; source-local dates must not acquire an invented timezone.
 - Proposed default page size is six and configurable per listing. Reuse nuqs parsing/default/URL/history mechanics; derive only data-dependent page limits and slicing.
 - Extraction records and evidence are in `odd/tasks/news-articles-extraction.md`. Raw archival HTML must never be injected into the page.
+
+### L5 — T3 completed
+
+- `getNews`, `getNewsBySlug` and `getArticles` passed the exported-function probe (31/7 records, unknown slug undefined, no body/sourceHtml in summaries, both video-only details preserved), typecheck, focused ESLint and formatting checks.
+- Parent corrected nullable link/embed labels to match source data and removed a duplicate image interface; post-correction typecheck/lint passed. No tests added under repository policy.
+- Commit: `ba0c7448a71897994a448b959542beceb65af3c4`. Native committed-range ASSESS: medium, reviewDue false (`under_budget`); writer verification stands, no independent verifier required. Risk: none.
+
+### L6 — T4 build blocker
+
+- The detail page passed type generation, typecheck, focused ESLint and Prettier. Parent typecheck also passed. Presentation and querying remain in the page; no archival HTML rendering or React cache was added.
+- `pnpm build` (job-1) exited 1 after 31 seconds. Compilation and TypeScript passed, but prerendering failed at the unchanged existing `/medicion/[punto-id]` route with Cache Components enabled: runtime params outside Suspense and header usePathname outside Suspense for that dynamic route.
+- Readback confirmed the measurement page has no generateStaticParams and reads params directly; it is outside the feature's authorized edit surfaces. The existing human next.config.ts change enables Cache Components and must not be overwritten.
+- No build retry or unrelated fix was performed. News HTTP checks and T4 commit remain pending. Needs human decision: authorize the minimal measurement-route compatibility change (recommended: enumerate known point params), or explicitly defer the global build blocker and permit scoped feature verification. Remaining implementation steps are pending behind T4.
+
+### L7 — Measurement compatibility authorization
+
+lo autorizo
+
+- Authorization resolves the external T4 blocker. Add known measurement IDs through generateStaticParams, keep global configuration/header unchanged, then rebuild and verify both measurement and news routes. This additive route export has no meaningful test-first suite under the repository's no-tests policy.
