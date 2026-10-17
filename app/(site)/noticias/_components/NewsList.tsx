@@ -12,7 +12,7 @@ interface NewsListProps {
 
 export function NewsList({ news }: NewsListProps) {
   const { page, pageCount, startIndex, endIndex, hasPreviousPage, hasNextPage, previousPage, nextPage } = usePagination(
-    { totalItems: news.length, pageSize: 6 }
+    { totalItems: news.length, pageSize: 9 }
   )
   const pageNews = news.slice(startIndex, endIndex)
 
@@ -22,39 +22,35 @@ export function NewsList({ news }: NewsListProps) {
 
   return (
     <>
-      <ul className="grid grid-cols-1 gap-x-8 gap-y-6 md:grid-cols-2">
+      <ul className="grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3">
         {pageNews.map((item) => (
           <li key={item.id} className="min-w-0 border-b border-border/40 pb-6">
-            <article className="flex h-full flex-col gap-3">
-              {item.image && (
-                <Link
-                  href={`/noticias/${item.slug}`}
-                  aria-label={`Leer noticia: ${item.title}`}
-                  className="group/image block overflow-hidden rounded border border-border focus-visible:ring-2 focus-visible:ring-accent"
-                >
+            <article className="h-full">
+              <Link
+                href={`/noticias/${item.slug}`}
+                className="group flex h-full items-start gap-4 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
+              >
+                {item.image && (
                   <Image
                     src={item.image.url}
                     alt={item.image.alt ?? ''}
-                    width={1200}
-                    height={675}
+                    width={160}
+                    height={160}
                     loading="lazy"
                     unoptimized
-                    className="aspect-video h-auto w-full object-cover transition-transform duration-200 group-hover/image:scale-105 motion-reduce:transition-none motion-reduce:group-hover/image:scale-100"
+                    className="size-16 shrink-0 rounded border border-border/40 object-cover sm:size-20"
                   />
-                </Link>
-              )}
-              <p className="font-body text-sm text-text">
-                <time dateTime={item.publishedAt}>{item.publishedAtLabel}</time>
-              </p>
-              <h2 className="font-heading text-2xl leading-tight font-semibold text-foreground">
-                <Link
-                  href={`/noticias/${item.slug}`}
-                  className="rounded-sm transition-colors hover:text-primary focus-visible:ring-2 focus-visible:ring-accent motion-reduce:transition-none"
-                >
-                  {item.title}
-                </Link>
-              </h2>
-              <p className="font-body leading-relaxed text-text">{item.description}</p>
+                )}
+                <div className="min-w-0 flex-1 space-y-2">
+                  <p className="font-body text-xs text-primary">
+                    <time dateTime={item.publishedAt}>{item.publishedAtLabel}</time>
+                  </p>
+                  <h2 className="line-clamp-3 font-heading text-xl leading-snug text-foreground transition-colors group-hover:text-primary group-focus-visible:text-primary motion-reduce:transition-none">
+                    {item.title}
+                  </h2>
+                  <p className="line-clamp-3 font-body text-sm leading-relaxed text-text">{item.description}</p>
+                </div>
+              </Link>
             </article>
           </li>
         ))}

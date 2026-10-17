@@ -16,8 +16,8 @@ Checks: focused ESLint, TypeScript, production build, and public HTTP/HTML check
 
 ## Tasks
 
-- T1 [S3,S6,S7,S9] — Shared PageLayout/Breadcrumbs and all interior-route breadcrumb integration. Route: inline (foundation consumed by later tasks; no independent writer unit). Status: in_progress. Commit: pending. Checks: pending.
-- T2 [S1,S2,S4,S5,S6,S7,S8,S9] — Reusable compositional aside and compact 9-item news listing. Route: inline (depends on T1 layout). Status: pending. Commit: pending. Checks: pending.
+- T1 [S3,S6,S7,S9] — Shared PageLayout/Breadcrumbs and all interior-route breadcrumb integration. Route: inline (foundation consumed by later tasks; no independent writer unit). Status: done. Commit: `63360ee`. Checks: focused ESLint (zero warnings), TypeScript, diff check, and ten public HTTP baseline comparisons passed.
+- T2 [S1,S2,S4,S5,S6,S7,S8,S9] — Reusable compositional aside and compact 9-item news listing. Route: inline (depends on T1 layout). Status: in_progress. Commit: pending. Checks: pending.
 - T3 [S1,S2,S6,S7,S8,S9] — Horizontal article rows and recent-news aside, preserving six-item pagination and external destinations. Route: inline (depends on T1/T2 shared surfaces). Status: pending. Commit: pending. Checks: pending.
 - T4 [S1-S9] — Integrated functional/structural verification, candidate assessment when available, and final evidence. Route: inline unless a named high-risk item requires an independent verifier. Status: pending. Commit: pending. Checks: pending.
 
@@ -60,3 +60,7 @@ Creoq que sólo eso tengo para añadir, comienza la implementación.
 The accepted proposal keeps article pagination at six and adds no point block yet. All owned exports are named except framework-required pages/layouts; conditional classes use cn(). Existing DAL order and usePagination remain unchanged. News summaries number 31; articles number 7 and require an independently sorted copy for latest-five selection. Home remains unchanged. PageLayout and aside are server components; existing URL pagination remains in its current Suspense boundary. This multi-turn feature needs durable specifications to retain the user's accumulated corrections. Tasks are sequential consumers of the shared foundation, so no independent parallel writer trigger holds.
 
 Pre-existing modified files: AGENTS.md (the requested colocated rule), app/_components/Separator.tsx, next.config.ts. Initial native review mode command failed with exit 127 (`gentle-ai: command not found`). No development server was listening on 127.0.0.1:3000. No new tests will be written per repository policy; ordinary runtime and structural checks replace RED/GREEN, without claiming test-first evidence.
+
+### L6 — T1 evidence
+
+Committed the shared page foundation and all interior-route breadcrumbs as `63360ee`. Focused ESLint and TypeScript passed; three initial canonical-class warnings were fixed and strict ESLint then passed. All ten baseline HTTP routes returned 200 with identical existing heading text. Interior routes each contain one centered breadcrumb before h1, exactly one decorative star between entries, and one current-page entry; home contains none. The first HTTP assertion exited 1 because it compared tag-stripped baseline text with unstripped inline HTML; correcting that checker to normalize both sides yielded the passing comparison above. No application defect was inferred from that checker failure. Existing user changes were excluded from the commit. Risk: none; SectionPage retains its API through an optional breadcrumb prop and its existing children/heading content was checked on every consuming route shape.
