@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import { getPoints } from '@/_dal/points/getPoints'
-import { SectionPage } from '@/_components/SectionPage'
+import { SectionPage } from '../../_components/SectionPage'
 
 export async function generateStaticParams() {
   const points = await getPoints()

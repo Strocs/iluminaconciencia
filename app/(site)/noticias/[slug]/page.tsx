@@ -1,11 +1,11 @@
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { LinkButton } from '@/_components/LinkButton'
+import { Breadcrumbs } from '../../_components/Breadcrumbs'
 import { SectionHeading } from '@/_components/SectionHeading'
 import { getNews } from '@/_dal/news/getNews'
 import { getNewsBySlug } from '@/_dal/news/getNewsBySlug'
 import type { News } from '@/_dal/news/types'
-import { PageLayout } from '@/_shared/page/PageLayout'
 
 export async function generateStaticParams() {
   const news = await getNews()
@@ -120,11 +120,12 @@ export default async function NewsDetailPage({ params }: PageProps<'/noticias/[s
   if (!news) notFound()
 
   return (
-    <PageLayout
-      breadcrumbs={[{ label: 'Inicio', href: '/' }, { label: 'Noticias', href: '/noticias' }, { label: news.title }]}
-      header={<SectionHeading as="h1" eyebrow="03 / NOTICIAS" title={news.title} />}
-    >
-      <article className="mx-auto w-full max-w-292">
+    <div className="container mx-auto">
+      <div className="mx-auto w-full max-w-360 min-w-0">
+        <Breadcrumbs items={[{ label: 'Inicio', href: '/' }, { label: 'Noticias', href: '/noticias' }, { label: news.title }]} />
+        <SectionHeading as="h1" eyebrow="03 / NOTICIAS" title={news.title} />
+      </div>
+      <article className="mx-auto mt-10 w-full max-w-292">
         <p className="text-center font-body text-sm text-text">
           <time dateTime={news.publishedAt}>{news.publishedAtLabel}</time>
         </p>
@@ -150,6 +151,6 @@ export default async function NewsDetailPage({ params }: PageProps<'/noticias/[s
           </LinkButton>
         </div>
       </article>
-    </PageLayout>
+    </div>
   )
 }

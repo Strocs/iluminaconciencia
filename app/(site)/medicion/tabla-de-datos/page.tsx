@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { getPoints } from '@/_dal/points/getPoints'
-import { SectionPage } from '@/_components/SectionPage'
+import { SectionPage } from '../../_components/SectionPage'
 
 export default async function TablaDeDatosPage() {
   const points = await getPoints()

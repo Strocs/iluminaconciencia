@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { SectionPage } from '@/_components/SectionPage'
+import { SectionPage } from '../_components/SectionPage'
 
 export default function MedicionPage() {
   return (
