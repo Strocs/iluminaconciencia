@@ -12,7 +12,7 @@ interface NewsListProps {
 
 export function NewsList({ news }: NewsListProps) {
   const { page, pageCount, startIndex, endIndex, hasPreviousPage, hasNextPage, previousPage, nextPage } = usePagination(
-    { totalItems: news.length, pageSize: 9 }
+    { totalItems: news.length, pageSize: 6 }
   )
   const pageNews = news.slice(startIndex, endIndex)
 
@@ -22,7 +22,7 @@ export function NewsList({ news }: NewsListProps) {
 
   return (
     <>
-      <ul className="grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3">
+      <ul className="grid grid-cols-1 gap-8 md:grid-cols-2">
         {pageNews.map((item) => (
           <li key={item.id} className="min-w-0 border-b border-border/40 pb-6">
             <article className="h-full">
