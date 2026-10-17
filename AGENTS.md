@@ -20,3 +20,9 @@ DONT do visual verification with playwright unless user tells you to do so.
 
 ## Styles
 For conditional classes use cn() utility function. DONT use template strings.
+
+## Data Fetching and Server Composition
+
+- Call data-fetching functions only from Server Components, as close as possible to where the data is consumed.
+- Let the consuming Server Component obtain its own data. Do not hoist queries into pages, layouts, or parent components solely to pass the results through props to another Server Component.
+- Avoid wrapper components unless they provide a necessary, concrete responsibility. Do not introduce wrappers just to fetch data or forward props.
