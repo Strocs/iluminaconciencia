@@ -5,6 +5,7 @@ import { SectionHeading } from '@/_components/SectionHeading'
 import { getNews } from '@/_dal/news/getNews'
 import { getNewsBySlug } from '@/_dal/news/getNewsBySlug'
 import type { News } from '@/_dal/news/types'
+import { PageLayout } from '@/_shared/page/PageLayout'
 
 export async function generateStaticParams() {
   const news = await getNews()
@@ -119,9 +120,10 @@ export default async function NewsDetailPage({ params }: PageProps<'/noticias/[s
   if (!news) notFound()
 
   return (
-    <main className="container mx-auto min-h-[60dvh] px-4 pt-32 pb-16 text-foreground sm:px-5">
-      <SectionHeading as="h1" eyebrow="03 / NOTICIAS" title={news.title} />
-
+    <PageLayout
+      breadcrumbs={[{ label: 'Inicio', href: '/' }, { label: 'Noticias', href: '/noticias' }, { label: news.title }]}
+      header={<SectionHeading as="h1" eyebrow="03 / NOTICIAS" title={news.title} />}
+    >
       <article className="mx-auto w-full max-w-292">
         <p className="text-center font-body text-sm text-text">
           <time dateTime={news.publishedAt}>{news.publishedAtLabel}</time>
@@ -148,6 +150,6 @@ export default async function NewsDetailPage({ params }: PageProps<'/noticias/[s
           </LinkButton>
         </div>
       </article>
-    </main>
+    </PageLayout>
   )
 }

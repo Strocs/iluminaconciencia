@@ -1,5 +1,6 @@
 import { Suspense } from 'react'
 import { SectionHeading } from '@/_components/SectionHeading'
+import { PageLayout } from '@/_shared/page/PageLayout'
 import { getArticles } from '@/_dal/articles/getArticles'
 import { ArticleList } from './_components/ArticleList'
 
@@ -7,14 +8,16 @@ export default async function ArticulosPage({ searchParams }: PageProps<'/articu
   const articles = await getArticles()
 
   return (
-    <main className="container mx-auto min-h-[60dvh] px-4 pt-32 pb-16 text-foreground sm:px-5">
-      <SectionHeading as="h1" eyebrow="04 / ARTÍCULOS" title="Artículos y publicaciones" />
+    <PageLayout
+      breadcrumbs={[{ label: 'Inicio', href: '/' }, { label: 'Artículos' }]}
+      header={<SectionHeading as="h1" eyebrow="04 / ARTÍCULOS" title="Artículos y publicaciones" />}
+    >
       <div className="mx-auto w-full max-w-360">
         <Suspense fallback={<p className="py-8 text-center font-body text-text">Cargando publicaciones…</p>}>
           <RequestArticleList articles={articles} searchParams={searchParams} />
         </Suspense>
       </div>
-    </main>
+    </PageLayout>
   )
 }
 

@@ -1,18 +1,23 @@
 import type { ReactNode } from 'react'
 import { SectionHeading } from './SectionHeading'
+import { PageLayout } from '@/_shared/page/PageLayout'
+import type { BreadcrumbItem } from '@/_shared/page/Breadcrumbs'
 
 interface SectionPageProps {
   eyebrow: string
   title: string
   description: string
   children?: ReactNode
+  breadcrumbs?: readonly BreadcrumbItem[]
 }
 
-export function SectionPage({ eyebrow, title, description, children }: SectionPageProps) {
+export function SectionPage({ eyebrow, title, description, children, breadcrumbs }: SectionPageProps) {
   return (
-    <main className="container mx-auto min-h-[60dvh] px-4 pt-32 pb-16 text-foreground sm:px-5">
-      <SectionHeading as="h1" eyebrow={eyebrow} title={title} subtitle={description} />
-      {children && <div className="mx-auto w-full max-w-360">{children}</div>}
-    </main>
+    <PageLayout
+      breadcrumbs={breadcrumbs ?? [{ label: 'Inicio', href: '/' }, { label: title }]}
+      header={<SectionHeading as="h1" eyebrow={eyebrow} title={title} subtitle={description} />}
+    >
+      {children}
+    </PageLayout>
   )
 }
