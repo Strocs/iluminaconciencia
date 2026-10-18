@@ -26,3 +26,16 @@ For conditional classes use cn() utility function. DONT use template strings.
 - Call data-fetching functions only from Server Components, as close as possible to where the data is consumed.
 - Let the consuming Server Component obtain its own data. Do not hoist queries into pages, layouts, or parent components solely to pass the results through props to another Server Component.
 - Avoid wrapper components unless they provide a necessary, concrete responsibility. Do not introduce wrappers just to fetch data or forward props.
+
+## Colocation and Module Organization
+
+Follow [README architecture](README.md#arquitectura) when changing structure, composition, or dependencies. Do not add unnecessary layers.
+
+- Keep all application code within `app/`, following a **colocation-first** approach.
+- Place components, hooks, DAL, and utilities as close as possible to their consumers, using private folders (`_components/`, `_hooks/`, `_dal/`, etc.).
+- When multiple routes share a module, move it to their **lowest common ancestor**, avoiding premature global abstractions.
+- **Preserve functional ownership:** if shared code belongs to a specific domain or feature, group it within a dedicated feature module instead of placing it in generic shared folders.
+- Use `_components/` for presentation components, not complete functional modules.
+- Use `_features/<module>/` for reusable functional modules that own composition, logic, and data consumption. Keep their internal components colocated within the module.
+- Keep shared modules independent of route-specific implementations. Avoid circular dependencies and unnecessary coupling.
+- Prefer simple, local structures; introduce additional abstraction only when actual reuse or complexity justifies it.

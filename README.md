@@ -1,4 +1,78 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Arquitectura
+
+El proyecto sigue una **arquitectura basada en rutas y módulos funcionales, con colocation como criterio de organización**. No exige una cadena de abstracciones ni organizar todo en capas globales.
+
+### 1. Rutas: puntos de entrada
+
+`app/` contiene la aplicación.
+
+- **`page.tsx`** define y compone la vista de una URL.
+- **`layout.tsx`** mantiene una estructura compartida entre rutas.
+- **Los grupos `(group)`** organizan rutas y layouts sin agregar segmentos a la URL.
+
+La página puede componer directamente sus componentes. No necesita un contenedor intermedio obligatorio.
+
+### 2. Módulos: unidades de responsabilidad
+
+Un módulo reúne lo necesario para una responsabilidad concreta: componentes, hooks, lógica, tipos y recursos.
+
+**Su ubicación depende de quién lo consume:**
+
+- Un único consumidor: junto a él.
+- Varias rutas: en su ancestro común más cercano.
+- Toda la aplicación: en el nivel raíz correspondiente.
+
+Usá carpetas privadas como `_components/`, `_hooks/` y `_dal/` para organizar implementaciones sin crear rutas.
+
+Compartir un módulo no significa desarmarlo y repartir sus archivos entre carpetas genéricas. Conservá su identidad funcional al moverlo a un scope compartido.
+
+### 3. UI genérica y módulos funcionales
+
+Son categorías diferentes:
+
+- **UI genérica:** presentación reutilizable, sin conocimiento del negocio ni consultas de datos.
+- **Módulo funcional:** implementa un comportamiento concreto y puede coordinar datos, estado y presentación.
+
+Ambos pueden compartirse, pero conservan responsabilidades distintas.
+
+### 4. Acceso a datos
+
+El DAL encapsula cómo se obtienen los datos y sus contratos.
+
+Los **Server Components consumidores** realizan las consultas cerca de donde presentan sus resultados. No se concentran consultas en un padre solamente para distribuirlas mediante props.
+
+Pasar props sigue siendo válido: lo que evitamos es intermediación innecesaria.
+
+### 5. Servidor y cliente
+
+- **Servidor:** acceso a datos y renderizado que no requiere interacción del navegador.
+- **Cliente:** estado interactivo, eventos y APIs del navegador.
+
+La frontera cliente se mantiene cerca de la interacción; no convierte automáticamente toda una vista en componente cliente.
+
+### 6. Dirección de dependencias
+
+```text
+Entradas de rutas
+       ↓
+Módulos locales o compartidos
+       ↓
+UI genérica · DAL · utilidades
+```
+
+Los módulos compartidos no dependen de páginas ni de sus implementaciones privadas. Las rutas pueden compartir módulos, pero no importar los detalles internos de otras rutas.
+
+Este esquema indica la dirección de las dependencias, no una cadena obligatoria de capas. Una página puede consumir directamente UI genérica o el DAL cuando le corresponda.
+
+### 7. Criterio de abstracción
+
+**Primero composición local; después extracción justificada.**
+
+Se extrae cuando existe reutilización real o una responsabilidad suficientemente clara para encapsular. No se introducen wrappers solamente para consultar datos o reenviar props.
+
+Los mecanismos especiales del framework se eligen por el comportamiento que necesitás, no para aparentar modularidad.
+
+**En síntesis:** ubicación por consumidores, límites por responsabilidad y abstracciones por necesidad comprobada.
 
 ## Getting Started
 
