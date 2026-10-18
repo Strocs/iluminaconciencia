@@ -21,11 +21,9 @@ export default function NoticiasPage() {
         <Separator />
       </div>
       <div className="container mx-auto grid grid-cols-1 gap-10 2xl:grid-cols-[minmax(0,1fr)_17rem]">
-        <div className="min-w-0">
-          <Suspense fallback={<NewsListSkeleton />}>
-            <RequestNewsList />
-          </Suspense>
-        </div>
+        <Suspense fallback={<NewsListSkeleton />}>
+          <RequestNewsList />
+        </Suspense>
         <NewsListingSidebar />
       </div>
     </div>

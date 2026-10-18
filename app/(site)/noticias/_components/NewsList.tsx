@@ -21,7 +21,7 @@ export function NewsList({ news }: NewsListProps) {
 
   return (
     <>
-      <ul className="grid grid-cols-1 gap-x-8 md:grid-cols-2">
+      <ul className="grid min-w-0 grid-cols-1 gap-x-8 md:grid-cols-2">
         {pageNews.map((item) => (
           <li key={item.id} className="min-w-0">
             <PublicationCard
@@ -39,10 +39,14 @@ export function NewsList({ news }: NewsListProps) {
       </ul>
 
       {pageCount > 1 && (
-        <nav aria-label="Paginación de noticias" className="mt-12 flex flex-wrap items-center justify-center gap-4">
+        <nav
+          aria-label="Paginación de noticias"
+          className="order-last col-span-full flex flex-wrap items-center justify-center gap-4"
+        >
           <LinkButton
             as="btn"
             variant="neutral"
+            size="sm"
             disabled={!hasPreviousPage}
             onClick={() => void previousPage()}
             aria-label="Mostrar noticias anteriores"
@@ -55,6 +59,7 @@ export function NewsList({ news }: NewsListProps) {
           <LinkButton
             as="btn"
             variant="neutral"
+            size="sm"
             disabled={!hasNextPage}
             onClick={() => void nextPage()}
             aria-label="Mostrar noticias siguientes"

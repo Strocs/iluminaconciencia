@@ -46,6 +46,7 @@ export function ArticleList({ articles }: ArticleListProps) {
           <LinkButton
             as="btn"
             variant="neutral"
+            size="sm"
             disabled={!hasPreviousPage}
             onClick={() => void previousPage()}
             aria-label="Mostrar publicaciones anteriores"
@@ -58,6 +59,7 @@ export function ArticleList({ articles }: ArticleListProps) {
           <LinkButton
             as="btn"
             variant="neutral"
+            size="sm"
             disabled={!hasNextPage}
             onClick={() => void nextPage()}
             aria-label="Mostrar publicaciones siguientes"

@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 
-export function SiteAside({ children }: { children: ReactNode }) {
+export function SiteSidebar({ children }: { children: ReactNode }) {
   return (
     <aside
       aria-label="Explora otras secciones"

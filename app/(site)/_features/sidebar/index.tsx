@@ -1,28 +1,28 @@
-import { SiteAside } from './_components/SiteAside'
+import { SiteSidebar } from './_components/SiteSidebar'
 import { LatestArticles } from './_components/LatestArticles'
 import { LatestNews } from './_components/LatestNews'
 
 export function DefaultSidebar() {
   return (
-    <SiteAside>
+    <SiteSidebar>
       <LatestNews />
       <LatestArticles />
-    </SiteAside>
+    </SiteSidebar>
   )
 }
 
 export function NewsListingSidebar() {
   return (
-    <SiteAside>
+    <SiteSidebar>
       <LatestArticles />
-    </SiteAside>
+    </SiteSidebar>
   )
 }
 
 export function ArticleListingSidebar() {
   return (
-    <SiteAside>
+    <SiteSidebar>
       <LatestNews />
-    </SiteAside>
+    </SiteSidebar>
   )
 }
