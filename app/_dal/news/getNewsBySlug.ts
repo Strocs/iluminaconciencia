@@ -3,11 +3,9 @@ import snapshot from './data/news.snapshot.json'
 import { News } from './types'
 
 interface NewsSnapshotItem extends News {
-  sourceUrl: string
   sourcePosition: number
   sourceListingTitle: string
   sourcePageSha256: string
-  content: News['content'] & { sourceHtml: string }
 }
 
 interface NewsSnapshot {
@@ -29,7 +27,8 @@ export async function getNewsBySlug(slug: string): Promise<News | undefined> {
     publishedAtLabel,
     datePrecision,
     image,
-    content
+    content,
+    sourceUrl
   } = item
 
   return {
@@ -42,7 +41,9 @@ export async function getNewsBySlug(slug: string): Promise<News | undefined> {
     publishedAtLabel,
     datePrecision,
     image,
+    sourceUrl,
     content: {
+      sourceHtml: content.sourceHtml,
       text: content.text,
       images: content.images,
       links: content.links,

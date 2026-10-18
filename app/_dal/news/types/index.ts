@@ -26,7 +26,9 @@ export interface NewsSummary {
 }
 
 export interface News extends NewsSummary {
+  sourceUrl: string
   content: {
+    sourceHtml: string
     text: string
     images: NewsImage[]
     links: NewsContentLink[]
