@@ -9,6 +9,7 @@ export async function MapSection() {
   return (
     <section
       id="explorar"
+      data-header-solid-start
       tabIndex={-1}
       className="relative z-10 flex h-dvh w-full scroll-mt-20 flex-col px-4 text-foreground outline-none sm:px-5 lg:max-h-220"
     >

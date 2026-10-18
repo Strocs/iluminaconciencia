@@ -3,22 +3,17 @@ import Link from 'next/link'
 import logo from '@/_assets/images/logo.png'
 import { BrandStarIcon } from '@/_components/BrandStarIcon'
 import { LinkButton } from '@/_components/LinkButton'
-import { HeaderBehaviorSentinel } from './components/HeaderBehaviorSentinel'
 import { HeaderRuntime } from './components/HeaderRuntime'
 import { NavLink } from './navigation/NavLink'
 import { navigationItems } from '../navigation/navigation'
 
-export { HeaderBehaviorSentinel }
-
-export type HeaderMode = 'solid' | 'hero'
-
-export function Header({ mode = 'solid' }: { mode?: HeaderMode }) {
+export function Header() {
   return (
-    <HeaderRuntime mode={mode}>
+    <HeaderRuntime>
       <input id="site-menu-toggle" data-menu-toggle className="peer sr-only lg:hidden" type="checkbox" />
 
       <div
-        className="pointer-events-none absolute inset-0 -z-10 opacity-0 transition-opacity duration-600 ease-[cubic-bezier(0.76,0,0.24,1)] group-has-checked:opacity-100 group-data-[region=post-hero]:opacity-100 motion-reduce:transition-none"
+        className="pointer-events-none absolute inset-0 -z-10 opacity-0 transition-opacity duration-600 ease-[cubic-bezier(0.76,0,0.24,1)] group-has-checked:opacity-100 group-data-[appearance=solid]:opacity-100 motion-reduce:transition-none"
         aria-hidden="true"
       >
         <div className="absolute inset-x-0 top-0 h-dvh bg-[radial-gradient(ellipse_at_50%_100%,#3b1f45_0%,#170d2f_40%,#010005_100%)]" />
@@ -77,7 +72,7 @@ export function Header({ mode = 'solid' }: { mode?: HeaderMode }) {
         </div>
       </div>
 
-      <div className="pointer-events-none invisible absolute inset-x-0 top-24 z-10 h-[calc(100dvh-6rem)] overflow-y-auto transition-[visibility] duration-600 group-data-[region=post-hero]:top-20 group-data-[region=post-hero]:h-[calc(100dvh-5rem)] peer-checked:pointer-events-auto peer-checked:visible motion-reduce:transition-none lg:hidden">
+      <div className="pointer-events-none invisible absolute inset-x-0 top-24 z-10 h-[calc(100dvh-6rem)] overflow-y-auto transition-[visibility] duration-600 group-data-[appearance=solid]:top-20 group-data-[appearance=solid]:h-[calc(100dvh-5rem)] peer-checked:pointer-events-auto peer-checked:visible motion-reduce:transition-none lg:hidden">
         <nav className="flex h-full flex-col items-center justify-center gap-6" aria-label="Navegación móvil">
           {navigationItems.map(({ label, href, section }) => (
             <NavLink key={label} href={href} section={section} variant="mobile">

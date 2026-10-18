@@ -5,8 +5,6 @@ import { useCallback } from 'react'
 
 const DIRECTION_THRESHOLD = 6
 
-type HeaderMode = 'solid' | 'hero'
-
 function handleAnchorClick(event: MouseEvent) {
   if (
     event.defaultPrevented ||
@@ -47,109 +45,99 @@ function handleAnchorClick(event: MouseEvent) {
   }
 }
 
-export function useHeaderBehavior(mode: HeaderMode) {
+export function useHeaderBehavior() {
   const pathname = usePathname()
 
-  return useCallback((header: HTMLElement | null) => {
-    if (!header) return
+  return useCallback(
+    (header: HTMLElement | null) => {
+      if (!header) return
 
-    header.addEventListener('click', handleAnchorClick)
-    header.dataset.headerPathname = pathname
-    header.dataset.region = mode === 'hero' ? 'hero' : 'post-hero'
-    header.dataset.hidden = 'false'
+      header.addEventListener('click', handleAnchorClick)
+      header.dataset.headerPathname = pathname
+      header.dataset.hidden = 'false'
 
-    const boundary = mode === 'hero' ? document.querySelector<HTMLElement>('[data-header-boundary]') : null
-    const banner = document.querySelector<HTMLElement>('[data-site-banner]')
-    const menuToggle = header.querySelector<HTMLInputElement>('[data-menu-toggle]')
-    let frameId: number | null = null
+      const banner = document.querySelector<HTMLElement>('[data-site-banner]')
+      const menuToggle = header.querySelector<HTMLInputElement>('[data-menu-toggle]')
+      let frameId: number | null = null
+      let referenceScrollY = Math.max(0, window.scrollY)
 
-    const updateHeaderOffset = () => {
-      header.style.top = menuToggle?.checked
-        ? '0px'
-        : `${Math.max(0, banner?.getBoundingClientRect().bottom ?? 0)}px`
-    }
-    updateHeaderOffset()
+      const updateHeader = (trackDirection = false) => {
+        const currentScrollY = Math.max(0, window.scrollY)
+        // Cached route trees may remain mounted but must not supply the active marker.
+        const solidStart = Array.from(document.querySelectorAll<HTMLElement>('[data-header-solid-start]')).find(
+          (element) => element.getClientRects().length > 0
+        )
+        const solid = solidStart ? solidStart.getBoundingClientRect().top < window.innerHeight : currentScrollY > 0
+        const top = menuToggle?.checked ? '0px' : `${Math.max(0, banner?.getBoundingClientRect().bottom ?? 0)}px`
 
-    const resizeObserver = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(updateHeaderOffset)
-    if (banner) resizeObserver?.observe(banner)
+        header.dataset.appearance = solid ? 'solid' : 'transparent'
+        if (header.style.top !== top) header.style.top = top
 
-    const handleResize = () => updateHeaderOffset()
-    const handleScrollOffset = () => updateHeaderOffset()
-    const handleMenuChange = () => updateHeaderOffset()
-    window.addEventListener('resize', handleResize)
-    window.addEventListener('scroll', handleScrollOffset, { passive: true })
-    menuToggle?.addEventListener('change', handleMenuChange)
+        if (!solid || currentScrollY === 0 || menuToggle?.checked) {
+          header.dataset.hidden = 'false'
+          referenceScrollY = currentScrollY
+        } else if (trackDirection) {
+          const delta = currentScrollY - referenceScrollY
+          if (Math.abs(delta) >= DIRECTION_THRESHOLD) {
+            header.dataset.hidden = delta > 0 ? 'true' : 'false'
+            referenceScrollY = currentScrollY
+          }
+        }
+      }
 
-    const cleanupBase = () => {
-      resizeObserver?.disconnect()
-      window.removeEventListener('resize', handleResize)
-      window.removeEventListener('scroll', handleScrollOffset)
-      menuToggle?.removeEventListener('change', handleMenuChange)
-      header.removeEventListener('click', handleAnchorClick)
-      delete header.dataset.headerPathname
-      if (frameId !== null) window.cancelAnimationFrame(frameId)
-    }
+      let scrollPending = false
+      const scheduleUpdate = () => {
+        if (frameId !== null) return
+        frameId = window.requestAnimationFrame(() => {
+          frameId = null
+          updateHeader(scrollPending)
+          scrollPending = false
+        })
+      }
+      const handleScroll = () => {
+        scrollPending = true
+        scheduleUpdate()
+      }
+      const handleMenuChange = () => {
+        referenceScrollY = Math.max(0, window.scrollY)
+        updateHeader()
+      }
 
-    if (mode === 'solid' || !boundary || typeof IntersectionObserver === 'undefined') {
-      header.dataset.region = 'post-hero'
-      return cleanupBase
-    }
+      // Re-evaluate streamed content and route changes without observing our own writes.
+      const mutationObserver = new MutationObserver((records) => {
+        if (records.some((record) => !header.contains(record.target))) scheduleUpdate()
+      })
+      mutationObserver.observe(document.body, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['data-header-solid-start', 'hidden', 'style']
+      })
+      const resizeObserver = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(scheduleUpdate)
+      resizeObserver?.observe(document.body)
+      if (banner) resizeObserver?.observe(banner)
 
-    let hasPassedRelease = boundary.getBoundingClientRect().top < window.innerHeight
-    let hasPassedCenter = boundary.getBoundingClientRect().top < window.innerHeight / 2
-    let referenceScrollY = window.scrollY
+      window.addEventListener('resize', scheduleUpdate)
+      window.addEventListener('scroll', handleScroll, { passive: true })
+      window.addEventListener('pageshow', scheduleUpdate)
+      document.addEventListener('load', scheduleUpdate, true)
+      menuToggle?.addEventListener('change', handleMenuChange)
+      updateHeader()
+      scheduleUpdate()
 
-    const renderThresholdState = (hideAtCenter = false) => {
-      header.dataset.region = hasPassedRelease ? 'post-hero' : 'hero'
-      if (!hasPassedCenter) header.dataset.hidden = 'false'
-      else if (hideAtCenter) header.dataset.hidden = 'true'
-    }
-
-    renderThresholdState(hasPassedCenter)
-
-    const releaseObserver = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry?.rootBounds) return
-        hasPassedRelease = entry.boundingClientRect.top < entry.rootBounds.bottom
-        renderThresholdState()
-        referenceScrollY = window.scrollY
-      },
-      { threshold: 0 }
-    )
-    const centerObserver = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry?.rootBounds) return
-        const wasPastCenter = hasPassedCenter
-        hasPassedCenter = entry.boundingClientRect.top < entry.rootBounds.bottom
-        renderThresholdState(!wasPastCenter && hasPassedCenter)
-        referenceScrollY = window.scrollY
-      },
-      { rootMargin: '0px 0px -50% 0px', threshold: 0 }
-    )
-
-    releaseObserver.observe(boundary)
-    centerObserver.observe(boundary)
-
-    const updateDirection = () => {
-      frameId = null
-      const currentScrollY = window.scrollY
-      const delta = currentScrollY - referenceScrollY
-      if (!hasPassedCenter || Math.abs(delta) < DIRECTION_THRESHOLD) return
-      header.dataset.hidden = delta > 0 ? 'true' : 'false'
-      referenceScrollY = currentScrollY
-    }
-    const handleScroll = () => {
-      if (frameId !== null) return
-      frameId = window.requestAnimationFrame(updateDirection)
-    }
-
-    window.addEventListener('scroll', handleScroll, { passive: true })
-
-    return () => {
-      releaseObserver.disconnect()
-      centerObserver.disconnect()
-      window.removeEventListener('scroll', handleScroll)
-      cleanupBase()
-    }
-  }, [mode, pathname])
+      return () => {
+        mutationObserver.disconnect()
+        resizeObserver?.disconnect()
+        window.removeEventListener('resize', scheduleUpdate)
+        window.removeEventListener('scroll', handleScroll)
+        window.removeEventListener('pageshow', scheduleUpdate)
+        document.removeEventListener('load', scheduleUpdate, true)
+        menuToggle?.removeEventListener('change', handleMenuChange)
+        header.removeEventListener('click', handleAnchorClick)
+        delete header.dataset.headerPathname
+        if (frameId !== null) window.cancelAnimationFrame(frameId)
+      }
+    },
+    [pathname]
+  )
 }

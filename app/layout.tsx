@@ -4,6 +4,7 @@ import { Footer as UserenaFooter } from '@/_features/userena/footer/Footer'
 import { ProjectFooter } from '@/_features/footer/ProjectFooter'
 import { NavUSerena } from '@/_features/userena/nav-userena/NavUSerena'
 import '@/_styles/globals.css'
+import { Header } from '@/_features/header'
 import { Background } from './_components/Background'
 import { Separator } from './_components/Separator'
 import { cn } from './_utils/cn'
@@ -32,6 +33,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
       <body className="relative isolate flex min-h-dvh flex-col font-body">
         <Background />
         <NavUSerena />
+        <Header />
         {children}
         <footer className="border-t border-border bg-background">
           <ProjectFooter />
