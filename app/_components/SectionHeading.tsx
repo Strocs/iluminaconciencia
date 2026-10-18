@@ -32,14 +32,20 @@ export function SectionHeading({
         <p className="font-body text-xs leading-4 font-light tracking-[3px] text-primary uppercase">{eyebrow}</p>
 
         <div className="flex w-full items-center justify-center gap-4">
-          <span className="hidden h-px min-w-4 flex-1 bg-border sm:flex" aria-hidden="true" />
+          <span
+            className="hidden h-px min-w-4 flex-1 bg-linear-to-l from-border from-80% to-transparent sm:flex"
+            aria-hidden="true"
+          />
           <Heading
             id={titleId}
             className="max-w-full min-w-0 font-heading text-3xl leading-tight font-extrabold tracking-wide text-foreground sm:text-5xl sm:leading-12"
           >
             {title}
           </Heading>
-          <span className="hidden h-px min-w-4 flex-1 bg-border sm:flex" aria-hidden="true" />
+          <span
+            className="hidden h-px min-w-4 flex-1 bg-linear-to-r from-border from-80% to-transparent sm:flex"
+            aria-hidden="true"
+          />
         </div>
       </div>
 
