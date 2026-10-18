@@ -31,7 +31,7 @@ export function ProjectFooter() {
       <div className="flex items-center justify-around">
         <div className="flex items-center">
           <Image
-            className="mx-auto h-auto w-42 sm:w-42"
+            className="mx-auto h-auto w-42 sm:w-68"
             src={projectLogo}
             width={projectLogo.width}
             height={projectLogo.height}

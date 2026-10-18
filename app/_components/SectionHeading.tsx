@@ -38,7 +38,7 @@ export function SectionHeading({
           />
           <Heading
             id={titleId}
-            className="max-w-full min-w-0 font-heading text-3xl leading-tight font-extrabold tracking-wide text-foreground sm:text-5xl sm:leading-12"
+            className="max-w-6xl min-w-0 font-heading text-3xl leading-tight font-extrabold tracking-wide text-foreground sm:text-5xl sm:leading-12"
           >
             {title}
           </Heading>
