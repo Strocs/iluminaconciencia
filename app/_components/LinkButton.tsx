@@ -32,8 +32,7 @@ const linkButtonVariants = tv({
     variant: {
       default: 'border-primary bg-transparent text-primary',
       important: 'border-primary bg-primary text-background',
-      neutral: 'border-foreground bg-transparent text-foreground',
-      text: 'border-0 bg-transparent p-0 text-foreground'
+      neutral: 'border-foreground bg-transparent text-foreground'
     },
     disabled: {
       true: 'cursor-not-allowed opacity-50',
@@ -41,11 +40,6 @@ const linkButtonVariants = tv({
     }
   },
   compoundVariants: [
-    {
-      variant: 'text',
-      disabled: false,
-      class: 'hover:text-accent active:scale-95 motion-reduce:active:scale-100'
-    },
     {
       variant: 'default',
       disabled: false,

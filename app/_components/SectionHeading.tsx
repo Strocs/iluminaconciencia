@@ -24,15 +24,18 @@ export function SectionHeading({
   ...rest
 }: SectionHeadingProps) {
   return (
-    <header {...rest} className={cn('mx-auto flex w-full max-w-292 flex-col items-center py-8 text-center', className)}>
+    <header
+      {...rest}
+      className={cn('container mx-auto flex w-full flex-col items-center py-12 text-center', className)}
+    >
       <div className="flex w-full flex-col items-center gap-4">
-        <p className="font-body text-xs leading-4 font-light tracking-[2px] text-primary uppercase">{eyebrow}</p>
+        <p className="font-body text-xs leading-4 font-light tracking-[3px] text-primary uppercase">{eyebrow}</p>
 
         <div className="flex w-full items-center justify-center gap-4">
           <span className="hidden h-px min-w-4 flex-1 bg-border sm:flex" aria-hidden="true" />
           <Heading
             id={titleId}
-            className="max-w-full min-w-0 font-heading text-3xl leading-tight font-bold text-foreground sm:text-[2.5rem] sm:leading-10.5"
+            className="max-w-full min-w-0 font-heading text-3xl leading-tight font-extrabold tracking-wide text-foreground sm:text-5xl sm:leading-12"
           >
             {title}
           </Heading>
@@ -43,7 +46,7 @@ export function SectionHeading({
       {subtitle && (
         <div className="mt-4 flex max-w-full items-center justify-center gap-2 px-4">
           <BrandStarIcon className="shrink-0 text-primary" />
-          <p className="font-body text-base leading-relaxed font-normal text-foreground">{subtitle}</p>
+          <p className="font-body leading-relaxed font-extralight tracking-wide text-foreground">{subtitle}</p>
         </div>
       )}
     </header>

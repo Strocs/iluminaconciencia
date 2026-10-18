@@ -1,5 +1,5 @@
 import { gsap } from 'gsap'
-import { bortleClasses } from '@/_shared/bortle/bortle-classes'
+import { bortleClasses } from '@/_features/bortle/bortle-classes'
 import { createBortleCapability } from '../capabilities/bortle-scale/bortle'
 import { bortleConfig } from '../capabilities/bortle-scale/config'
 import { createHeroMapTransitionCapability } from '../capabilities/hero-map-transition/hero-map-transition'

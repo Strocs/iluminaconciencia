@@ -6,7 +6,7 @@ import { LinkButton } from '@/_components/LinkButton'
 import { HeaderBehaviorSentinel } from './components/HeaderBehaviorSentinel'
 import { HeaderRuntime } from './components/HeaderRuntime'
 import { NavLink } from './navigation/NavLink'
-import { navigationItems } from './navigation/navigation'
+import { navigationItems } from '../navigation/navigation'
 
 export { HeaderBehaviorSentinel }
 

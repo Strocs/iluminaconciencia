@@ -1,16 +1,16 @@
 import type { Metadata } from 'next'
-import { Ubuntu, Baskervville } from 'next/font/google'
-import { Footer as UserenaFooter } from '@/_shared/userena/footer/Footer'
-import { ProjectFooter } from '@/_shared/footer/ProjectFooter'
-import { NavUSerena } from '@/_shared/userena/nav-userena/NavUSerena'
+import { Ubuntu_Sans, Baskervville } from 'next/font/google'
+import { Footer as UserenaFooter } from '@/_features/userena/footer/Footer'
+import { ProjectFooter } from '@/_features/footer/ProjectFooter'
+import { NavUSerena } from '@/_features/userena/nav-userena/NavUSerena'
 import '@/_styles/globals.css'
 import { Background } from './_components/Background'
 import { Separator } from './_components/Separator'
 import { cn } from './_utils/cn'
 
-const ubuntuSans = Ubuntu({
+const ubuntuSans = Ubuntu_Sans({
   variable: '--font-ubuntu',
-  weight: ['300', '400', '500', '700'],
+  weight: ['200', '400', '600', '800'],
   subsets: ['latin']
 })
 
@@ -33,8 +33,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
         <Background />
         <NavUSerena />
         {children}
-        <Separator />
-        <footer>
+        <footer className="border-t border-border bg-background">
           <ProjectFooter />
           <UserenaFooter />
         </footer>

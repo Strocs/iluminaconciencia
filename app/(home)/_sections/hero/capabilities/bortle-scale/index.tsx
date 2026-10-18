@@ -1,5 +1,5 @@
 import { Fragment, type CSSProperties } from 'react'
-import { bortleClasses } from '@/_shared/bortle/bortle-classes'
+import { bortleClasses } from '@/_features/bortle/bortle-classes'
 import { bortleConfig } from './config'
 
 const { focusX, nodeSpacing } = bortleConfig.visual

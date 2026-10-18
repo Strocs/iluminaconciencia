@@ -2,7 +2,7 @@
 
 import { useCallback, type RefObject } from 'react'
 import { LinkButton } from '@/_components/LinkButton'
-import { getBortleClass } from '@/_shared/bortle/lookup'
+import { getBortleClass } from '@/_features/bortle/lookup'
 import type { MapMark } from '../types'
 
 const MONTHS: Record<string, string> = {

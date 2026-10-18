@@ -2,6 +2,7 @@ import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { LinkButton } from '@/_components/LinkButton'
 import { Breadcrumbs } from '../../_components/Breadcrumbs'
+import { DefaultSidebar } from '../../_features/sidebar'
 import { SectionHeading } from '@/_components/SectionHeading'
 import { getNews } from '@/_dal/news/getNews'
 import { getNewsBySlug } from '@/_dal/news/getNewsBySlug'
@@ -120,37 +121,42 @@ export default async function NewsDetailPage({ params }: PageProps<'/noticias/[s
   if (!news) notFound()
 
   return (
-    <div className="container mx-auto">
-      <div className="mx-auto w-full max-w-360 min-w-0">
-        <Breadcrumbs items={[{ label: 'Inicio', href: '/' }, { label: 'Noticias', href: '/noticias' }, { label: news.title }]} />
+    <div className="grid grid-cols-1 gap-10">
+      <div className="min-w-0">
+        <Breadcrumbs
+          items={[{ label: 'Inicio', href: '/' }, { label: 'Noticias', href: '/noticias' }, { label: news.title }]}
+        />
         <SectionHeading as="h1" eyebrow="03 / NOTICIAS" title={news.title} />
       </div>
-      <article className="mx-auto mt-10 w-full max-w-292">
-        <p className="text-center font-body text-sm text-text">
-          <time dateTime={news.publishedAt}>{news.publishedAtLabel}</time>
-        </p>
+      <div className="container mx-auto grid grid-cols-1 gap-10 2xl:grid-cols-[minmax(0,1fr)_17rem]">
+        <article className="mx-auto w-full max-w-292 min-w-0">
+          <p className="text-center font-body text-sm text-text">
+            <time dateTime={news.publishedAt}>{news.publishedAtLabel}</time>
+          </p>
 
-        {news.image && (
-          <figure className="mt-8">
-            <Image
-              src={news.image.url}
-              alt={news.image.alt ?? ''}
-              width={1200}
-              height={675}
-              unoptimized
-              className="h-auto max-h-168 w-full rounded border border-border object-contain"
-            />
-          </figure>
-        )}
+          {news.image && (
+            <figure className="mt-8">
+              <Image
+                src={news.image.url}
+                alt={news.image.alt ?? ''}
+                width={1200}
+                height={675}
+                unoptimized
+                className="h-auto max-h-168 w-full rounded border border-border object-contain"
+              />
+            </figure>
+          )}
 
-        {renderArticleContent(news)}
+          {renderArticleContent(news)}
 
-        <div className="mt-10 flex justify-center">
-          <LinkButton href="/noticias" variant="neutral">
-            Volver a noticias
-          </LinkButton>
-        </div>
-      </article>
+          <div className="mt-10 flex justify-center">
+            <LinkButton href="/noticias" variant="neutral">
+              Volver a noticias
+            </LinkButton>
+          </div>
+        </article>
+        <DefaultSidebar />
+      </div>
     </div>
   )
 }

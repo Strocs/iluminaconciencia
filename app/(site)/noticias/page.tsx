@@ -3,9 +3,11 @@ import { SectionHeading } from '@/_components/SectionHeading'
 import { Separator } from '@/_components/Separator'
 import { getNews } from '@/_dal/news/getNews'
 import { Breadcrumbs } from '../_components/Breadcrumbs'
+import { NewsListingSidebar } from '../_features/sidebar'
 import { NewsList } from './_components/NewsList'
+import { NewsListSkeleton } from './_components/NewsListSkeleton'
 
-export default function NoticiasPage({ searchParams }: PageProps<'/noticias'>) {
+export default function NoticiasPage() {
   return (
     <div className="grid grid-cols-1 gap-10">
       <div className="min-w-0">
@@ -18,17 +20,19 @@ export default function NoticiasPage({ searchParams }: PageProps<'/noticias'>) {
         />
         <Separator />
       </div>
-      <div className="min-w-0">
-        <Suspense fallback={<p className="py-8 text-center text-text">Cargando noticias…</p>}>
-          <RequestNewsList searchParams={searchParams} />
-        </Suspense>
+      <div className="container mx-auto grid grid-cols-1 gap-10 2xl:grid-cols-[minmax(0,1fr)_17rem]">
+        <div className="min-w-0">
+          <Suspense fallback={<NewsListSkeleton />}>
+            <RequestNewsList />
+          </Suspense>
+        </div>
+        <NewsListingSidebar />
       </div>
     </div>
   )
 }
 
-async function RequestNewsList({ searchParams }: Pick<PageProps<'/noticias'>, 'searchParams'>) {
-  await searchParams
+async function RequestNewsList() {
   const news = await getNews()
   return <NewsList news={news} />
 }

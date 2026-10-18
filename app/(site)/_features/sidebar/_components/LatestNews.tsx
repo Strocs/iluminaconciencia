@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { getNews } from '@/_dal/news/getNews'
-import { AsideSection } from './SiteAside'
+import { AsideSection } from './AsideSection'
 
 export async function LatestNews() {
   const news = await getNews()

@@ -1,7 +1,7 @@
 'use client'
 
 import { LinkButton } from '@/_components/LinkButton'
-import { bortleClasses } from '@/_shared/bortle/bortle-classes'
+import { bortleClasses } from '@/_features/bortle/bortle-classes'
 import { InfoPopover } from '@/_components/InfoPopover'
 import { MapFilteredCount } from './FilteredCount'
 import { useMapFilters } from '../hooks/useMapFilters'

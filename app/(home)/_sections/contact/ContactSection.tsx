@@ -1,4 +1,4 @@
-import { LinkButton } from '@/_components/LinkButton'
+import { Link } from '@/_components/Link'
 import { SectionHeading } from '@/_components/SectionHeading'
 
 export function ContactSection() {
@@ -21,13 +21,13 @@ export function ContactSection() {
 
             <div className="space-y-2">
               <h3 className="leading-4 font-light tracking-wider text-primary uppercase">CORREO</h3>
-              <LinkButton className="tracking-wider" variant="text" href="mailto:iluminaconciencia@userena.cl">
+              <Link className="tracking-wider" href="mailto:iluminaconciencia@userena.cl">
                 iluminaconciencia@userena.cl
-              </LinkButton>
+              </Link>
             </div>
           </div>
 
-          <div className="max-w-prose space-y-6 text-center font-light text-foreground sm:text-start">
+          <div className="max-w-prose space-y-6 text-center font-light tracking-wide text-foreground sm:text-start">
             <p>
               Si tienes interés en formar parte de nuestra red de monitoreo, te invitamos a ponerte en contacto con
               nosotros. En Iluminaconciencia, estamos listos para ofrecerte todo el apoyo necesario en el proceso de

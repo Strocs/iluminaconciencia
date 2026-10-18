@@ -1,5 +1,5 @@
 import { getArticles } from '@/_dal/articles/getArticles'
-import { AsideSection } from './SiteAside'
+import { AsideSection } from './AsideSection'
 
 export async function LatestArticles() {
   const articles = await getArticles()
