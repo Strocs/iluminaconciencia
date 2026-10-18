@@ -13,7 +13,7 @@ export function ArticleList({ articles }: ArticleListProps) {
   const { page, pageCount, startIndex, endIndex, hasPreviousPage, hasNextPage, previousPage, nextPage } = usePagination(
     {
       totalItems: articles.length,
-      pageSize: 6
+      pageSize: 8
     }
   )
   const pageArticles = articles.slice(startIndex, endIndex)
@@ -24,7 +24,7 @@ export function ArticleList({ articles }: ArticleListProps) {
 
   return (
     <>
-      <ul>
+      <ul className="grid min-w-0 grid-cols-1 gap-x-8 md:grid-cols-2">
         {pageArticles.map((article) => (
           <li key={article.id} className="min-w-0">
             <PublicationCard
@@ -42,7 +42,10 @@ export function ArticleList({ articles }: ArticleListProps) {
       </ul>
 
       {pageCount > 1 ? (
-        <nav aria-label="Paginación de artículos" className="mt-8 flex flex-wrap items-center justify-center gap-4">
+        <nav
+          aria-label="Paginación de artículos"
+          className="order-last col-span-full flex flex-wrap items-center justify-center gap-4"
+        >
           <LinkButton
             as="btn"
             variant="neutral"
