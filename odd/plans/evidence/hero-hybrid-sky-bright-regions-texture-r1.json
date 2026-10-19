@@ -1,0 +1,120 @@
+{
+  "schema": 1,
+  "candidate": "output/hero-sky-prototype/production/t13-texture-r1",
+  "codeCommit": "8ad23565fca3b5e4c45b95397cd1c4f832131775",
+  "regionPlanSha256": "990e8b7ff4fc73e4f79d4870ebee0c62adc38a8280593332dfac952edbcc8ce5",
+  "assets": {
+    "background-1x.webp": {
+      "bytes": 835166,
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "sha256": "aa494ee8010265dc400b6d8482081a512ca58cb5034289b7459b8a4134c7b951"
+    },
+    "background-2x.webp": {
+      "bytes": 3103668,
+      "dimensions": [
+        3840,
+        2160
+      ],
+      "sha256": "da50676da4c8e6a5403d874a6931296c4f17e938824234eff961522635cbf85d"
+    },
+    "1920x1080@1-composite-opacity1.png": {
+      "bytes": 3411370,
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "sha256": "3b6d8536083ac67fb17cdc599661ce1db029f3e70f55dde73fa6458986141dea"
+    },
+    "390x844@2-composite-opacity1.png": {
+      "bytes": 2093521,
+      "dimensions": [
+        780,
+        1688
+      ],
+      "sha256": "38e2437bbe067e9708bdd0272ecb1778940bd313913b97f52188cef9afb9959e"
+    }
+  },
+  "codeReview": {
+    "lineage": "review-a74e08ecaa771db9",
+    "state": "approved",
+    "authority": "burned",
+    "consumedRevision": "7d3803c07dcdd132b3fd7c88cb58d3cd8aaeaa32c69cf7cadc6d598b03b8a634"
+  },
+  "generation": {
+    "job": "job-6",
+    "exitCode": 0,
+    "seconds": 68,
+    "targets": 112,
+    "groups": 105,
+    "unionPixels": 181062,
+    "changedSourcePixels": 158964,
+    "outsideMaskDifferentPixels": 0
+  },
+  "completedValidation": {
+    "job": "job-7",
+    "exitCode": 0,
+    "seconds": 9,
+    "mode": "completed-artifact-validation",
+    "passed": true,
+    "writes": false
+  },
+  "preservation": {
+    "job": "job-8",
+    "exitCode": 0,
+    "seconds": 5,
+    "historyFiles": 131,
+    "partialV1Files": 4584,
+    "v2DeclaredFiles": 4606,
+    "firstCandidateArtifacts": 53,
+    "firstCandidateSetExact": true,
+    "humanLayoutPreserved": true,
+    "sourcePreserved": true
+  },
+  "versionComparison": {
+    "changedPixels": 48968,
+    "outsideUnionDifferentPixels": 0,
+    "maskFeatherRegionsCameraBuffersExact": true,
+    "all112SourceCoresChanged": true,
+    "all105GroupsEditedOnce": true,
+    "donorTargetOverlapPixels": 0,
+    "interpolatedDonorSamples": 39059,
+    "unsupportedStructureSamples": 166,
+    "unsupportedFineSamples": 166,
+    "report": "output/hero-sky-prototype/production/validation-t11/t13-texture-r1-review/review.json"
+  },
+  "visualInspection": {
+    "nativeComparisonPagesOpened": 5,
+    "targetCountRepresented": 112,
+    "desktopMobileShiftedOpened": true,
+    "observation": "Faceted donor texture is reduced and softened; some smooth dark fill remains visible in native crops.",
+    "state": "ready-for-human-review",
+    "noPhysicalDustOrExactCounterpartClaim": true
+  },
+  "humanQualityApproval": "pending",
+  "applicationIntegration": false,
+  "failedOrSkippedChecks": [
+    {
+      "kind": "optional-exploratory-probe",
+      "result": "timeout-after-30-seconds",
+      "retried": false,
+      "scope": "Earlier all-group dual-reconstruction probe; not the completed single production run."
+    },
+    {
+      "kind": "browser-build-new-test-files",
+      "result": "not-run",
+      "reason": "Outside current offline scope/repository policy."
+    }
+  ],
+  "pendingDecision": "Final human visual approval of this exact corrected version before any hero integration.",
+  "riskAssessment": {
+    "risk": "medium",
+    "nativeRisk": "high",
+    "reason": "process_boundary",
+    "writerSelfVerification": true,
+    "independentVerifier": false,
+    "outsideViewClosed": true
+  }
+}
