@@ -1,0 +1,78 @@
+{
+  "schema": 1,
+  "unit": "T7 bounded read-only assumption challenge",
+  "decision": {
+    "qualityAssessment": "partial; complete asset not approved",
+    "humanApproval": "pending; not solicited in this unit",
+    "appEditAllowed": false,
+    "initialDuplicationClaim": "provisional; annotated pairs do not establish a named photographic counterpart"
+  },
+  "provenance": {
+    "source": "output/hero-sky-prototype/source/eso0932a.jpg",
+    "sourceCredit": "ESO/S. Brunier / CC BY 4.0",
+    "sourceSha256": "60400c92c54b7c1bd12299c69e83b16e5b6256e7dabacc478c021758ecd28179",
+    "v2ManifestSha256": "9ce97da58901d63b741ec36ed99a8666df8197c433a81ec58a79fdbc680a5107",
+    "projection": "Existing inventory predictedSourcePixel and stored phase-2 identity centers; no new fit",
+    "crop": "Native 192x192 source/background pixels; periodic X only; Y clipped at poles; annotations in derived copies"
+  },
+  "audit": {
+    "sample": {"total": 24, "multiPeak": 12, "neighborFootprint": 6, "missingOrTruncated": 3, "broadSaturated": 2, "pole": 1},
+    "multiPeakStrata": "3 raw candidate-brightness tertiles x 4 source-image quadrants",
+    "multiPeakCorpus": {
+      "rows": 2673,
+      "candidateMaximumPixels": 6621,
+      "8ConnectedPixelComponentSizes": {"1": 6621},
+      "candidateCountByRow": {"2": 1697, "3": 742, "4": 191, "5": 29, "6": 9, "7": 2, "8": 3},
+      "meaning": "Refutes adjacent/tied plateau pixels in stored maxima; does not prove distinct physical sources."
+    },
+    "candidateComparison": {
+      "nearestIsHighestExcess": "10/12 sampled multi-peak cases",
+      "closestOnlyCounterexample": "catalog-01043: nearest d=0px excess=17.085; stronger d=3.162px excess=81.519",
+      "brightestOnlyCounterexample": "catalog-04252: nearest d=4.472px excess=11.633; stronger candidates d=5/6px excess=81.33/71.8",
+      "conclusion": "Distance and brightness are useful ranking signals but neither alone safely identifies a photographic counterpart."
+    },
+    "storedIdentityResiduals": {
+      "n": 12,
+      "AlnitakDeduplicated": true,
+      "radialMinPx": 0.1076,
+      "radialMedianPx": 0.6555,
+      "radialMaxPx": 3.7469,
+      "fiveTentativeHeldOutPx": {"Sirius": 0.6321, "Canopus": 0.6214, "Aldebaran": 1.4581, "Regulus": 2.7388, "Spica": 3.7469},
+      "nearestLocalMaximumWithin1_43PxOfStoredCenter": "12/12",
+      "limitation": "Seven Orion centers participated in fit; five other associations are tentative and none is external astrometry."
+    },
+    "definitions": {
+      "saturatedChannelSamples": "Counts RGB channel samples >=250 across 192x192 patch, not just target core (reconstruct_background.py:148).",
+      "otherBrightComponentsInFootprint": "Threshold-connected morphology intersecting inferred alpha, not a physical-neighbor identity (reconstruct_background.py:123-148)."
+    },
+    "visualConclusion": "All 24 annotated panels inspected. Some candidates align closely with predicted positions; dense PSFs, blends, faint intended population, broad structures and registration uncertainty remain confounded. Specific photo/catalog identity is not proven; initial duplication claim remains provisional.",
+    "codeBasis": [
+      "tools/hero-sky-prototype/production_inventory.py:61-65 candidate maxima",
+      "tools/hero-sky-prototype/production_inventory.py:83-85 unconditional multi-candidate abstention",
+      "tools/hero-sky-prototype/production_inventory.py:94-103 neighbor/truncation guards",
+      "tools/hero-sky-prototype/reconstruct_background.py:113-148 profile, halo and flag definitions"
+    ]
+  },
+  "recommendedCorrection": {
+    "unit": "Explicit deterministic candidate ranking metadata within existing 6px search and unchanged thresholds; include center distance, local excess/noise and profile/footprint suitability.",
+    "safety": "Keep unresolved-by-default, preserve all candidates, do not auto-select/promote until controls and negatives validate score separation; retain neighbor, support and donor guards.",
+    "evidenceAndLimit": "12/12 provisional stored centers lie within 1.43px of a local maximum, but only five are held-out tentative anchors; examples 01043 and 04252 defeat single-variable ranking. Do not assert how many rows will be recovered.",
+    "notAuthorized": "No code implementation, threshold/radius/mask/donor changes, app integration, or asset approval."
+  },
+  "specVerdicts": {
+    "S1": "partial; hybrid direction examined, specific counterpart identity unresolved",
+    "S5": "24 annotated comparisons delivered/inspected; complete-asset approval pending",
+    "S6": "Perceptual sharpness reviewed without arbitrary subpixel gate",
+    "S7": "Stored mapping/crop reused; no universal responsive claim",
+    "S9": "Native contextual reconstruction inspected; independent-motion cleanliness unproven",
+    "S10": "No physical hidden-dust certainty required; abstentions retained",
+    "S14": "Resumption honored; original v1/v2 preserved"
+  },
+  "report": "odd/plans/hero-hybrid-sky-detector-triage-v2.md",
+  "fullCaseMeasurementsAndImageHashes": "output/hero-sky-prototype/production/detector-triage-v2/evidence.json",
+  "annotatedOverview": "output/hero-sky-prototype/production/detector-triage-v2/case-overview.png",
+  "preservation": {"v1v2SourceToolsRecipeApplicationEdited": false, "all24DerivedPanelsNativeSourcePreserved": true},
+  "commandFailureReceipts": [
+    "Exploratory output-generation attempts failed on a metadata-key lookup, missing ImageFont import, NumPy scalar JSON serialization, and missing math import; fixes were bounded, receipts are retained in the full case evidence, no source/tool/app files were changed."
+  ]
+}
