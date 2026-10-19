@@ -1,3 +1,23 @@
+# Bright-region rebuild — padded photographic replacements
+
+`bright_regions.py` is the additive T10 entrypoint. It preserves all 4,666 canvas rows and plans 112 photographic replacement regions (catalog magnitude ≤3), grouped globally on one registered 3840×2160 reference master. Quadrants are review batches, not separately transformed images. Human approval remains pending; this output does not authorize app edits.
+
+## Quick path
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 output/hero-sky-prototype/venv/bin/python -B tools/hero-sky-prototype/bright_regions.py --help
+PYTHONDONTWRITEBYTECODE=1 output/hero-sky-prototype/venv/bin/python -B tools/hero-sky-prototype/bright_regions.py --version validation-t10 --validate-only
+PYTHONDONTWRITEBYTECODE=1 output/hero-sky-prototype/venv/bin/python -B tools/hero-sky-prototype/bright_regions.py --version t10-candidate
+```
+
+Preflight is read-only and checks current catalog/render buffers, source hash, stored projection validation, fixture hash/plane/reference equality, all 112 targets and quadrant counts. A fresh version is immutable; generation refuses an existing destination. The registered 2x fixture is used as the master, so exact preservation is measured against its decoded PNG outside the new union—not against the raw JPEG before reprojection.
+
+Each region derives its own maximum shader half-extent from the live mapped star size and configured twinkle maximum. The 5 master-pixel registration allowance is included inside the opaque core; a 6-pixel feather extends outside it. Overlaps are globally unioned and each connected group is reconstructed once from immutable master context. Context is a real 192×192 window shifted inward at poster edges; completed donor coordinates are checked against every target mask. Source low-frequency structure and deterministic high-/fine-frequency RGB texture are reused, with prominent sources excluded while faint texture can remain. This is a plausible local replacement, not source-peak identity or physical hidden-dust recovery.
+
+`--validate-only` without `region-plan.json` is read-only preflight, never completed success. On a generated version it validates the full 112-target/group census, provenance and parameter hash, exact artifact set and hashes, dimensions, original fixture identity, and decoded outside-mask equality. The generated `CREDITS.txt`, quadrant/contact-sheet previews and summary keep ESO/S. Brunier CC BY 4.0 attribution and pending approval visible. Every output records `approval: pending` and `appEditAllowed: false`. A successful structural check is not human visual acceptance. No app/public assets, legacy generator, input, source, v1/v2 or failed PSF evidence is changed.
+
+---
+
 # Production generator — offline assets, review still required
 
 T5 provides a reproducible full-row pipeline. **No full production run or asset approval is implied by the bounded preflight checks.** The approved twelve samples remain historical evidence; the complete asset must pass plan gates B–C before any hero integration. No application, public assets, dependencies or historical outputs are written.
