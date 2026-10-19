@@ -1,0 +1,77 @@
+{
+  "schema": 1,
+  "candidate": "output/hero-sky-prototype/production/t10-candidate",
+  "codeCommit": "a66683dd1f58c63e9ab2fc4259090ffbc704c240",
+  "codeReview": {
+    "lineage": "review-a7e54757dec5b504",
+    "state": "approved",
+    "authority": "burned",
+    "warning": "R4-001 informational; no correction offered"
+  },
+  "generation": {
+    "job": "job-3",
+    "exitCode": 0,
+    "seconds": 68,
+    "targets": 112,
+    "groups": 105,
+    "editUnionPixels": 181062,
+    "changedPixels": 160801,
+    "outsideMaskDifferentPixels": 0
+  },
+  "completedValidation": {
+    "job": "job-4",
+    "exitCode": 0,
+    "seconds": 8,
+    "mode": "completed-artifact-validation",
+    "passed": true,
+    "writes": false
+  },
+  "preservation": {
+    "job": "job-5",
+    "exitCode": 0,
+    "seconds": 4,
+    "historyFiles": 131,
+    "partialV1Files": 4584,
+    "v2DeclaredFiles": 4606,
+    "humanLayoutPreserved": true,
+    "v1StillPartial": true
+  },
+  "decodedCoverage": {
+    "targetCoresChanged": 112,
+    "groupsEditedOnce": 105,
+    "donorTargetOverlapPixels": 0,
+    "report": "output/hero-sky-prototype/production/validation-t11/t10-candidate-review/review.json"
+  },
+  "visualInspection": {
+    "state": "rejected",
+    "requirementsNotMet": [
+      "S10"
+    ],
+    "reason": "Visible dark and polygonal/geometric fill patches in multiple reconstructed regions.",
+    "examples": [
+      {
+        "id": "catalog-02799",
+        "quadrant": "q1-TL"
+      },
+      {
+        "id": "catalog-00865",
+        "quadrant": "q4-BR"
+      }
+    ],
+    "nativePagesInspected": 5,
+    "targetCountRepresented": 112,
+    "otherViewsInspected": [
+      "t10-candidate/contact-sheet.png",
+      "t10-candidate/390x844@2-composite-opacity1.png",
+      "t10-candidate/1920x1080@2-shifted-opacity1.png"
+    ]
+  },
+  "humanQualityApproval": false,
+  "applicationIntegration": false,
+  "pendingDecision": "Authorize one additional bounded texture correction with unchanged112masks/catalog/crop, or stop and preserve the rejected candidate.",
+  "limitations": [
+    "Structural/native-code approval does not establish image-quality approval.",
+    "Exact photographic counterparts and physical hidden dust are not identified.",
+    "Static [8,-6]CSS shift is diagnostic, not implemented parallax."
+  ]
+}
