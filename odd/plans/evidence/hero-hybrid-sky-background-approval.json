@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "status": "user-approved",
+  "version": "t13-texture-r1",
+  "answerVerbatim": "Lo apruebo",
+  "questionVerbatim": "¿Aprobás `t13-texture-r1` para pasar a integrar el fondo en el hero?",
+  "regionPlanSha256": "990e8b7ff4fc73e4f79d4870ebee0c62adc38a8280593332dfac952edbcc8ce5",
+  "sourceCodeCommit": "8ad23565fca3b5e4c45b95397cd1c4f832131775",
+  "deliveryCommit": "c9eb684627c9a8bd90f566715ba6e45da222ac08",
+  "sourceDirectory": "output/hero-sky-prototype/production/t13-texture-r1",
+  "assets": {
+    "background-1x.webp": {
+      "sha256": "aa494ee8010265dc400b6d8482081a512ca58cb5034289b7459b8a4134c7b951",
+      "bytes": 835166,
+      "dimensions": [
+        1920,
+        1080
+      ]
+    },
+    "background-2x.webp": {
+      "sha256": "da50676da4c8e6a5403d874a6931296c4f17e938824234eff961522635cbf85d",
+      "bytes": 3103668,
+      "dimensions": [
+        3840,
+        2160
+      ]
+    }
+  },
+  "heroIntegrationAuthorized": true,
+  "browserAutomationAuthorized": false,
+  "actualParallaxAuthorized": false,
+  "publishingAuthorized": false,
+  "externalTemporaryCleanupAuthorized": false,
+  "nativeReviewConsent": "provider-owned; this record is not native review consent"
+}
