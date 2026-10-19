@@ -1,5 +1,7 @@
 # Cielo híbrido: hoja de ruta para implementación real
 
+**Actualización S15–S16:** la limpieza fotográfica se limita a las 112 entradas con magnitud ≤3, conservando las 4.666 del canvas. Se reconstruirán regiones acolchadas alrededor de su huella máxima, por cuadrantes con contexto solapado y un solo master/proyección. No se exige identificar cada pico ni recuperar fielmente el polvo interior. Esto reemplaza el matching individual propuesto en las secciones 4–5; la fidelidad visual, ausencia de manchas y aprobación previa a integrar siguen vigentes. Especificación actual: [documento de tareas](../tasks/hero-sky-offline-prototype.md).
+
 **Decisión:** fondo fotográfico limpio local + canvas WebGL actual + estrellas estáticas transparentes del catálogo como respaldo.
 Se conserva el encuadre responsive, la narrativa y la opacidad intencional; la fotografía aporta densidad sin ampliar el catálogo.
 Este documento cierra **T4**, sólo planificación: no ejecuta ni autoriza herramientas, assets o cambios de aplicación.
