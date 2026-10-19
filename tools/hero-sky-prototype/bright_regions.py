@@ -33,6 +33,8 @@ REGISTRATION_PADDING = 5
 FEATHER = 6
 CONTEXT_SIZE = 192
 CONTEXT_HALF = CONTEXT_SIZE // 2
+DONOR_INTERPOLATION_SIGMA = 2.0
+FINE_TEXTURE_GAIN = 0.35
 
 
 def digest(path):
@@ -144,6 +146,52 @@ def planned_masks(shape, selected, centers, sizes, twinkle_factor):
     return union,alpha_union,regions
 
 
+def completed_source_texture(patch, missing, other_targets, info, sigma):
+    """Replace nearest-pixel donor completion with smooth, target-excluded source samples."""
+    ys, xs = np.nonzero(missing)
+    dx, dy = info['donorOffsetSourcePx']
+    nominal_y, nominal_x = ys + dy, xs + dx
+    excluded = recon.star_exclusion(patch) | other_targets
+    donor_valid = ~recon.binary_dilation(missing | excluded, iterations=5)
+    require((nominal_y >= 0).all() and (nominal_y < CONTEXT_SIZE).all() and
+            (nominal_x >= 0).all() and (nominal_x < CONTEXT_SIZE).all(),
+            'Nominal donor coordinates leave the real context')
+    completed = ~donor_valid[nominal_y, nominal_x]
+    unsupported_mask=np.zeros(len(ys),dtype=bool)
+    actual = np.asarray(info['donorLocalPixelsXY']).astype(int)
+    _, nearest = recon.distance_transform_edt(~donor_valid, return_indices=True)
+    expected_nearest = nearest[:, nominal_y, nominal_x].T[:, ::-1]
+    require(np.array_equal(actual, expected_nearest),
+            'Shared donor adapter completion no longer matches its validated source map')
+
+    residual = patch - gaussian_filter(patch, (sigma, sigma, 0))
+    samples = residual[nominal_y, nominal_x].copy()
+    supported=~completed
+    if completed.any():
+        valid_float = donor_valid.astype(np.float32)
+        numerator = gaussian_filter(residual * valid_float[..., None],
+                                   (DONOR_INTERPOLATION_SIGMA, DONOR_INTERPOLATION_SIGMA, 0),
+                                   mode='constant', cval=0)
+        denominator = gaussian_filter(valid_float, DONOR_INTERPOLATION_SIGMA,
+                                      mode='constant', cval=0)
+        support=denominator[nominal_y[completed], nominal_x[completed]]
+        interpolable=support>1e-12
+        completed_samples=samples[completed]
+        completed_samples[interpolable]=(numerator[nominal_y[completed][interpolable],
+          nominal_x[completed][interpolable]]/support[interpolable,None])
+        # No valid context support means no texture sample; never repeat a nearest
+        # donor or invent a synthetic value in the unsupported part of a fill.
+        completed_samples[~interpolable]=0
+        supported[completed]=interpolable
+        unsupported_mask[completed]=~interpolable
+        samples[completed]=completed_samples
+    samples[supported]-=samples[supported].mean(axis=0)
+    samples[unsupported_mask]=0
+    require(not np.any(samples[unsupported_mask]),
+            'Unsupported donor texture rows must remain zero after centering')
+    return samples, int(completed.sum()), int(unsupported_mask.sum()), unsupported_mask
+
+
 def reconstruct_master(original, union, alpha_union, group_order=None):
     """Edit each global component once; support and donors always read original."""
     labels,n=label(union,structure=np.ones((3,3),dtype=np.uint8))
@@ -176,13 +224,35 @@ def reconstruct_master(original, union, alpha_union, group_order=None):
         donor_x,donor_y=donors.astype(int).T
         require(not global_targets[donor_y,donor_x].any(),
                 f'Completed donor samples overlap a global bright-target mask in group {group_id}')
-        # Add a bounded finer-scale source texture layer so inferred regions retain
-        # faint point structure rather than only broad grain. Strong-source and
-        # target exclusions are inherited from the validated completed donor map.
-        fine_residual=patch-gaussian_filter(patch,(0.8,0.8,0))
-        fine_texture=fine_residual[donor_y,donor_x]
-        fine_texture-=fine_texture.mean(axis=0)
-        fill[missing]+=0.35*fine_texture
+        # The shared adapter's nearest-valid completion creates Voronoi-like
+        # repeated texture when most translated donor positions are excluded.
+        # Retain its support/ranking/coordinates, but interpolate residuals only
+        # from valid original-context donors for both recorded texture bands.
+        structure_texture,completed_pixels,unsupported,_=completed_source_texture(
+            patch,missing,other_targets,info,2.5)
+        fine_texture,_,fine_unsupported,fine_unsupported_mask=completed_source_texture(
+            patch,missing,other_targets,info,0.8)
+        fine_residual=patch-gaussian_filter(patch,(2.5,2.5,0))
+        old_structure_texture=fine_residual[donor_y,donor_x]
+        old_structure_texture-=old_structure_texture.mean(axis=0)
+        fill[missing]-=old_structure_texture
+        fill[missing]+=structure_texture
+        fill_before_fine=fill[missing].copy()
+        fine_contribution=FINE_TEXTURE_GAIN*fine_texture
+        fill[missing]+=fine_contribution
+        require(np.allclose(fill[missing]-fill_before_fine,fine_contribution,atol=1e-10,rtol=1e-10),
+                'Fine source texture must be added at its recorded gain')
+        require(not np.any(fine_texture[fine_unsupported_mask]),
+                'Unsupported fine texture rows must remain zero through fill assembly')
+        info['method']=('Weighted source structure + hard-boundary biharmonic continuation; '
+          '2.5px and 0.8px source RGB residuals with 2px normalized masked donor interpolation; '
+          'all bright targets excluded, no nearest-pixel texture completion')
+        info['donorTextureInterpolationSigmaPx']=DONOR_INTERPOLATION_SIGMA
+        info['donorTextureScalesSigmaPx']=[2.5,0.8]
+        info['fineTextureGain']=FINE_TEXTURE_GAIN
+        info['donorPixelsInterpolated']=completed_pixels
+        info['donorTextureUnsupportedPixels']=unsupported
+        info['fineTextureUnsupportedPixels']=fine_unsupported
         local_alpha=alpha_union[y0:y1,x0:x1]
         require(np.isfinite(fill[missing]).all(),f'Nonfinite fill in group {group_id}')
         blended=patch*(1-local_alpha[...,None])+fill*local_alpha[...,None]
@@ -195,7 +265,14 @@ def reconstruct_master(original, union, alpha_union, group_order=None):
           'otherTargetMaskPixels':int(other_targets.sum()),
           'donorGlobalTargetOverlapPixels':0,'method':info.get('method'),
           'donorOffsetSourcePx':info.get('donorOffsetSourcePx'),
-          'donorCompletedPixels':info.get('donorCompletedPixels',0),'donorPixels':info.get('donorCopiedPixels')})
+          'donorCompletedPixels':info.get('donorCompletedPixels',0),
+          'donorPixelsInterpolated':info.get('donorPixelsInterpolated',0),
+          'donorTextureUnsupportedPixels':info.get('donorTextureUnsupportedPixels',0),
+          'fineTextureUnsupportedPixels':info.get('fineTextureUnsupportedPixels',0),
+          'donorTextureInterpolationSigmaPx':info.get('donorTextureInterpolationSigmaPx'),
+          'donorTextureScalesSigmaPx':info.get('donorTextureScalesSigmaPx'),
+          'fineTextureGain':info.get('fineTextureGain'),
+          'donorPixels':info.get('donorCopiedPixels')})
     return result,feather_map,groups
 
 
