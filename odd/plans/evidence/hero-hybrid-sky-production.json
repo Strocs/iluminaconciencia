@@ -1,0 +1,126 @@
+{
+  "schema": 1,
+  "unit": "T7 RESULTS-TRIAGE/REPORT",
+  "decision": {
+    "completeAssetSuitableForHumanApproval": false,
+    "humanApproval": "pending",
+    "appEditAllowed": false,
+    "reason": "4094 unresolved rows and visible photographic counterparts remain; previews show duplication with the current catalog layer.",
+    "distinguish": {
+      "qualityFailure": "The complete-cleanup objective is not met: photographic counterparts remain visible in the inspected full/composite previews.",
+      "candidateUncertainty": "510 treated/merged rows have inferred reconstruction pending full visual review; hidden source pixels are unknowable. This is not proof of visible blotches."
+    }
+  },
+  "inputs": {
+    "productionDirectory": "output/hero-sky-prototype/production/v2",
+    "manifestSha256": "9ce97da58901d63b741ec36ed99a8666df8197c433a81ec58a79fdbc680a5107",
+    "source": "ESO/S. Brunier eso0932a.jpg, RGB 6000x3000",
+    "sourceSha256": "60400c92c54b7c1bd12299c69e83b16e5b6256e7dabacc478c021758ecd28179",
+    "recipe": "local-connected-context-texture-v1",
+    "mapping": "FK5 J2000 to Galactic; stored Orion rotation; mirrored STG; periodic X, nonperiodic Y",
+    "approvalInManifest": "pending-complete-asset-review"
+  },
+  "completedChecks": [
+    {
+      "check": "Full production current-host job-1",
+      "exit": 0,
+      "duration": "244s total; driver 237.878s",
+      "observed": "structuralInternalValidation=true; 445 treated + 65 merged + 62 nonobservable + 4094 unresolved; mask union 131005 px; changed 119748 px; outside-mask differences 0"
+    },
+    {
+      "check": "Separate public CLI --version v2 --validate-only job-2",
+      "exit": 0,
+      "duration": "22s",
+      "observed": "mode=completed-artifact-validation; passed=true; writes=false; counts and preservation agree; 131 historical hashes and all 4584 partial-v1 files unchanged; pre-existing app/layout.tsx unchanged"
+    },
+    {
+      "check": "Read-only inventory aggregation",
+      "exit": 0,
+      "observed": "4666 rows reconcile exactly; 445 treated source groups; 4,094 unresolved all footprintVisible conservative; all 445 groups status treated"
+    },
+    {
+      "check": "Direct visual read of linked v2 PNG previews",
+      "exit": 0,
+      "observed": "Panorama/dust continuity looks coherent; duplicate unresolved photo/catalog stars evident in composite; no obvious global blotch in inspected full-frame views; no blanket visual acceptance"
+    }
+  ],
+  "inventory": {
+    "rows": 4666,
+    "counts": {"treated": 445, "merged": 65, "nonobservable": 62, "unresolved": 4094},
+    "treatedSourceGroups": 445,
+    "treatedAndMergedRows": 510,
+    "footprintVisible": {"allRows": 4666, "unresolved": 4094, "unresolvedQuadVisible": 4043, "unresolvedHaloOnly": 62},
+    "geometry": {"centerInsideReference": 4602, "maximumRendererQuadVisible": 4613, "haloOnlyRows": 64, "outsideRendererQuad": 53},
+    "reasons": {
+      "Ambiguous neighboring source peaks inside measured alignment uncertainty": 2673,
+      "Mask includes unidentified bright neighbor; collateral-removal review required": 1096,
+      "Missing or truncated photograph-derived connected PSF/halo": 262,
+      "Broad/saturated excess without distinguishable local peak": 45,
+      "Visible prediction lacks nonperiodic Y context; no polar wrapping": 18,
+      "Context source texture inferred; pending visual review": 510
+    },
+    "treatedMergedMaskEvidence": {"rowsWithSaturatedChannelSamples": 506, "rowsWithBrightNeighborsInFootprint": 13, "truncatedFootprints": 0, "maximumEllipseSemiaxisPx": 10.556}
+  },
+  "preservation": {
+    "nativeEditUnionPixels": 131005,
+    "changedPixels": 119748,
+    "outsideMaskDifferentPixels": 0,
+    "v1PartialFilesPreserved": 4584,
+    "historicalHashesPreserved": 131,
+    "preexistingHumanAppLayoutPreserved": true,
+    "v1Immutable": true
+  },
+  "visualEvidence": {
+    "credit": "ESO/S. Brunier / CC BY 4.0 (recorded in source panels)",
+    "inspected": [
+      "contact-sheet.png",
+      "1920x1080@1-background-opacity1.png",
+      "1920x1080@1-shifted-opacity1.png",
+      "1920x1080@1-composite-opacity1.png",
+      "1920x1080@1-background-opacity0.12.png",
+      "390x844@2-background-opacity1.png",
+      "Betelgeuse-native.png",
+      "Sirius-native.png",
+      "Alnitak-native.png",
+      "catalog-00019-native.png",
+      "catalog-00000-native.png",
+      "catalog-00880-native.png",
+      "catalog-00014-native.png",
+      "1920x1080@2-dense-candidate-native.png",
+      "1920x1080@2-edge-native.png"
+    ],
+    "actualVerdict": "Visual continuity is promising in sampled full frames and named sample crops, but unresolved counterpart duplication is visible and the full asset is not approvable yet.",
+    "limitations": ["Not all 4094 unresolved native tiles inspected", "No browser/render/runtime/performance review", "No integrated hero composition review", "Static shift +8/-6 CSS is diagnostic, not parallax acceptance", "No names inferred for catalog IDs from statistics"]
+  },
+  "rootCause": {
+    "demonstratedOverconservatism": "production_inventory.py:61-83 rejects any row with >1 local maximum in a 6px radius without scoring predicted-center consistency; 2673 rows are bucketed this way.",
+    "notEstablished": "Whether each multi-peak case is a neighboring source, true blend, or detector ambiguity is not established; automatic peak choice is unsafe.",
+    "realSafetyLimits": "1096 neighbor-contaminated footprints, 262 absent/truncated profiles, 45 broad/saturated cases, 18 nonperiodic-pole contexts remain unresolved.",
+    "supportingLocations": [
+      "tools/hero-sky-prototype/production_inventory.py:61-103",
+      "tools/hero-sky-prototype/production_inventory.py:220",
+      "tools/hero-sky-prototype/reconstruct_background.py:113-149",
+      "tools/hero-sky-prototype/reconstruct_background.py:151-186"
+    ]
+  },
+  "recommendedNextStep": {
+    "unit": "Read-only, stratified detector triage, first on multi-peak bucket; then sample neighbor, truncated, saturated, and pole buckets.",
+    "deliver": "For each reviewed case, compare predicted center, candidate offsets/excesses, registration uncertainty, native source context, and overlap mask; distinguish incidental neighbor from ambiguous identity.",
+    "constraints": ["No automatic peak selection", "No weakening donor/mask safeguards", "Preserve faint population, native context reconstruction, crop and opacity", "No 0.5 CSS px or arbitrary minimum cleanup percentage", "Only propose bounded algorithm correction if case evidence demonstrates one"]
+  },
+  "specVerdicts": {
+    "S1": "partial: hybrid density evaluated; unresolved duplicates prevent complete acceptance",
+    "S2": "respected: opacity 1 and 0.12 views inspected; canvas opacity unchanged",
+    "S3": "satisfied for analysis-before-app-edit; no app edit",
+    "S5": "images generated and inspected; complete-asset human approval pending",
+    "S6": "perceptual sharpness/continuity judgment; no arbitrary subpixel or percentage gate",
+    "S7": "shared stored mapping and one mobile crop inspected; no universal responsive claim",
+    "S9": "partial: contextual reconstruction inspected, but cleanup for independent movement remains pending for unresolved counterparts",
+    "S10": "no obvious global blotch in inspected views; cannot extrapolate all rows",
+    "S11": "prior approval covered twelve sample candidates only, not this complete asset",
+    "S12": "implementation authorization remains gated on S5 and plan C; no integration",
+    "S14": "explicit resumption respected: fresh v2 and preserved partial v1; no asset or integration approval"
+  },
+  "report": "odd/plans/hero-hybrid-sky-production-review.md",
+  "evidence": "odd/plans/evidence/hero-hybrid-sky-production.json"
+}
