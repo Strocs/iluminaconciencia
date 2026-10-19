@@ -1,3 +1,19 @@
+# Approved hero sky delivery (`t13-texture-r1`)
+
+The only promoted photo files are byte-identical copies from the explicitly approved production directory. Their approval record is `odd/plans/evidence/hero-hybrid-sky-background-approval.json`; public `manifest.json` binds the approval plan hash, photo hashes, canonical bounds and CC BY 4.0 source/adaptations. The photo files/history remain unchanged.
+
+The transparent catalog-star fallback was generated with the existing `production_assets.svg` helper, from the immutable exported `current-sky.json` catalog/mapped profiles/projection and `production-recipe.json` radial bands. Its manifest records snapshot, catalog, mapper, reference, recipe, and generator hashes. **Do not refresh/overwrite the historical input snapshot.** The approved snapshot SHA-256 is `dc331ea71325bb99b7e95ca3e8e779f0429a34020f8eef2b35da0b889a3c9535`; only regenerate after validating that identity, using the existing helper:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 output/hero-sky-prototype/venv/bin/python -B -c 'import hashlib,json,pathlib,sys; sys.path.insert(0,"tools/hero-sky-prototype"); import production_assets as assets; root=pathlib.Path("."); source=root/"output/hero-sky-prototype/input/current-sky.json"; assert hashlib.sha256(source.read_bytes()).hexdigest()=="dc331ea71325bb99b7e95ca3e8e779f0429a34020f8eef2b35da0b889a3c9535"; data=json.loads(source.read_text()); recipe=json.loads((root/"tools/hero-sky-prototype/production-recipe.json").read_text()); assets.svg(data,root/"public/images/hero/sky/t13-texture-r1",recipe)'
+```
+
+This deterministic one-off adds no CLI or dependency. The external SVG retains all 4,666 catalog rows and current 16-band profiles. Its raw size is 14,579,681 bytes; the parent's approximately 1,098,961-byte gzip figure is an estimate, **not measured HTTP transfer or raster cost**. Browser SVG-as-image sizing, transfer, decode, and rasterization await authorized T15 browser verification.
+
+## Hero delivery usage
+
+`HeroSky` declares one native `<picture>/<img>` photo and one external SVG catalog image in SSR. It selects the approved 1x/2x files directly (no Next optimizer), retains the photo on all runtime paths, and switches catalog stars only after a successful first draw at non-zero host size. `computeSkyCrop` produces the one crop shared with the renderer and an asset-plane placement; canvas geometry remains the untransformed host box. CSS container-query placement derives its coefficients from `SKY_REFERENCE` and `PORTRAIT_GROUP`. The group fade is 0.12→1 by progress 0.7; canvas opacity remains 1. The visible credit is a sibling of the aria-hidden artwork, placed at the top of the z-0 sky host, outside the lower terrain/light-pollution occlusion area; photo layering is unchanged.
+
 # Bright-region rebuild — padded photographic replacements
 
 `bright_regions.py` is the additive T10 entrypoint. It preserves all 4,666 canvas rows and plans 112 photographic replacement regions (catalog magnitude ≤3), grouped globally on one registered 3840×2160 reference master. Quadrants are review batches, not separately transformed images. Human approval remains pending; this output does not authorize app edits.

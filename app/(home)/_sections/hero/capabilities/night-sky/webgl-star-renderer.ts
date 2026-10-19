@@ -1,6 +1,6 @@
 import { nightSkyConfig } from './config'
 import type { MappedStarData } from './star-mapper'
-import { computeSkyCrop, type SkyCrop } from './sky-crop'
+import type { SkyCrop } from './sky-crop'
 
 export interface WebglStarViewport {
   readonly width: number
@@ -9,8 +9,8 @@ export interface WebglStarViewport {
 }
 
 export interface WebglStarRenderer {
-  resize(viewport: WebglStarViewport): void
-  draw(timeMs: number): void
+  resize(viewport: WebglStarViewport, crop: SkyCrop): void
+  draw(timeMs: number): boolean
   destroy(): void
 }
 
@@ -173,18 +173,16 @@ export function createWebglStarRenderer(canvas: HTMLCanvasElement, data: MappedS
   let destroyed = false
 
   return {
-    resize: (nextViewport) => {
-      if (destroyed) return
+    resize: (nextViewport, nextCrop) => {
+      if (destroyed || !(nextViewport.width > 0) || !(nextViewport.height > 0)) return
       viewport = nextViewport
-      if (nextViewport.height > 0) {
-        crop = computeSkyCrop(nextViewport.width / nextViewport.height)
-      }
+      crop = nextCrop
       canvas.width = Math.max(1, Math.round(nextViewport.width * nextViewport.devicePixelRatio))
       canvas.height = Math.max(1, Math.round(nextViewport.height * nextViewport.devicePixelRatio))
       gl.viewport(0, 0, canvas.width, canvas.height)
     },
     draw: (timeMs) => {
-      if (destroyed || !viewport) return
+      if (destroyed || !viewport || gl.isContextLost()) return false
       gl.clearColor(0, 0, 0, 0)
       gl.clear(gl.COLOR_BUFFER_BIT)
       gl.enable(gl.BLEND)
@@ -201,6 +199,7 @@ export function createWebglStarRenderer(canvas: HTMLCanvasElement, data: MappedS
       gl.uniform1f(starResources.twinkleSpeedMultiplier, nightSkyConfig.twinkle.speedMultiplier)
       gl.drawElementsInstanced(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0, starCount)
       gl.bindVertexArray(null)
+      return !gl.isContextLost() && gl.getError() === gl.NO_ERROR
     },
     destroy: () => {
       if (destroyed) return

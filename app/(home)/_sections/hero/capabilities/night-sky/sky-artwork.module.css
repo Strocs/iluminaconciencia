@@ -1,0 +1,107 @@
+.host {
+  isolation: isolate;
+  overflow: hidden;
+  container-type: size;
+}
+
+.artwork {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  opacity: 0.12;
+}
+
+.photoPlane,
+.catalogStars {
+  position: absolute;
+  display: block;
+  width: 100cqw;
+  height: auto;
+  aspect-ratio: var(--sky-reference-aspect);
+  max-width: none;
+}
+
+.photoPlane {
+  top: calc((100cqh - var(--sky-wide-height-cqw)) / 2);
+  left: 0;
+}
+
+.photoPlane img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+}
+
+.catalogStars {
+  top: calc((100cqh - var(--sky-wide-height-cqw)) / 2);
+  left: 0;
+  visibility: visible;
+}
+
+.catalogStars[data-hero-sky-stars-visible='false'] {
+  visibility: hidden;
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  visibility: hidden;
+  opacity: 1;
+}
+
+.canvas[data-hero-sky-ready='true'] {
+  visibility: visible;
+}
+
+.credit {
+  position: absolute;
+  z-index: 1;
+  top: 0.75rem;
+  right: 0.75rem;
+  max-width: min(28rem, 90%);
+  color: rgb(255 255 255 / 0.88);
+  font-size: 0.625rem;
+  line-height: 1.4;
+  text-align: right;
+  text-shadow: 0 1px 3px #030712;
+}
+
+.credit a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.host .artwork[data-hero-sky-photo-error='true'] .photoPlane {
+  display: none;
+}
+
+@container (max-aspect-ratio: 16 / 9) {
+  .photoPlane,
+  .catalogStars {
+    top: 0;
+    left: clamp(
+      calc(100cqw - 177.7777777778cqh),
+      calc(50cqw - var(--sky-middle-center-cqh)),
+      0px
+    );
+    width: auto;
+    height: 100cqh;
+  }
+}
+
+@container (aspect-ratio < 1) {
+  .photoPlane,
+  .catalogStars {
+    left: clamp(
+      calc(100cqw - 177.7777777778cqh),
+      calc(50cqw - var(--sky-reference-center-cqh)),
+      0px
+    );
+  }
+}

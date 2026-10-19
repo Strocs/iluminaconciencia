@@ -1,5 +1,7 @@
 import { gsap } from 'gsap'
 import { nightSkyConfig } from './config'
+import { computeSkyArtworkPlacement } from './sky-crop'
+import { nightSkyAssets } from './sky-assets'
 import type { HeroSkyCapability } from './contracts'
 import { mapStarCatalog } from './star-mapper'
 import { starCatalog } from './star-catalog'
@@ -17,9 +19,6 @@ type HeroSkyLifecycleState = 'initializing' | 'active' | 'fallback' | 'destroyed
 
 const reducedMotionQuery = '(prefers-reduced-motion: reduce)'
 
-const isRootRelativeLocalUrl = (url: string): boolean =>
-  url.startsWith('/') && !url.startsWith('//') && !url.includes('\\')
-
 export function createNightSkyCapability({
   root,
   config
@@ -28,79 +27,62 @@ export function createNightSkyCapability({
   config: NightSkyConfig
 }): HeroSkyCapability | null {
   const canvas = root.querySelector<HTMLCanvasElement>('[data-hero-stars]')
+  const photo = root.querySelector<HTMLImageElement>('[data-hero-sky-photo]')
+  const photoPlane = root.querySelector<HTMLElement>('[data-hero-sky-photo-plane]')
   const fallbackImage = root.querySelector<HTMLImageElement>('[data-hero-sky-fallback]')
-  if (!canvas) return null
+  const artwork = root.querySelector<HTMLElement>('[data-hero-sky-artwork]')
+  if (!canvas || !photo || !photoPlane || !fallbackImage || !artwork) return null
 
   let lifecycleState: HeroSkyLifecycleState = 'initializing'
   let renderer: WebglStarRenderer | undefined
   let resizeGeneration = 0
   let destroyed = false
-  let viewport: NightSkyViewport = { width: 1, height: 1, devicePixelRatio: 1 }
+  let attemptedInitialization = false
+  let viewport: NightSkyViewport = { width: 0, height: 0, devicePixelRatio: 1 }
   let timeMs = 0
   let rafId = 0
   const fadeTimeline = gsap.timeline({ paused: true })
-  fadeTimeline.fromTo(
-    canvas,
-    { opacity: config.starOpacity.initial },
-    {
-      opacity: config.starOpacity.full,
-      duration: config.starOpacity.fullProgress,
-      ease: 'none'
-    },
-    0
-  )
+  fadeTimeline.fromTo(artwork, { opacity: config.starOpacity.initial }, {
+    opacity: config.starOpacity.full,
+    duration: config.starOpacity.fullProgress,
+    ease: 'none'
+  }, 0)
   fadeTimeline.add(() => undefined, 1)
 
-  const isReducedMotion = (): boolean => window.matchMedia(reducedMotionQuery).matches
   const getViewport = (): NightSkyViewport => {
     const { width, height } = canvas.getBoundingClientRect()
     return {
-      width: Math.max(1, width),
-      height: Math.max(1, height),
+      width,
+      height,
       devicePixelRatio: Math.min(window.devicePixelRatio || 1, config.maximumDevicePixelRatio)
     }
   }
-  const fallbackSource = fallbackImage?.dataset.fallbackSrc
-  const showFallback = (): void => {
-    if (!fallbackImage || !fallbackSource || !isRootRelativeLocalUrl(fallbackSource)) return
-    fallbackImage.hidden = false
-    fallbackImage.src = fallbackSource
+  const setArtworkPlacement = (size: NightSkyViewport): ReturnType<typeof computeSkyArtworkPlacement> | null => {
+    if (!(size.width > 0) || !(size.height > 0)) return null
+    const placement = computeSkyArtworkPlacement(size.width, size.height, nightSkyAssets.bounds)
+    for (const layer of [photoPlane, fallbackImage]) {
+      layer.style.width = `${placement.width}px`
+      layer.style.height = `${placement.height}px`
+      layer.style.left = `${placement.left}px`
+      layer.style.top = `${placement.top}px`
+      layer.style.transform = 'none'
+    }
+    return placement
   }
-  const hideFallback = (): void => {
-    if (!fallbackImage) return
-    // Drop src so the browser stops requesting it and no stale error re-fires.
-    fallbackImage.hidden = true
-    fallbackImage.removeAttribute('src')
+  const showFallback = (): void => {
+    fallbackImage.dataset.heroSkyStarsVisible = 'true'
   }
   const setLifecycleState = (next: HeroSkyLifecycleState): void => {
     lifecycleState = next
     canvas.dataset.heroSkyState = next
-    if (next === 'active') hideFallback()
-    else if (next === 'fallback') showFallback()
-  }
-  const renderFrame = (): void => {
-    if (lifecycleState === 'active') renderer?.draw(timeMs)
-  }
-  const loop = (nowMs: number): void => {
-    timeMs = nowMs
-    renderFrame()
-    rafId = requestAnimationFrame(loop)
-  }
-  const startLoop = (): void => {
-    if (rafId !== 0) return
-    rafId = requestAnimationFrame(loop)
+    if (next === 'active') return
+    delete canvas.dataset.heroSkyReady
+    showFallback()
   }
   const stopLoop = (): void => {
     if (rafId === 0) return
     cancelAnimationFrame(rafId)
     rafId = 0
-  }
-  const applyViewport = (): void => {
-    if (destroyed) return
-    viewport = getViewport()
-    if (lifecycleState !== 'active') return
-    renderer?.resize(viewport)
-    renderFrame()
   }
   const enterFallback = (): void => {
     if (destroyed) return
@@ -109,10 +91,73 @@ export function createNightSkyCapability({
     renderer = undefined
     setLifecycleState('fallback')
   }
+  const drawAndActivate = (timeMs: number): boolean => {
+    if (!renderer || !renderer.draw(timeMs)) return false
+    setLifecycleState('active')
+    canvas.dataset.heroSkyReady = 'true'
+    fallbackImage.dataset.heroSkyStarsVisible = 'false'
+    return true
+  }
+  const renderFrame = (timeMs: number): boolean => {
+    if (lifecycleState !== 'active' || !renderer) return false
+    try {
+      if (renderer.draw(timeMs)) return true
+    } catch {
+      enterFallback()
+      return false
+    }
+    enterFallback()
+    return false
+  }
+  const loop = (nowMs: number): void => {
+    rafId = 0
+    timeMs = nowMs
+    if (!renderFrame(timeMs) || destroyed) return
+    rafId = requestAnimationFrame(loop)
+  }
+  const startLoop = (): void => {
+    if (rafId !== 0 || lifecycleState !== 'active') return
+    rafId = requestAnimationFrame(loop)
+  }
+  const initializeWhenSized = (size: NightSkyViewport, placement: ReturnType<typeof computeSkyArtworkPlacement>): void => {
+    if (attemptedInitialization || lifecycleState !== 'initializing' || destroyed || !(size.width > 0) || !(size.height > 0)) return
+    attemptedInitialization = true
+    if (reducedMotionMedia.matches || !document.createElement('canvas').getContext('webgl2')) {
+      setLifecycleState('fallback')
+      return
+    }
+    try {
+      renderer = createWebglStarRenderer(canvas, mapStarCatalog(starCatalog))
+      renderer.resize(size, placement.crop)
+      if (!drawAndActivate(timeMs)) enterFallback()
+    } catch {
+      enterFallback()
+    }
+  }
+  const applyViewport = (): void => {
+    if (destroyed) return
+    viewport = getViewport()
+    const placement = setArtworkPlacement(viewport)
+    if (!placement) return
+    if (lifecycleState === 'initializing') {
+      initializeWhenSized(viewport, placement)
+      return
+    }
+    if (lifecycleState !== 'active') return
+    try {
+      renderer?.resize(viewport, placement.crop)
+      renderFrame(timeMs)
+    } catch {
+      enterFallback()
+    }
+  }
   const onContextLost = (event: Event): void => {
     event.preventDefault()
     if (destroyed || lifecycleState !== 'active') return
     enterFallback()
+  }
+  const onPhotoError = (): void => {
+    artwork.dataset.heroSkyPhotoError = 'true'
   }
   const onResize = (): void => {
     const currentResize = ++resizeGeneration
@@ -124,31 +169,15 @@ export function createNightSkyCapability({
   const observer = new ResizeObserver(onResize)
   const reducedMotionMedia = window.matchMedia(reducedMotionQuery)
   const onReducedMotionChange = (event: MediaQueryListEvent): void => {
-    // Preference switched to reduced while the sky is live: freeze it into the static image.
-    if (event.matches && lifecycleState !== 'fallback' && lifecycleState !== 'destroyed') {
-      enterFallback()
-    }
+    if (event.matches && lifecycleState !== 'fallback' && lifecycleState !== 'destroyed') enterFallback()
   }
 
   canvas.addEventListener('webglcontextlost', onContextLost)
-  fallbackImage?.addEventListener('error', hideFallback)
+  photo.addEventListener('error', onPhotoError)
+  if (photo.complete && photo.naturalWidth === 0) onPhotoError()
   reducedMotionMedia.addEventListener('change', onReducedMotionChange)
   observer.observe(canvas)
   applyViewport()
-
-  if (isReducedMotion() || !document.createElement('canvas').getContext('webgl2')) {
-    // Reduced motion (or WebGL2 unavailable): render the static sky image instead.
-    enterFallback()
-  } else {
-    try {
-      renderer = createWebglStarRenderer(canvas, mapStarCatalog(starCatalog))
-      renderer.resize(viewport)
-      setLifecycleState('active')
-      renderFrame()
-    } catch {
-      enterFallback()
-    }
-  }
 
   return {
     onProgress: (progress) => fadeTimeline.progress(progress),
@@ -159,8 +188,8 @@ export function createNightSkyCapability({
     stop: () => {
       if (rafId === 0) return
       stopLoop()
-      // Deterministic freeze: draw one final frame with time 0.
-      renderer?.draw(0)
+      if (lifecycleState === 'active') renderFrame(0)
+      timeMs = 0
     },
     destroy: () => {
       if (destroyed) return
@@ -169,7 +198,7 @@ export function createNightSkyCapability({
       fadeTimeline.kill()
       observer.disconnect()
       canvas.removeEventListener('webglcontextlost', onContextLost)
-      fallbackImage?.removeEventListener('error', hideFallback)
+      photo.removeEventListener('error', onPhotoError)
       reducedMotionMedia.removeEventListener('change', onReducedMotionChange)
       renderer?.destroy()
       renderer = undefined

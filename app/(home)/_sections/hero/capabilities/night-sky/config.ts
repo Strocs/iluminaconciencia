@@ -1,6 +1,5 @@
 export const nightSkyConfig = {
   maximumDevicePixelRatio: 2,
-  fallbackImagePath: '/images/hero/hero-sky-fallback.svg',
   twinkle: {
     /** Twinkle amplitude: 0 = no twinkle, higher = stronger pulsing. */
     amplitude: 0.06,
