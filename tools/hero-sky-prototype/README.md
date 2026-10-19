@@ -1,3 +1,64 @@
+# Production generator — offline assets, review still required
+
+T5 provides a reproducible full-row pipeline. **No full production run or asset approval is implied by the bounded preflight checks.** The approved twelve samples remain historical evidence; the complete asset must pass plan gates B–C before any hero integration. No application, public assets, dependencies or historical outputs are written.
+
+## Quick path (repository root)
+
+```sh
+# Read-only preflight: source/provenance, live module hashes, pinned packages,
+# recipe, stored rotation, independent geometry and complete catalog census.
+PYTHONDONTWRITEBYTECODE=1 output/hero-sky-prototype/venv/bin/python -B tools/hero-sky-prototype/generate-production.py --version v1 --validate-only
+
+# Parent only: potentially long full generation, fresh v1 reserved for first run.
+PYTHONDONTWRITEBYTECODE=1 output/hero-sky-prototype/venv/bin/python -B tools/hero-sky-prototype/generate-production.py --version v1
+
+# Read-only completed-artifact validation after generation.
+PYTHONDONTWRITEBYTECODE=1 output/hero-sky-prototype/venv/bin/python -B tools/hero-sky-prototype/generate-production.py --version v1 --validate-only
+```
+
+Use `--help` for the complete interface. Version names match `[a-z][a-z0-9-]{0,47}`; no paths, uppercase, separators or output override. All writes are confined to `output/hero-sky-prototype/production/<version>/`. Generation refuses **any existing directory**, even empty/incomplete, before writing. Symlink output ancestors are rejected. A failed generation leaves its incomplete evidence intact; select a fresh version, never overwrite/resume history.
+
+Validation writes nothing. Without `manifest.json` it performs **preflight only**, even for an existing incomplete directory: `artifactsValidated:false` is not completion. With a manifest it additionally checks the exact artifact set, hashes/bytes/decoded dimensions, snapshot recipe/export, row/group/donor reconciliation, external SVG safety/population, canonical dimensions and decoded native outside-mask equality. Drift/errors exit 1 with `Error:` on stderr; argparse usage errors exit 2. Exit 0 never grants visual approval or means every counterpart was removed.
+
+Allow a **7200-second finite parent-run bound** initially; this is a conservative scheduling allowance, not a measured runtime. Full throughput/peak memory remain unmeasured. The worker does not launch full processing. Local solves are 192×192 contexts, not full-frame solves/float RGB accumulators per star. One global union/label allocation is used, and only connected groups no larger than 64 source pixels are eligible for donor inference. Large/dense groups remain explicitly unresolved rather than degrading to flat fills. Generation prints compact elapsed time, reconciled counts, preservation and preview locator; deterministic pixel/manifest data excludes wallclock values.
+
+## Reproducible inputs and inventory
+
+`production-recipe.json` pins the four installed direct packages, fixed source SHA, deterministic tie rules, seed (no stochastic pixels), local search/detection settings, group bound, WebP95 and preview parameters. No installs/network/services/AI are needed. Historical `probe.py`, `constellation_review.py`, `reconstruct_background.py`, source, landmarks and reports stay unchanged. Their validation owners verify the one stored Orion-seeded rotation and provenance; there is no blind calibration or per-device warp.
+
+The exporter remains the owner of actual TypeScript execution and export shape. Its no-argument command/format is unchanged. Additive `node tools/hero-sky-prototype/export-inputs.mjs --output DIRECTORY` writes the same `current-sky.json` there; the production CLI supplies only its newly created version directory. Never invoke the historical default against immutable input. Generation compares the fresh actual-module snapshot to the independently validated historical input, and rechecks input/code hashes after processing.
+
+Every exported row has stable `catalog-NNNNN` ID, full row, predicted source coordinate, renderer-footprint evidence, local detection candidates/noise/threshold, status/reason and group/mask/donor evidence where applicable. Counts reconcile to the exported N (currently 4666), not twelve. All **64 center-outside catalog-envelope rows** still receive photographic checks: only 11 of those have an actual maximum-size renderer quad intersecting the canonical rectangle, but photographic halos can be larger. Renderer-quad nonintersection never discards a photographic candidate. Every unresolved row gets an explicit source-native preview locator.
+
+States are exclusive: `treated`, `merged` into a treated connected source group, `nonobservable` with no locally distinguishable peak above recorded noise, or `unresolved` with an actionable reason. Nonobservable is not removal success. The twelve validated inspected identities/centers take precedence (including both identical Alnitak components), preserving the approved samples rather than rematching them blindly. Other local peak selection searches six source pixels (the existing alignment uncertainty), requires a noise-supported distinguishable peak, and rejects ambiguous neighbors. Matching radius is unrelated to the canvas quad. Identical Alnitak components and overlapping masks share a single connected intervention. X wraps at the native panorama seam; Y never wraps. Saturation/seam contexts and the inspected samples' previously disclosed neighbor warnings are explicit review warnings, never quality passes; unknown neighbors, truncation and unsupported donors remain unresolved.
+
+The photograph-derived connected/elliptical core/halo mask and feather reuse the sample implementation. Its covariance-derived radii have the existing 4px floor and 26px ceiling, with connected wings checked at 32px. This can overmask small/faint profiles and miss broader halos: inspect these cases, not just counts. Faint population outside masks is byte-exact in the native derivative; faint stars inside inferred masks may be lost. Reconstruction reuses weighted low-frequency structure, biharmonic continuation and ranked/completed source high-frequency RGB donors. Groups blend once from immutable original pixels; nearby masks are excluded from donors, not sequentially erased. Compatible texture is inferred, not recovered physical dust.
+
+A 192×192 context may contain several independent groups. Only the **current connected group's mask** enters its solve and 64px extent guard; all other target masks are excluded from structure support and from the five-pixel-guarded donor domain, never added to that group's unknown pixels. `infer_group` calls unchanged `reconstruct_background.infer_patch` when no other masks occur. Otherwise its narrow adapter reuses `star_exclusion` / `continue_structure` and preserves the original donor ranking/completion method: the historical two-argument helper has no separate support/donor-exclusion parameter. Completed donor coordinates are checked for shape, integer bounds and zero overlap with **any** target before editing. Group reports expose solve-mask / other-target-mask counts and donor validation. Independent 16px groups 80px apart are not rejected merely because their combined context extent is 96px; genuinely oversized groups or exhausted donor domains remain unresolved. Bounded before/after and unchanged-Alnitak evidence is retained under `production/validation-t5/`; this is not full-field or perceptual approval.
+
+## Review outputs in each version
+
+| Output | Review purpose |
+| --- | --- |
+| `current-sky.json`, `production-recipe.json`, `preflight.json` | Fresh live catalog/reference/crop/mapper/config/shader snapshot, recipe and input/code provenance |
+| `inventory.json`, `groups.json`, `group-*-donor.json` | Exhaustive reconciled row states, masks/support, grouped treatment and exact completed native donor coordinates |
+| `native-background.png`, `native-edit-union.png` | 6000×3000 lossless reconstruction and authoritative binary edit union; decoded original exact outside union |
+| `background-1x.webp`, `background-2x.webp` | Canonical SKY_REFERENCE bounds, 1920×1080 and 3840×2160; independently reprojected from native, WebP95 method4, never from another WebP |
+| `catalog-stars.svg` | Transparent **external image**, all actual mapped colors/alpha/time0 sizes, projected centers and non-scaling-stroke core/halo radial approximation; no scripts/fonts/remotes/inline HTML module |
+| `1920x1080@1-*`, `1920x1080@2-*`, `390x844@2-*` | Full original/background/current-stars/composite/static-shift PNGs at opacity 1 and intro .12; same actual exported crop |
+| `*-native.png`, `contact-sheet.png` | Native-source original/background comparison for all unresolved rows and twelve approved reference locations; frame-native 1:1 original/background/composite/shifted diagnostics for statistics-selected dense/bright/nebulous/edge candidates; overview thumbnails are not sharpness proof |
+| `summary.json`, `manifest.json`, `CREDITS.txt` | Actionable unresolved locators, frame/crop bounds, file hashes/bytes/dimensions, source/code/catalog/recipe/rotation/encoder provenance, adaptations, ESO/S. Brunier CC BY4.0 credit and explicit pending approval |
+
+`proposedManifestUrlsOnly` are future URLs, **not public delivery**. Keep visible accessible ESO/S. Brunier / CC BY4.0 credit in any future integration; the manifest alone is insufficient. File hashes cover all other artifacts; the manifest is not self-hashed.
+
+The canonical bitmap uses SKY_REFERENCE, **not REGION-normalized UVs**. Preflight verifies the conversion; previews reuse `probe.crop_plane` and `constellation_review.sample` for the actual crops. CPU composites retain current profiles/colors/alpha/time0; opacity .12 is a single artistic-group fade over the existing sky color. Static +8/−6 CSS displacement is diagnostic only, never actual parallax. No alternate portrait framing, global blur, sharpening or second full-photo fallback is produced.
+
+SVG uses 16 concentric non-scaling stroke bands per row to approximate the current smoothstep nucleus/halo; center geometry is projected-plane precision, stroke widths are CSS pixels. It is an external resource, never thousands of injected HTML/RSC nodes. **SVG-as-image non-scaling stroke behavior, antialiasing, alpha, target-box sizing and decode/raster cost still require later authorized browser verification.** CPU preview PNGs are not SVG renderer proof. Bounds and required artwork-box mapping are declared in the manifest; no claim of exact shader AA or runtime performance.
+
+No tests/new framework per repository policy; RED/GREEN are not claimed. Use bounded help/live-preflight/rejection checks and isolated baseline exporter differential checks. Completed artifact validation, native processing, reproducible full-run pixel hashes and perceptual quality remain parent T6/T7 work. Rollback boundary is the production entrypoint/helpers/recipe, additive exporter option, this README section and only the new production version outputs; preserve all historical experiments and original data. No commits, application readiness code or hero integration here.
+
+---
+
 # Phase 3: inferred background reconstruction — bounded offline sample
 
 **Corrected sample run completed: twelve targets reconstructed; awaiting human visual approval.** The parent inspected representative native/background-only/static-shift panels and independently checked all 42 PNGs, outside-mask equality and protected inputs. This is a sample-quality candidate, not a full-catalog or app/parallax implementation. The first full run changed zero pixels: broad exclusion removed nearly all usable support. Its report and exact code remain in `reconstruction-review/attempt-1/`, untouched. The corrected support/donor path produces nonzero fills in four read-only representative patch diagnostics; that is functional evidence, not visual approval. This experiment attempts to remove only the twelve previously inspected photographic counterparts and infer plausible structure and texture beneath them. It is **not all4666stars**, physical recovery, actual parallax, or permission to integrate the hero. Read `reconstruction-review/results.json` after the full run for the actual processed subset, skipped donors/profiles and questionable cases.

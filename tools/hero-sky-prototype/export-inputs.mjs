@@ -8,7 +8,12 @@ import ts from 'typescript'
 
 const root = path.resolve(import.meta.dirname, '../..')
 const sourceDir = path.join(root, 'app/(home)/_sections/hero/capabilities/night-sky')
-const output = path.join(root, 'output/hero-sky-prototype/input')
+// Additive isolated export destination; no-argument behavior remains historical.
+const args = process.argv.slice(2)
+if (args.length && (args.length !== 2 || args[0] !== '--output')) {
+  throw new Error('Usage: node export-inputs.mjs [--output DIRECTORY]')
+}
+const output = args.length ? path.resolve(args[1]) : path.join(root, 'output/hero-sky-prototype/input')
 const cache = new Map()
 const hashes = {}
 function load(filename) {
@@ -64,6 +69,6 @@ const payload = {
 }
 fs.mkdirSync(output, { recursive: true })
 fs.writeFileSync(path.join(output, 'current-sky.json'), `${JSON.stringify(payload)}\n`)
-console.log(JSON.stringify({ output: 'output/hero-sky-prototype/input/current-sky.json',
+console.log(JSON.stringify({ output: args.length ? path.relative(root, path.join(output, 'current-sky.json')) : 'output/hero-sky-prototype/input/current-sky.json',
   currentStars: starCatalog.length, controlStars: backup.length, frames: frames.length,
   buffers: Object.fromEntries(Object.entries(mapped).map(([k, v]) => [k, v.length])) }))

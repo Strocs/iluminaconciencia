@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "method": "local-connected-context-texture-v1",
+  "sourceSha256": "60400c92c54b7c1bd12299c69e83b16e5b6256e7dabacc478c021758ecd28179",
+  "packages": {"numpy": "2.5.4", "scipy": "1.18.1", "astropy": "8.0.2", "Pillow": "13.0.0"},
+  "seed": 0,
+  "ties": "distance, then descending excess, then source y/x; groups by minimum stable catalog index; donor score/dy/dx from approved infer_patch",
+  "searchRadiusSourcePx": 6,
+  "detectionSigma": 0.8,
+  "minimumExcessEncoded8bit": 3,
+  "noiseMultiplier": 4,
+  "maximumGroupExtentSourcePx": 64,
+  "webpQuality": 95,
+  "webpMethod": 4,
+  "svgRadialSteps": 16,
+  "staticShiftCss": [8, -6],
+  "opacities": [1, 0.12],
+  "approval": "pending-complete-asset-review"
+}
