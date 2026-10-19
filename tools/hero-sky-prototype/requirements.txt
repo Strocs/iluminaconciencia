@@ -1,0 +1,5 @@
+# Direct imports for this offline probe; already installed in the isolated venv.
+numpy==2.5.4
+scipy==1.18.1
+astropy==8.0.2
+Pillow==13.0.0

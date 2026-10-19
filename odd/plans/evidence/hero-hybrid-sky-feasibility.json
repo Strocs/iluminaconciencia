@@ -1,0 +1,84 @@
+{
+  "scope": "Documentation and non-mutating feasibility probes; no application implementation or visual approval",
+  "snapshotTakenAtUtc": "2026-10-18T19:36:57Z",
+  "head": "0a08845820d40b027264116ab3a5b9cbec382cfc",
+  "sourceSha256": {
+    "app/(home)/_sections/hero/capabilities/night-sky/sky-reference.ts": "3e391cc7fb10b391d01869718e48cca21580c098d601c9974174fba6e8c6abf6",
+    "app/(home)/_sections/hero/capabilities/night-sky/sky-crop.ts": "58504270c7f3711fc1c2569a516948c18d5e1cbc9d06435089cfacd2d1fb5132",
+    "app/(home)/_sections/hero/capabilities/night-sky/star-mapper.ts": "1a92271f944bd9137c95835be7e4bfa0d01533db94513f4ff156a82c5b41ccf1",
+    "app/(home)/_sections/hero/capabilities/night-sky/star-catalog.ts": "251f2505448c089655f469588746b9fa53f00dc335c0cc6a11d53f151e17ac76"
+  },
+  "localGeometry": {
+    "method": "Node inline stdin probes; actual TypeScript modules transpiled in memory using typescript.transpileModule and executed with vm; explicit import extensions preserved; no source writes",
+    "exportsExecuted": ["projectStar", "computeSkyCrop", "mapStarCatalog"],
+    "validProbeExitCode": 0,
+    "reference": { "x0": -2.6601222222222223, "y0": -1.4565, "width": 5.443022222222221, "height": 3.0617 },
+    "projectionTangent": { "raHours": 9.75, "decDegrees": -7.5, "mirroredX": true },
+    "catalogRecords": 4666,
+    "backupRecords": 5530,
+    "referenceCenterCount": 4602,
+    "referenceHaloOnlyCount": 64,
+    "maxInverseRoundtripPixelsAt3840": 4.803447113953947e-12,
+    "planePixelAnisotropyAt3840x2160": 0.9999999999999997,
+    "bufferLengths": { "origins": 9332, "stars": 18664, "colors": 18664 },
+    "bufferSchemas": { "origins": ["x", "y"], "stars": ["phase", "sizePx", "alpha", "speed"], "colors": ["r", "g", "b", "1"] },
+    "twinkleSizeMultiplierBounds": [0.88, 1],
+    "maxQuadHalfSizeCssPx": 9,
+    "frames": [
+      { "cssWidth": 1920, "cssHeight": 1080, "centers": 4602, "maxQuadIntersections": 4613, "omittedOriginalQuadIntersections": 0, "maxRasterVsGpuFloat32DeltaCssPx": 0.0000869442475017359 },
+      { "cssWidth": 1440, "cssHeight": 1080, "centers": 4261, "maxQuadIntersections": 4275, "omittedOriginalQuadIntersections": 0, "maxRasterVsGpuFloat32DeltaCssPx": 0.00008694424769012759 },
+      { "cssWidth": 1920, "cssHeight": 823, "centers": 3784, "maxQuadIntersections": 3816, "omittedOriginalQuadIntersections": 0, "maxRasterVsGpuFloat32DeltaCssPx": 0.00008694424769012759 },
+      { "cssWidth": 390, "cssHeight": 844, "centers": 1950, "maxQuadIntersections": 1985, "omittedOriginalQuadIntersections": 0, "maxRasterVsGpuFloat32DeltaCssPx": 0.00006794531951473257 },
+      { "cssWidth": 360, "cssHeight": 800, "centers": 1903, "maxQuadIntersections": 1932, "omittedOriginalQuadIntersections": 0, "maxRasterVsGpuFloat32DeltaCssPx": 0.00006440314639621878 },
+      { "cssWidth": 1920, "cssHeight": 1440, "centers": 4261, "maxQuadIntersections": 4272, "omittedOriginalQuadIntersections": 0, "maxRasterVsGpuFloat32DeltaCssPx": 0.00011592566371328806 },
+      { "cssWidth": 1920, "cssHeight": 2160, "centers": 3374, "maxQuadIntersections": 3385, "omittedOriginalQuadIntersections": 0, "maxRasterVsGpuFloat32DeltaCssPx": 0.0001738884951918635 },
+      { "cssWidth": 3840, "cssHeight": 2160, "hypotheticalUncappedCssFrame": true, "centers": 4602, "maxQuadIntersections": 4609, "omittedOriginalQuadIntersections": 0, "maxRasterVsGpuFloat32DeltaCssPx": 0.0001738884950034718 }
+    ],
+    "asserted": { "allCropsContainedInReference": true, "allCenterDeltasBelowCssPx": 0.001 },
+    "notAsserted": ["Photographic registration", "Actual DOM viewport dimensions", "Raster sampling or antialiasing", "Independent WCSLIB equivalence", "Arbitrary frame coverage", "GPU performance"]
+  },
+  "candidateMasterWcs": {
+    "NAXIS": 2, "NAXIS1": 3840, "NAXIS2": 2160,
+    "CTYPE1": "RA---STG", "CTYPE2": "DEC--STG",
+    "CRVAL1": 146.25, "CRVAL2": -7.5,
+    "CRPIX1": 1877.1907273736817, "CRPIX2": 1028.0467877323056,
+    "CDELT1": -0.0812141148774093, "CDELT2": 0.08121411487740933,
+    "note": "Candidate derived from projected reference. FITS one-based pixels and bottom-up Y require explicit conversion. Not independently aligned to an image."
+  },
+  "remoteFitsProbe": {
+    "exitCode": 0,
+    "endpoint": "https://alasky.cds.unistra.fr/hips-image-services/hips2fits",
+    "parameters": { "hips": "CDS/P/DSS2/color", "width": 64, "height": 36, "format": "fits" },
+    "requestedWcs": {
+      "NAXIS": 2, "NAXIS1": 64, "NAXIS2": 36,
+      "CTYPE1": "RA---STG", "CTYPE2": "DEC--STG",
+      "CRVAL1": 146.25, "CRVAL2": -7.5,
+      "CRPIX1": 31.778178789561363, "CRPIX2": 17.625779795538428,
+      "CDELT1": -4.872846892644558, "CDELT2": 4.872846892644559,
+      "CUNIT1": "deg", "CUNIT2": "deg"
+    },
+    "reproduce": "GET endpoint with parameters above and wcs=JSON.stringify(requestedWcs); inspect binary FITS header/data, not only HTTP status",
+    "httpStatus": 200, "contentType": "application/fits", "bytes": 14400,
+    "responseSha256": "5ad17013650eafe3e1b30036e35dc7b2acf9cefe462b8629740d84775c519eb5",
+    "served": { "SIMPLE": true, "BITPIX": 8, "NAXIS": 3, "NAXIS1": 64, "NAXIS2": 36, "NAXIS3": 4, "WCSAXES": 2, "RADESYS": "ICRS", "CPYRIGHT": "" },
+    "samples": { "count": 9216, "finite": 9216, "nonzero": 9006, "min": 0, "max": 255 },
+    "asserted": "HTTP success, valid SIMPLE FITS, requested first two dimensions/STG projection, finite nonconstant data",
+    "notAsserted": ["License", "Linear photometry", "Astrometric source alignment", "Per-channel coverage", "Production image quality"],
+    "rawResponsePersisted": false
+  },
+  "environment": {
+    "node": "26.12.0", "python": "3.15.0", "imageMagick": "7.1.2-34 Q16-HDRI",
+    "missingPythonModules": ["numpy", "astropy", "reproject", "PIL", "photutils", "scipy"],
+    "advertisedImageMagickFormats": ["FITS", "WEBP"],
+    "avifAdvertised": false,
+    "webpEncodeDecode": { "command": "set -o pipefail; magick docs/evidence/fondo-estrellado-1920.png -quality 85 webp:- | magick identify -format '%m %wx%h\\n' -", "exitCode": 0, "stdout": "WEBP 1920x1080\n", "productionAssetApproval": false },
+    "dependenciesInstalled": false
+  },
+  "theoreticalRgbaMemoryMiB": { "1920x1080": 7.91015625, "3840x2160": 31.640625, "3840x2160FullMipChain": 42.1875 },
+  "discardedOrUnsupportedAttempts": [
+    { "probe": "Initial local loader", "exitCode": 1, "cause": "Appended .ts to an already suffixed import", "resolution": "Corrected in-memory loader only; successful local probe recorded above" },
+    { "probe": "Initial raster/GPU comparison", "exitCode": 0, "validEvidence": false, "cause": "Used stars instead of origins for positions", "resolution": "Discarded deltas; corrected comparison recorded above" },
+    { "probe": "Web content FITS reader", "httpStatus": 200, "validBinaryInspection": false, "cause": "Reader does not support raw application/fits", "resolution": "Separate direct binary probe recorded above" }
+  ],
+  "notExecuted": ["Offline astrometric registration", "PSF separation", "Final asset compression/quality", "Browser or Playwright checks", "Runtime benchmarks", "Application build/typecheck/tests"]
+}

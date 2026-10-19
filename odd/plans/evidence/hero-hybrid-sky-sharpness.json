@@ -1,0 +1,354 @@
+{
+  "status": "VISUAL_CANDIDATE_AWAITING_HUMAN_APPROVAL",
+  "phase": 2,
+  "generatedAtUtc": "2026-10-18T22:54:48.447Z",
+  "task": "odd/tasks/hero-sky-offline-prototype.md",
+  "source": {
+    "credit": "ESO/S. Brunier | CC BY 4.0",
+    "license": "https://creativecommons.org/licenses/by/4.0/",
+    "sha256": "60400c92c54b7c1bd12299c69e83b16e5b6256e7dabacc478c021758ecd28179"
+  },
+  "rawReport": {
+    "path": "output/hero-sky-prototype/sharpness-review/results.json",
+    "sha256": "918e4edcbf3d8f723736c0f8bd835dc32880c25a16ca78f08b46767f22569285"
+  },
+  "inputAndLandmarkHashes": {
+    "input": "dc331ea71325bb99b7e95ca3e8e779f0429a34020f8eef2b35da0b889a3c9535",
+    "landmarks": "8928a22e6284e3433f4222b7e2405739daa53b1941639129079e6e78f4e4d21d",
+    "modules": {
+      "star-catalog.ts": "251f2505448c089655f469588746b9fa53f00dc335c0cc6a11d53f151e17ac76",
+      "star-catalog.ts.bak": "047dc4db80b635aae871633276dde9ab077bd7daaaf078467627d0b24b8f93da",
+      "sky-reference.ts": "3e391cc7fb10b391d01869718e48cca21580c098d601c9974174fba6e8c6abf6",
+      "sky-crop.ts": "58504270c7f3711fc1c2569a516948c18d5e1cbc9d06435089cfacd2d1fb5132",
+      "star-mapper.ts": "1a92271f944bd9137c95835be7e4bfa0d01533db94513f4ff156a82c5b41ccf1",
+      "config.ts": "c055a29059e7273cc708a08778f9d0ffc4aa56e033aeb342d2a5b3b4ec17eeb1",
+      "webgl-star-renderer.ts": "1a86fa7fd992419a49af237de3e04655811de2758675fc16c5c8fa07486d9bc7"
+    }
+  },
+  "execution": {
+    "exitCode": 0,
+    "elapsedSeconds": 55.995,
+    "validationExitCode": 0,
+    "parentStructuralChecksPassed": true,
+    "decodedAndHashedVariants": 18,
+    "nativeDetailSheets": 7,
+    "protectedApplicationDiffExitCode": 0
+  },
+  "mapping": {
+    "model": "Galactic CAR after ONE global 3D rotation; fixed 6000x3000 scale and handedness",
+    "rotationVectorRadians": [
+      -0.01998015450763844,
+      -0.028403214294377505,
+      -0.055687098733424326
+    ],
+    "rotationMatrix": [
+      [
+        0.9980468034123484,
+        0.055930781742477065,
+        -0.027826711125614356
+      ],
+      [
+        -0.055363484788649275,
+        0.9982504982911302,
+        0.02075637766005826
+      ],
+      [
+        0.02893894867561702,
+        -0.019175252675919543,
+        0.9993972418084635
+      ]
+    ],
+    "fit": "Seven principal Orion stars, belt + both shoulders + both feet",
+    "heldOut": "Sirius, Canopus, Aldebaran, Regulus, Spica; NEVER used to fit rotation",
+    "uncertainty": "At least 5 source px per inspected seed; integer smoothed-peak proxy, not an astrometric centroid. Orion-only fit extrapolation and held-out identities remain provisional; no catalog epoch/proper-motion correction or external plate solution.",
+    "threshold": "No 0.5px gate. Errors reported without filtering or declaring human approval."
+  },
+  "landmarks": [
+    {
+      "name": "Betelgeuse",
+      "split": "fit",
+      "sourcePixel": [
+        5719,
+        1669
+      ],
+      "sourceOffsetPx": 0.10763983441978846,
+      "desktopOffsetCssPx": 0.052071267005978014
+    },
+    {
+      "name": "Rigel",
+      "split": "fit",
+      "sourcePixel": [
+        5552,
+        1936
+      ],
+      "sourceOffsetPx": 0.5049798706205717,
+      "desktopOffsetCssPx": 0.2500203826182604
+    },
+    {
+      "name": "Bellatrix",
+      "split": "fit",
+      "sourcePixel": [
+        5762,
+        1787
+      ],
+      "sourceOffsetPx": 1.4101134699976423,
+      "desktopOffsetCssPx": 0.7095443985208102
+    },
+    {
+      "name": "Saiph",
+      "split": "fit",
+      "sourcePixel": [
+        5468,
+        1820
+      ],
+      "sourceOffsetPx": 0.7783320888721047,
+      "desktopOffsetCssPx": 0.36635768239880173
+    },
+    {
+      "name": "Mintaka",
+      "split": "fit",
+      "sourcePixel": [
+        5646,
+        1814
+      ],
+      "sourceOffsetPx": 0.678872199280554,
+      "desktopOffsetCssPx": 0.34218482481488194
+    },
+    {
+      "name": "Alnilam",
+      "split": "fit",
+      "sourcePixel": [
+        5624,
+        1804
+      ],
+      "sourceOffsetPx": 0.4427675516474638,
+      "desktopOffsetCssPx": 0.22237419073255194
+    },
+    {
+      "name": "Alnitak",
+      "split": "fit",
+      "sourcePixel": [
+        5604,
+        1793
+      ],
+      "sourceOffsetPx": 0.547352845827307,
+      "desktopOffsetCssPx": 0.2604400705944544
+    },
+    {
+      "name": "Sirius",
+      "split": "held-out",
+      "sourcePixel": [
+        5261,
+        1654
+      ],
+      "sourceOffsetPx": 0.6321082739340249,
+      "desktopOffsetCssPx": 0.2728580832236321
+    },
+    {
+      "name": "Canopus",
+      "split": "held-out",
+      "sourcePixel": [
+        4686,
+        1908
+      ],
+      "sourceOffsetPx": 0.6214024899228331,
+      "desktopOffsetCssPx": 0.30362063128249067
+    },
+    {
+      "name": "Aldebaran",
+      "split": "held-out",
+      "sourcePixel": [
+        29,
+        1866
+      ],
+      "sourceOffsetPx": 1.4581054803759472,
+      "desktopOffsetCssPx": 0.9039222017894366
+    },
+    {
+      "name": "Regulus",
+      "split": "held-out",
+      "sourcePixel": [
+        5314,
+        692
+      ],
+      "sourceOffsetPx": 2.7387586308320744,
+      "desktopOffsetCssPx": 0.7650455236266633
+    },
+    {
+      "name": "Spica",
+      "split": "held-out",
+      "sourcePixel": [
+        3796,
+        619
+      ],
+      "sourceOffsetPx": 3.7468749822569256,
+      "desktopOffsetCssPx": 1.119709961703163
+    }
+  ],
+  "frames": [
+    {
+      "frame": {
+        "width": 1920,
+        "height": 1080,
+        "dpr": 2,
+        "crop": {
+          "scaleX": 1.2744941535748116,
+          "scaleY": 1.5504458307476239,
+          "offsetX": 0.10366993826958866,
+          "offsetY": 0.33762288924453726
+        }
+      },
+      "invalidCoveragePixels": 0,
+      "coverageFraction": 1
+    },
+    {
+      "frame": {
+        "width": 390,
+        "height": 844,
+        "dpr": 2,
+        "crop": {
+          "scaleX": 4.90335300566218,
+          "scaleY": 1.5504458307476239,
+          "offsetX": 1.6177344913961824,
+          "offsetY": 0.33762288924453726
+        }
+      },
+      "invalidCoveragePixels": 0,
+      "coverageFraction": 1
+    }
+  ],
+  "photographicVariants": [
+    {
+      "file": "1920x1080@2x-photo.png",
+      "bytes": 12278392,
+      "sha256": "348cc8bd00c35a0daeeb284b595ad070e0f4065078d59e6bd3655a9b73af7743",
+      "dimensions": [
+        3840,
+        2160
+      ],
+      "decodedRgbBytes": 24883200,
+      "decodedRgbaBytes": 33177600,
+      "kind": "photo",
+      "encoding": "lossless PNG reference",
+      "skyOnly": true
+    },
+    {
+      "file": "1920x1080@2x-photo-q90.webp",
+      "bytes": 2210494,
+      "sha256": "4333c915dc9f74d21a3f9a8a299580f35d45ce780f188c79196cc8a9e66cdbb1",
+      "dimensions": [
+        3840,
+        2160
+      ],
+      "decodedRgbBytes": 24883200,
+      "decodedRgbaBytes": 33177600,
+      "kind": "photo",
+      "quality": 90,
+      "skyOnly": true
+    },
+    {
+      "file": "1920x1080@2x-photo-q95.webp",
+      "bytes": 3116438,
+      "sha256": "9707c8d4a31e8c99138808e492c043ab4400c6c069e046228caaf91d6b59eca2",
+      "dimensions": [
+        3840,
+        2160
+      ],
+      "decodedRgbBytes": 24883200,
+      "decodedRgbaBytes": 33177600,
+      "kind": "photo",
+      "quality": 95,
+      "skyOnly": true
+    },
+    {
+      "file": "390x844@2x-photo.png",
+      "bytes": 2222190,
+      "sha256": "2997df93275169f8f4840f1243f5ca09c94bf8240d14a1465ce1c29672600808",
+      "dimensions": [
+        780,
+        1688
+      ],
+      "decodedRgbBytes": 3949920,
+      "decodedRgbaBytes": 5266560,
+      "kind": "photo",
+      "encoding": "lossless PNG reference",
+      "skyOnly": true
+    },
+    {
+      "file": "390x844@2x-photo-q90.webp",
+      "bytes": 456832,
+      "sha256": "ee21ea02d5b06911c350edafe251f58e30bfed2edf9fa126b050c16a668dda86",
+      "dimensions": [
+        780,
+        1688
+      ],
+      "decodedRgbBytes": 3949920,
+      "decodedRgbaBytes": 5266560,
+      "kind": "photo",
+      "quality": 90,
+      "skyOnly": true
+    },
+    {
+      "file": "390x844@2x-photo-q95.webp",
+      "bytes": 593120,
+      "sha256": "3b3432ae38c0f18e8847586e3dbf1f3b8d7e478b99c40ae6e66feeb1912f97d8",
+      "dimensions": [
+        780,
+        1688
+      ],
+      "decodedRgbBytes": 3949920,
+      "decodedRgbaBytes": 5266560,
+      "kind": "photo",
+      "quality": 95,
+      "skyOnly": true
+    }
+  ],
+  "reviewImages": {
+    "directory": "output/hero-sky-prototype/sharpness-review/",
+    "overview": "contact-sheet.png",
+    "desktop": "1920x1080@2x-composite-panel.png",
+    "mobile": "390x844@2x-composite-panel.png",
+    "orion": "orion-original-annotated.png",
+    "heldOut": "distributed-checks.png",
+    "nativeDetails": [
+      "1920x1080@2x-native-Betelgeuse-bright-point.png",
+      "1920x1080@2x-native-Orion-belt.png",
+      "1920x1080@2x-native-faint-dust-candidate.png",
+      "1920x1080@2x-native-edge.png",
+      "390x844@2x-native-bright-region-candidate.png",
+      "390x844@2x-native-faint-dust-candidate.png",
+      "390x844@2x-native-edge.png"
+    ]
+  },
+  "parentImageInspection": {
+    "completed": true,
+    "notes": [
+      "Orion and distributed source patterns are inspectably coherent; not an external plate solution.",
+      "One mapping and unchanged responsive crops; original portrait crop does not include Orion.",
+      "Native1:1 comparisons reviewed; WebP95 tentatively preferred for fine detail, pending human approval.",
+      "Some source/reprojection softness near frame edges is visible in PNG too; no codec setting restores missing source detail."
+    ]
+  },
+  "subtraction": {
+    "attempted": false,
+    "reason": "Photo preserved intact; photo+canvas duplicates deliberately remain visible."
+  },
+  "limitations": [
+    "Provisional identities, not externally solved WCS; held-outs can challenge but not certify source identities.",
+    "Source stitching, JPEG PSF, proper motion and epoch are unresolved; captioned planets are not catalog identifications.",
+    "4K raster does not imply 4K photographic detail everywhere: native source scale varies with latitude and STG reprojection.",
+    "Native crops expose interpolation and codec loss; no residual/separated-background claim.",
+    "Magenta denotes any invalid source coverage; inspect stretched polar/edge regions rather than blur-fill.",
+    "No app integration, runtime/browser validation, human approval or production budget established."
+  ],
+  "nativeAssessment": {
+    "risk": "medium",
+    "nativeRisk": "unassessable",
+    "reason": "Untracked intent undeclared",
+    "writerSelfVerification": true,
+    "independentVerifier": false,
+    "approved": false
+  },
+  "applicationIntegrated": false,
+  "humanApproval": "not-granted"
+}

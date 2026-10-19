@@ -1,0 +1,83 @@
+{
+  "status": "NO-GO: photographic registration not established; application integration prohibited",
+  "scope": "Offline real-image experiment; no app changes, browser checks or human approval",
+  "task": "odd/tasks/hero-sky-offline-prototype.md",
+  "tooling": "tools/hero-sky-prototype/",
+  "source": {
+    "credit": "ESO/S. Brunier",
+    "url": "https://cdn.eso.org/images/large/eso0932a.jpg",
+    "imagePage": "https://www.hq.eso.org/public/images/eso0932a/",
+    "rightsPage": "https://www.hq.eso.org/public/outreach/copyright/",
+    "licenseEvidence": "General CC BY 4.0 policy and image credit captured; no supplied exact WCS",
+    "dimensions": [6000, 3000],
+    "bytes": 8228817,
+    "sha256": "60400c92c54b7c1bd12299c69e83b16e5b6256e7dabacc478c021758ecd28179"
+  },
+  "environment": {
+    "root": "output/hero-sky-prototype/",
+    "python": "3.14.8",
+    "numpy": "2.5.4",
+    "scipy": "1.18.1",
+    "astropy": "8.0.2",
+    "pillow": "13.0.0",
+    "photutils": "3.1.1",
+    "reproject": "0.21.0",
+    "frontendDependenciesModified": false
+  },
+  "process": {
+    "fullRunExitCode": 0,
+    "elapsedSeconds": 49.019,
+    "geometrySpotCheckExitCode": 0,
+    "independentMasterWcsMaxPixelError": 1.8974551188051142e-12,
+    "maxGpuCenterDiscrepancyCssPx": 0.00017388849506969642,
+    "initialWrapperExitCode": 127,
+    "initialWrapperFailure": "/usr/bin/time absent; Python never started; corrected first actual run used Bash timing",
+    "nativeAssessment": "Unavailable: rejected without diagnostic",
+    "nativeReviewModeRead": "Unavailable: exit127, gentle-ai command not found"
+  },
+  "photographicRegistration": {
+    "hypothesis": "Fitted Galactic CAR; not supplied astrometry",
+    "plausible": false,
+    "gatePassed": false,
+    "desktop": { "expectedHeldOut": 55, "acceptedHeldOut": 7, "medianCssPx": 4.841893927451014, "maxCssPx": 5.72331204896726 },
+    "mobile": { "expectedHeldOut": 23, "acceptedHeldOut": 3, "medianCssPx": 2.903255142371913, "maxCssPx": 3.7929470638884517 },
+    "desktopCoveredCellsOf12": 5,
+    "note": "Nearest-peak identities remain tentative; accepted-subset residuals do not prove real star matching"
+  },
+  "separation": { "attempted": false, "catalogCount": 4666, "subtracted": 0, "skipped": 4666, "residualEqualsSource": true, "psfQualityProven": false },
+  "encodedVariants": [
+    { "file": "1920x1080@1x-residual-q80.webp", "bytes": 478178, "dimensions": [1920, 1080] },
+    { "file": "1920x1080@1x-residual-q90.webp", "bytes": 730720, "dimensions": [1920, 1080] },
+    { "file": "390x844@2x-residual-q80.webp", "bytes": 285042, "dimensions": [780, 1688] },
+    { "file": "390x844@2x-residual-q90.webp", "bytes": 442144, "dimensions": [780, 1688] }
+  ],
+  "variantCaveat": "These encode an unvalidated photographic mapping, not a successfully separated or production-approved background",
+  "reviewArtifacts": {
+    "directory": "output/hero-sky-prototype/results/",
+    "contactSheet": "contact-sheet.png",
+    "desktopComposite": "1920x1080@1x-composite.png",
+    "mobileComposite": "390x844@2x-composite.png",
+    "brightDetail": "detail-bright-isolation-candidate.png",
+    "anchors": "source-anchors.png",
+    "rawNumericalReport": "results.json",
+    "pngFooterPixels": 62,
+    "trackedInGit": false,
+    "description": "Real-image sky-only candidates with visible credit and UNVALIDATED/NO-GO status; not app screenshots; human approval required"
+  },
+  "pending": ["Reliable photographic registration", "Actual star-separation quality", "Production asset approval", "Runtime verification", "Explicit human visual approval"],
+  "independentVerification": {
+    "taskId": "mve9exkz-6-id3m",
+    "isolationPassed": true,
+    "protectedBaselineDiffExitCode": 0,
+    "protectedHashesMatched": true,
+    "pngsDecoded": 15,
+    "webpsDecoded": 4,
+    "sourceEqualsResidualPixelsConfirmed": true,
+    "toolingBlockers": [],
+    "coordinationNotice": "Intentional parent updates to plan and prototype summary confirmed; verifier already inspected their values",
+    "advisory": "README updated to observed49.019s; peak memory remains unmeasured",
+    "doesNotApprovePhotographicOrPsfQuality": true
+  },
+  "applicationImplemented": false,
+  "humanApproval": "Not granted"
+}

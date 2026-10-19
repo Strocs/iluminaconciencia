@@ -1,0 +1,397 @@
+{
+  "status": "SAMPLE_RECONSTRUCTION_READY_FOR_HUMAN_REVIEW",
+  "phase": 3,
+  "task": "odd/tasks/hero-sky-offline-prototype.md",
+  "source": {
+    "credit": "ESO/S. Brunier | CC BY 4.0",
+    "license": "https://creativecommons.org/licenses/by/4.0/",
+    "sha256": "60400c92c54b7c1bd12299c69e83b16e5b6256e7dabacc478c021758ecd28179"
+  },
+  "rawReport": {
+    "path": "output/hero-sky-prototype/reconstruction-review/results.json",
+    "sha256": "a3a8638e70f6d583f1ce9909feadebcfe6a2b991c720d008798cc626210e6500"
+  },
+  "execution": {
+    "correctedExitCode": 0,
+    "correctedElapsedSeconds": 63.935,
+    "firstExitCode": 0,
+    "firstElapsedSeconds": 56.829,
+    "firstProcessedCount": 0,
+    "firstArchive": "output/hero-sky-prototype/reconstruction-review/attempt-1/"
+  },
+  "scope": {
+    "processedNameCount": 12,
+    "processedNames": [
+      "Betelgeuse",
+      "Rigel",
+      "Bellatrix",
+      "Saiph",
+      "Mintaka",
+      "Alnilam",
+      "Alnitak",
+      "Sirius",
+      "Canopus",
+      "Aldebaran",
+      "Regulus",
+      "Spica"
+    ],
+    "totalCatalog": 4666,
+    "allCatalogProcessed": false,
+    "appImplemented": false,
+    "actualParallaxImplemented": false
+  },
+  "acceptance": {
+    "spec": "S10",
+    "userQuote": "No necesita certeza, sólo que no se vea una mancha evidente",
+    "criterion": "Perceptually inconspicuous at intended/native size and beneath statically shifted stars; reject obvious blotches, holes, ghost halos, seams or visibly destroyed texture, not inferred pixels or lack of physical certainty.",
+    "numericalMetrics": "Descriptive diagnostics, not perceptual pass/fail gates"
+  },
+  "preservation": {
+    "outsideMaskDifferentPixels": 0,
+    "outsideMaskExact": true,
+    "editUnionPixels": 4623,
+    "fullyInferredPixels": 2205,
+    "featherPixels": 2418,
+    "changedPixels": 4266,
+    "overlapPixels": 3,
+    "losslessDecodedCheck": true
+  },
+  "cases": [
+    {
+      "name": "Betelgeuse",
+      "status": "questionable-structure-or-neighbor",
+      "nativeFile": "Betelgeuse-native.png",
+      "sourceCenter": [
+        5719,
+        1669
+      ],
+      "changedPixelsInContext": 262,
+      "ellipseSemiaxesSourcePx": [
+        4.230866298364617,
+        4.479694738084872
+      ],
+      "donorCandidates": 264,
+      "donorCompletedPixels": 0
+    },
+    {
+      "name": "Rigel",
+      "status": "questionable-structure-or-neighbor",
+      "nativeFile": "Rigel-native.png",
+      "sourceCenter": [
+        5552,
+        1936
+      ],
+      "changedPixelsInContext": 413,
+      "ellipseSemiaxesSourcePx": [
+        5.920595910194505,
+        6.836094347168122
+      ],
+      "donorCandidates": 264,
+      "donorCompletedPixels": 73
+    },
+    {
+      "name": "Bellatrix",
+      "status": "questionable-structure-or-neighbor",
+      "nativeFile": "Bellatrix-native.png",
+      "sourceCenter": [
+        5762,
+        1787
+      ],
+      "changedPixelsInContext": 253,
+      "ellipseSemiaxesSourcePx": [
+        4.11956836537774,
+        4.377933012093567
+      ],
+      "donorCandidates": 263,
+      "donorCompletedPixels": 8
+    },
+    {
+      "name": "Saiph",
+      "status": "questionable-structure-or-neighbor",
+      "nativeFile": "Saiph-native.png",
+      "sourceCenter": [
+        5468,
+        1820
+      ],
+      "changedPixelsInContext": 285,
+      "ellipseSemiaxesSourcePx": [
+        4.603872636652502,
+        4.9139976980186315
+      ],
+      "donorCandidates": 264,
+      "donorCompletedPixels": 20
+    },
+    {
+      "name": "Mintaka",
+      "status": "questionable-structure-or-neighbor",
+      "nativeFile": "Mintaka-native.png",
+      "sourceCenter": [
+        5646,
+        1814
+      ],
+      "changedPixelsInContext": 1170,
+      "ellipseSemiaxesSourcePx": [
+        4,
+        4.163586951671384
+      ],
+      "donorCandidates": 183,
+      "donorCompletedPixels": 330
+    },
+    {
+      "name": "Alnilam",
+      "status": "questionable-structure-or-neighbor",
+      "nativeFile": "Alnilam-native.png",
+      "sourceCenter": [
+        5624,
+        1804
+      ],
+      "changedPixelsInContext": 1170,
+      "ellipseSemiaxesSourcePx": [
+        4.606234647010357,
+        4.72282202526316
+      ],
+      "donorCandidates": 230,
+      "donorCompletedPixels": 330
+    },
+    {
+      "name": "Alnitak",
+      "status": "questionable-structure-or-neighbor",
+      "nativeFile": "Alnitak-native.png",
+      "sourceCenter": [
+        5604,
+        1793
+      ],
+      "changedPixelsInContext": 1170,
+      "ellipseSemiaxesSourcePx": [
+        7.993643541401026,
+        10.555384281615675
+      ],
+      "donorCandidates": 213,
+      "donorCompletedPixels": 302
+    },
+    {
+      "name": "Sirius",
+      "status": "questionable-structure-or-neighbor",
+      "nativeFile": "Sirius-native.png",
+      "sourceCenter": [
+        5261,
+        1654
+      ],
+      "changedPixelsInContext": 488,
+      "ellipseSemiaxesSourcePx": [
+        7.083231146477366,
+        7.392720707562264
+      ],
+      "donorCandidates": 264,
+      "donorCompletedPixels": 0
+    },
+    {
+      "name": "Canopus",
+      "status": "questionable-structure-or-neighbor",
+      "nativeFile": "Canopus-native.png",
+      "sourceCenter": [
+        4686,
+        1908
+      ],
+      "changedPixelsInContext": 459,
+      "ellipseSemiaxesSourcePx": [
+        6.928368784915495,
+        7.086718488344218
+      ],
+      "donorCandidates": 264,
+      "donorCompletedPixels": 55
+    },
+    {
+      "name": "Aldebaran",
+      "status": "questionable-structure-or-neighbor",
+      "nativeFile": "Aldebaran-native.png",
+      "sourceCenter": [
+        29,
+        1866
+      ],
+      "changedPixelsInContext": 267,
+      "ellipseSemiaxesSourcePx": [
+        4.607307931218606,
+        4.873247443714771
+      ],
+      "donorCandidates": 258,
+      "donorCompletedPixels": 47
+    },
+    {
+      "name": "Regulus",
+      "status": "questionable-structure-or-neighbor",
+      "nativeFile": "Regulus-native.png",
+      "sourceCenter": [
+        5314,
+        692
+      ],
+      "changedPixelsInContext": 350,
+      "ellipseSemiaxesSourcePx": [
+        5.2709245173883765,
+        6.7296131204503755
+      ],
+      "donorCandidates": 263,
+      "donorCompletedPixels": 95
+    },
+    {
+      "name": "Spica",
+      "status": "questionable-structure-or-neighbor",
+      "nativeFile": "Spica-native.png",
+      "sourceCenter": [
+        3796,
+        619
+      ],
+      "changedPixelsInContext": 319,
+      "ellipseSemiaxesSourcePx": [
+        4.972835458853883,
+        6.588447980836799
+      ],
+      "donorCandidates": 262,
+      "donorCompletedPixels": 46
+    }
+  ],
+  "staticShift": {
+    "cssPixels": [
+      8,
+      -6
+    ],
+    "opacity": 1,
+    "time": 0,
+    "purpose": "Expose former counterpart locations, not a product amplitude or JS parallax implementation"
+  },
+  "frames": [
+    {
+      "frame": {
+        "width": 1920,
+        "height": 1080,
+        "dpr": 2,
+        "crop": {
+          "scaleX": 1.2744941535748116,
+          "scaleY": 1.5504458307476239,
+          "offsetX": 0.10366993826958866,
+          "offsetY": 0.33762288924453726
+        }
+      },
+      "invalidOriginalPixels": 0,
+      "invalidBackgroundPixels": 0,
+      "files": [
+        "1920x1080@2x-original.png",
+        "1920x1080@2x-mask.png",
+        "1920x1080@2x-background.png",
+        "1920x1080@2x-composite.png",
+        "1920x1080@2x-shifted.png"
+      ],
+      "details": [
+        {
+          "name": "Betelgeuse",
+          "file": "1920x1080@2x-Betelgeuse-detail.png"
+        },
+        {
+          "name": "Rigel",
+          "file": "1920x1080@2x-Rigel-detail.png"
+        },
+        {
+          "name": "Bellatrix",
+          "file": "1920x1080@2x-Bellatrix-detail.png"
+        },
+        {
+          "name": "Saiph",
+          "file": "1920x1080@2x-Saiph-detail.png"
+        },
+        {
+          "name": "Mintaka",
+          "file": "1920x1080@2x-Mintaka-detail.png"
+        },
+        {
+          "name": "Alnilam",
+          "file": "1920x1080@2x-Alnilam-detail.png"
+        },
+        {
+          "name": "Alnitak",
+          "file": "1920x1080@2x-Alnitak-detail.png"
+        },
+        {
+          "name": "Sirius",
+          "file": "1920x1080@2x-Sirius-detail.png"
+        },
+        {
+          "name": "Canopus",
+          "file": "1920x1080@2x-Canopus-detail.png"
+        },
+        {
+          "name": "Aldebaran",
+          "file": "1920x1080@2x-Aldebaran-detail.png"
+        },
+        {
+          "name": "Regulus",
+          "file": "1920x1080@2x-Regulus-detail.png"
+        },
+        {
+          "name": "Spica",
+          "file": "1920x1080@2x-Spica-detail.png"
+        }
+      ]
+    },
+    {
+      "frame": {
+        "width": 390,
+        "height": 844,
+        "dpr": 2,
+        "crop": {
+          "scaleX": 4.90335300566218,
+          "scaleY": 1.5504458307476239,
+          "offsetX": 1.6177344913961824,
+          "offsetY": 0.33762288924453726
+        }
+      },
+      "invalidOriginalPixels": 0,
+      "invalidBackgroundPixels": 0,
+      "files": [
+        "390x844@2x-original.png",
+        "390x844@2x-mask.png",
+        "390x844@2x-background.png",
+        "390x844@2x-composite.png",
+        "390x844@2x-shifted.png"
+      ],
+      "details": [
+        {
+          "name": "Regulus",
+          "file": "390x844@2x-Regulus-detail.png"
+        }
+      ]
+    }
+  ],
+  "checks": {
+    "parentFunctionalExitCode": 0,
+    "baselineFilesUnchanged": 13,
+    "pngsDecodedAndHashed": 42,
+    "nativeOutsideMaskDifferentPixels": 0,
+    "donorProvenanceCountsMatch": true,
+    "attempt1Preserved": true,
+    "protectedAppDiffExitCode": 0
+  },
+  "parentVisualReview": {
+    "status": "candidate_for_user_judgment",
+    "representativeNativeCases": [
+      "Betelgeuse",
+      "Sirius",
+      "Alnitak",
+      "Spica",
+      "Rigel",
+      "Canopus",
+      "Aldebaran"
+    ],
+    "shiftedCases": [
+      "Betelgeuse",
+      "Sirius",
+      "Alnitak",
+      "Spica",
+      "Regulus-mobile"
+    ],
+    "finding": "No obvious large blotch or empty disc in the inspected native-scale samples; final perceptual judgment belongs to the user. This is not a full-catalog quality claim."
+  },
+  "reviewDirectory": "output/hero-sky-prototype/reconstruction-review/",
+  "method": "Adaptive connected/elliptical masks; weighted source structure and curvature continuation; translated local source high-frequency RGB texture with strong-source exclusion and nearest-valid completion; cubic feather and overlap averaging.",
+  "responsiveContract": "Unchanged exported SKY_REFERENCE/computeSkyCrop, one stored phase2 rotation, DPR2; no fitting, local warp, crop manipulation, sharpening or global star removal",
+  "humanApproval": "not-granted"
+}

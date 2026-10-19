@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "sourceSha256": "60400c92c54b7c1bd12299c69e83b16e5b6256e7dabacc478c021758ecd28179",
+  "locatorProvenance": "Canonical approximate FK5/J2000 RA-hours and Dec-degrees locators supplied in the authorized task, not a replacement astrometric catalog. Associate to nearest actual controlCatalog row within 60 arcsec; equal-distance ties use the brighter component then index, with tied rows retained in report provenance. Alnitak has two identically rounded component coordinates. Use stored row coordinates thereafter. Exported BSC5 rows have no HR identifiers or names: retain row index and full row, never invent an HR number.",
+  "sourcePointProvenance": "Manually inspected ORIGINAL JPEG crops during this unit. Orion belt, orange Betelgeuse, Rigel, Bellatrix, Saiph and Orion nebula context form a coherent pattern. Distributed bright-object candidates were inspected separately, before rotation fitting. Seeds are approximate native pixel centers, not invented fitted coordinates. Refine only inside a small seed patch; no global nearest-peak search.",
+  "uncertaintySourcePx": 5,
+  "landmarks": [
+    {"name":"Betelgeuse", "locator":[5.91953,7.4071], "seed":[5719,1669], "group":"Orion", "split":"fit", "confidence":"strong-pattern; provisional", "evidence":"Orange upper shoulder of belt/shoulder/feet pattern"},
+    {"name":"Rigel", "locator":[5.24230,-8.2016], "seed":[5552,1936], "group":"Orion", "split":"fit", "confidence":"strong-pattern; provisional", "evidence":"Bright blue-white foot below belt and nebula"},
+    {"name":"Bellatrix", "locator":[5.41885,6.3497], "seed":[5762,1787], "group":"Orion", "split":"fit", "confidence":"strong-pattern; provisional", "evidence":"Other shoulder on opposite side of belt"},
+    {"name":"Saiph", "locator":[5.79594,-9.6696], "seed":[5466,1823], "group":"Orion", "split":"fit", "confidence":"strong-pattern; provisional", "evidence":"Other foot completing the hourglass"},
+    {"name":"Mintaka", "locator":[5.53344,-0.2991], "seed":[5646,1814], "group":"Orion", "split":"fit", "confidence":"strong-pattern; provisional", "evidence":"Cleaner belt end away from the prominent nebula below Alnitak"},
+    {"name":"Alnilam", "locator":[5.60356,-1.2019], "seed":[5624,1804], "group":"Orion", "split":"fit", "confidence":"strong-pattern; provisional", "evidence":"Middle of three belt stars"},
+    {"name":"Alnitak", "locator":[5.67931,-1.9426], "seed":[5604,1793], "group":"Orion", "split":"fit", "confidence":"strong-pattern; provisional", "evidence":"Belt end adjacent to faint nebulosity; prominent nebula context below"},
+    {"name":"Sirius", "locator":[6.75248,-16.7161], "seed":[5261,1655], "group":"distributed", "split":"held-out", "confidence":"tentative isolated-bright-object association", "evidence":"Dominant bright point beside Orion; separately inspected original source crop"},
+    {"name":"Canopus", "locator":[6.39920,-52.6957], "seed":[4686,1909], "group":"distributed", "split":"held-out", "confidence":"tentative isolated-bright-object association", "evidence":"Dominant bright point southwest of Sirius; separately inspected crop"},
+    {"name":"Aldebaran", "locator":[4.59868,16.5093], "seed":[29,1863], "group":"distributed", "split":"held-out", "confidence":"tentative isolated-bright-object association", "evidence":"Orange point near panorama seam; seam context requires human inspection"},
+    {"name":"Regulus", "locator":[10.13953,11.9672], "seed":[5314,692], "group":"distributed", "split":"held-out", "confidence":"tentative isolated-bright-object association", "evidence":"Bright northern-field point separately inspected before fitting"},
+    {"name":"Spica", "locator":[13.41988,-11.1613], "seed":[3796,619], "group":"distributed", "split":"held-out", "confidence":"tentative isolated-bright-object association", "evidence":"Bright northern-field point far from Orion; separately inspected before fitting"}
+  ]
+}
