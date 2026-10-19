@@ -38,6 +38,7 @@ export function createNightSkyCapability({
   let resizeGeneration = 0
   let destroyed = false
   let attemptedInitialization = false
+  let requestedRunning = false
   let viewport: NightSkyViewport = { width: 0, height: 0, devicePixelRatio: 1 }
   let timeMs = 0
   let rafId = 0
@@ -76,6 +77,7 @@ export function createNightSkyCapability({
     lifecycleState = next
     canvas.dataset.heroSkyState = next
     if (next === 'active') return
+    requestedRunning = false
     delete canvas.dataset.heroSkyReady
     showFallback()
   }
@@ -112,11 +114,11 @@ export function createNightSkyCapability({
   const loop = (nowMs: number): void => {
     rafId = 0
     timeMs = nowMs
-    if (!renderFrame(timeMs) || destroyed) return
+    if (!renderFrame(timeMs) || destroyed || !requestedRunning) return
     rafId = requestAnimationFrame(loop)
   }
   const startLoop = (): void => {
-    if (rafId !== 0 || lifecycleState !== 'active') return
+    if (!requestedRunning || rafId !== 0 || lifecycleState !== 'active') return
     rafId = requestAnimationFrame(loop)
   }
   const initializeWhenSized = (size: NightSkyViewport, placement: ReturnType<typeof computeSkyArtworkPlacement>): void => {
@@ -130,6 +132,7 @@ export function createNightSkyCapability({
       renderer = createWebglStarRenderer(canvas, mapStarCatalog(starCatalog))
       renderer.resize(size, placement.crop)
       if (!drawAndActivate(timeMs)) enterFallback()
+      else if (requestedRunning) startLoop()
     } catch {
       enterFallback()
     }
@@ -182,10 +185,12 @@ export function createNightSkyCapability({
   return {
     onProgress: (progress) => fadeTimeline.progress(progress),
     start: () => {
-      if (destroyed) return
+      if (destroyed || lifecycleState === 'fallback') return
+      requestedRunning = true
       startLoop()
     },
     stop: () => {
+      requestedRunning = false
       if (rafId === 0) return
       stopLoop()
       if (lifecycleState === 'active') renderFrame(0)
