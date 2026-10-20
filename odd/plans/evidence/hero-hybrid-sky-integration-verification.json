@@ -1,0 +1,84 @@
+{
+  "schema": 1,
+  "task": "T14",
+  "implementationStatus": "accepted-with-local-functional-evidence",
+  "commits": {
+    "assets": "8f1482382c3f5d367e28fb464e002d7fed6d0c8b",
+    "runtime": "2e431c4d85789a2e2b59e86087d3ea29704c0368",
+    "deferredStartFix": "000990e384b60485b67921d8f65745da6a30c2ca",
+    "runtimeBase": "aa4459cbe01e5ccb4af9c9b8e28499264f00bd39"
+  },
+  "risk": {
+    "item": 4,
+    "label": "concurrency",
+    "nativeRisk": "medium",
+    "reviewDue": false,
+    "rdd": "on",
+    "independentVerifierRequired": true
+  },
+  "verification": {
+    "initialVerifier": "mvfqqs3e-c-bn54",
+    "initialVerdict": "one deferred-start lifecycle blocker",
+    "limitedRecheck": "mvh0n284-1-is8s",
+    "limitedVerdict": "accepted-original-blocker-only",
+    "cases": {
+      "startBeforeSizingSchedulesOneRaf": true,
+      "stopBeforeSizingPreventsRaf": true,
+      "restartAndStopOneToZeroRaf": true,
+      "destroyInvalidatesQueuedResize": true,
+      "inFlightStopDoesNotReschedule": true
+    },
+    "method": "in-memory execution of public capability with mocked DOM/renderer; not real browser or GPU",
+    "limitedEslintExitCode": 0,
+    "limitedDiffCheckExitCode": 0
+  },
+  "parentChecks": {
+    "typecheck": {
+      "exitCode": 0,
+      "seconds": 3.2
+    },
+    "humanLayoutSha256": "7f1d3223231eef618778278814816bef5141ec74e8176746eaa391611d8a508d",
+    "postIntegrationRootLint": {
+      "exitCode": 0,
+      "seconds": 26.8,
+      "warningCount": 1,
+      "warning": "Intentional native img; preserve pre-encoded approved bytes instead of Next re-encoding"
+    }
+  },
+  "futureRuntimeVerification": {
+    "task": "T15",
+    "status": "needs-user-decision",
+    "build": "not-run",
+    "browser": "not-run",
+    "svgRasterization": "unverified",
+    "networkSelection": "unverified",
+    "visualComposition": "unverified",
+    "agentBrowser": "not-on-PATH",
+    "playwrightCli": "/home/strocs/.local/share/pnpm/bin/playwright-cli",
+    "browserPermission": false,
+    "decision": "Authorize existing Playwright CLI local-browser alternative without installations/test files, or human manual review. Do not claim next-dev-loop completion without its prerequisites."
+  },
+  "historicalFailures": [
+    {
+      "scope": "optional old T13 dual all-group probe",
+      "result": "30-second-timeout",
+      "retried": false
+    },
+    {
+      "scope": "initial independent direct Node probe",
+      "result": "extensionless import loader failure; not application failure"
+    },
+    {
+      "scope": "pre-restart limited recheck",
+      "result": "process failed before agent_settled due missing old extension path; no verdict"
+    },
+    {
+      "scope": "pre-restart final native assessment",
+      "result": "local binary missing; successful fresh post-restart assessment recorded separately"
+    }
+  ],
+  "backgroundApproved": true,
+  "runtimeHeroVisuallyApproved": false,
+  "publishing": false,
+  "externalTemporaryCleanup": false
+}
