@@ -47,16 +47,62 @@
   },
   "futureRuntimeVerification": {
     "task": "T15",
-    "status": "needs-user-decision",
-    "build": "not-run",
-    "browser": "not-run",
+    "status": "needs-user-manual-results",
+    "build": {
+      "job": "job-1",
+      "log": "/tmp/gpvUKwgR/gentle-jobs-VlVdyQ/job-1.log",
+      "timeoutSeconds": 900,
+      "exitCode": 0,
+      "seconds": 20,
+      "compiledSeconds": 7.5,
+      "typecheckSeconds": 5.2,
+      "staticPages": 80,
+      "retried": false
+    },
+    "browser": "not-run-user-chose-manual-review",
     "svgRasterization": "unverified",
     "networkSelection": "unverified",
     "visualComposition": "unverified",
     "agentBrowser": "not-on-PATH",
     "playwrightCli": "/home/strocs/.local/share/pnpm/bin/playwright-cli",
     "browserPermission": false,
-    "decision": "Authorize existing Playwright CLI local-browser alternative without installations/test files, or human manual review. Do not claim next-dev-loop completion without its prerequisites."
+    "decision": "User manual runtime/visual results required; no browser automation or installations.",
+    "browserDecision": "No, lo revisaré manualmente",
+    "ssrArtifact": {
+      "passed": true,
+      "prerenderArtifact": ".next/server/app/index.html",
+      "photoImageCount": 1,
+      "catalogImageCount": 1,
+      "canvasCount": 1,
+      "approvedPhotoDirectUrl": true,
+      "dpr2SourceDeclared": true,
+      "staticStarsNotHiddenInHtml": true,
+      "canvasNotMarkedReadyInSsr": true,
+      "canvasNotDisplayNoneViaHiddenAttribute": true,
+      "actualBrowserPaint": "not-verified-user-manual-review",
+      "actualNetworkTransfer": "not-verified",
+      "actualCssLayout": "not-verified",
+      "creditLinksPresentInHtml": true,
+      "skyImagePreloadHints": [
+        {
+          "rel": "preload",
+          "href": "/images/hero/sky/t13-texture-r1/catalog-stars.svg",
+          "as": "image"
+        }
+      ],
+      "creditVisualAccessibility": "not-verified-user-manual-review"
+    },
+    "manualCases": [
+      "Desktop/mobile and orientation/resize: shared framing, no stretching or hydration jump.",
+      "Cold reload/initialization: photo and static stars do not disappear or duplicate when WebGL becomes ready.",
+      "Scroll forward/back: one continuous fade, full exposure by progress0.7.",
+      "Reduced motion: persistent photo/static stars without twinkle loop.",
+      "Check visible ESO/S.Brunier and CC BY4.0 credit."
+    ],
+    "unverifiedAdvancedCases": [
+      "Actual WebGL/context-loss, slow/photo-error and destroy ordering in a real browser.",
+      "Actual SVG-as-image rasterization/transfer/decode/memory cost and DPR source selection."
+    ]
   },
   "historicalFailures": [
     {
