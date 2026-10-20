@@ -12,7 +12,43 @@ This deterministic one-off adds no CLI or dependency. The external SVG retains a
 
 ## Hero delivery usage
 
-`HeroSky` declares one native `<picture>/<img>` photo and one external SVG catalog image in SSR. It selects the approved 1x/2x files directly (no Next optimizer), retains the photo on all runtime paths, and switches catalog stars only after a successful first draw at non-zero host size. `computeSkyCrop` produces the one crop shared with the renderer and an asset-plane placement; canvas geometry remains the untransformed host box. CSS container-query placement derives its coefficients from `SKY_REFERENCE` and `PORTRAIT_GROUP`. The group fade is 0.12→1 by progress 0.7; canvas opacity remains 1. The visible credit is a sibling of the aria-hidden artwork, placed at the top of the z-0 sky host, outside the lower terrain/light-pollution occlusion area; photo layering is unchanged.
+`HeroSky` declares one native `<picture>/<img>` photo and one external SVG catalog image in SSR. It selects the approved 1x/2x files directly (no Next optimizer), retains the photo on all runtime paths, and switches catalog stars only after a successful first draw at non-zero host size. `computeSkyCrop` produces the one crop shared with the renderer and an asset-plane placement; canvas geometry remains the untransformed host box. CSS container-query placement derives its coefficients from `SKY_REFERENCE` and `PORTRAIT_GROUP`. The group fade is 0.12→1 by progress 0.7; canvas opacity remains 1. Per S22/S23, the HTML credit overlay and its unused CSS are removed, without relocation into the footer or decorative ALT. Empty ALT, aria-hidden decoration, photo layering and all existing license/provenance files remain unchanged. This presentation change makes no new license interpretation.
+
+# Local left-photo retouch — T16 tooling, T17 approval pending
+
+`retouch_left_region.py` repairs explicit residual photographic peaks/halos on the **approved `t13-texture-r1` registered PNG**, not the raw JPEG. No catalogue offsets, independent quadrant warps, runtime URL changes or new dependencies are involved. All 4,666 frozen rows/profiles/colors/config remain unchanged. The previous approval does **not** approve this new candidate.
+
+## Quick path
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 output/hero-sky-prototype/venv/bin/python -B tools/hero-sky-prototype/retouch_left_region.py --help
+PYTHONDONTWRITEBYTECODE=1 output/hero-sky-prototype/venv/bin/python -B tools/hero-sky-prototype/retouch_left_region.py --version t16-left-check --validate-only
+# Parent T17 only: FIRST full generation; t16-left-r1 must still be absent.
+PYTHONDONTWRITEBYTECODE=1 output/hero-sky-prototype/venv/bin/python -B tools/hero-sky-prototype/retouch_left_region.py --version t16-left-r1
+PYTHONDONTWRITEBYTECODE=1 output/hero-sky-prototype/venv/bin/python -B tools/hero-sky-prototype/retouch_left_region.py --version t16-left-r1 --validate-only
+```
+
+Allow a conservative **900-second parent scheduling bound** for first full generation (not a measured runtime). The worker's final five-target solve, real native/composite panels and PNG decode check took 10.50 seconds including preflight. Full 31-target reconstruction, WebP encoding and all responsive previews remain parent work; do not launch an unknown full run under a 30-second worker limit.
+
+## Local scope and evidence
+
+Evidence lives in `output/hero-sky-prototype/integration/validation-t16/`. Start with `left-top-matched.png` / `left-lower-matched.png`: actual screenshot → matched photo → catalogue → composite. Their matching uses one uniform photo scale/translation across six patches, not an assumption that a screenshot identifies stars or proves active DOM state. The visible pair's photographic peak remains present in the **photo-only** panel. No global astronomy/detector recalibration is needed for this local intervention.
+
+The yellow-marked 1925×1027 screenshot is translated −20/−32 to the first capture for analysis. Its inner polygon maps to the 3840×2160 master by `X=2*(1.00419294*(x-20)+5.01251384)`, `Y=2*(1.00419294*(y-32)+36.28734058)`. `roi-analysis.json` preserves the polygon; `screenshot-registration.json` records the real patch comparison. `mark-translation-check.json` independently measures +20/+32 in five shared screenshot patches. This is an empirical mark locator, not a claim about exact CSS box/DPR or a camera adjustment. The marked region is not the canonical quarter.
+
+`candidate-native-0.png` / `candidate-native-1.png` show photo/catalogue/composite comparisons at native scale. The CLI stores **31 manually inspected photo-centred targets**, including additional residuals beyond the old magnitude≤3 work. It never reruns a magnitude cut or erases the faint field. New masks have a 12-master-pixel opaque radius and 6-pixel smooth feather, clipped to the marked polygon with an additional 6-pixel inward ROI feather to avoid a hard edge; the complete union is 30,797 pixels (30 connected groups). Exact points, masks and mapping are in `planned-retouch.json` and the producer. The exploratory peak charts are selection aids only, not source-identity or eligibility proofs.
+
+The implementation reuses `bright_regions.reconstruct_master`: globally connected masks solved once, immutable approved-master context, existing weighted structure/biharmonic continuation and two source RGB texture bands. All planned masks are excluded from donors/support, even in the bounded five-target proof. Group records preserve original context boxes, donor offsets, interpolation/completion counts and zero target overlap. Reconstruction infers plausible dust/faint texture; it cannot recover physical hidden pixels.
+
+Open `final-local-{00,03,04,20,10}-native.png` at 1:1: approved photo → mask → local retouch → before/after with all 4,666 catalogue rows, opacity 1. `final-local-proof.json` records five real targets, 4,863 local mask pixels, 3,918 changed pixels and **zero decoded changes outside that local union**. It includes dense faint texture and an ROI-clipped left-border target; no canonical lower Milky Way dust cloud lies inside this marked ROI. `final-local-proof-master.png` is only this bounded proof, **not the full candidate**. Earlier four-target proof files remain as history. Parent/human inspection of every complete new region, desktop/mobile and shifted views remains mandatory.
+
+## CLI safety and validation
+
+Labels match `[a-z][a-z0-9-]{0,47}`. Paths, symlink output ancestors and existing generation destinations are rejected. Writes are confined to a fresh `production/<version>/`; failures never overwrite/resume history. An absent version with `--validate-only` means **read-only preflight**, `artifactsValidated:false`. Existing incomplete versions fail. Completed validation checks code/input/base provenance, mapping hash, target/group coverage, exact artifact set/hashes/dimensions, crops, decoded masks/feather and exact decoded PNG equality outside the **new** local union. WebP is lossy; that equality claim applies to the PNG master only.
+
+The frozen input hash and approved base-plan/master/source hashes are verified. The exporter's existing in-memory module loader executes current public `computeSkyCrop` and checks its reference/frames against the frozen snapshot without exporting or calling stale live-module preflights. Full review frames reuse the existing registered-master crop and all-row CPU compositor, including opacity 1/.12 and static +8/−6 CSS diagnostics. These are not browser/GPU proof. Completed output stays `approval:pending`, `appEditAllowed:false`; T17 human S5 approval precedes T18 promotion. Existing legal metadata is preserved, including inherited `CREDITS.txt` plus the additional adaptation record.
+
+No new tests/framework or browser are authorized. Empirical retouch has no meaningful predetermined RED; use the real-image proof and bounded CLI/structural checks. Existing helpers/commands are unchanged, so sibling-option differential checks are N/A. Rollback is limited to the additive retouch producer, this documentation, the small credit presentation removal and new T16 proof files; never alter old sources/assets/history.
 
 # Bright-region rebuild — padded photographic replacements
 
@@ -85,7 +121,7 @@ A 192×192 context may contain several independent groups. Only the **current co
 | `*-native.png`, `contact-sheet.png` | Native-source original/background comparison for all unresolved rows and twelve approved reference locations; frame-native 1:1 original/background/composite/shifted diagnostics for statistics-selected dense/bright/nebulous/edge candidates; overview thumbnails are not sharpness proof |
 | `summary.json`, `manifest.json`, `CREDITS.txt` | Actionable unresolved locators, frame/crop bounds, file hashes/bytes/dimensions, source/code/catalog/recipe/rotation/encoder provenance, adaptations, ESO/S. Brunier CC BY4.0 credit and explicit pending approval |
 
-`proposedManifestUrlsOnly` are future URLs, **not public delivery**. Keep visible accessible ESO/S. Brunier / CC BY4.0 credit in any future integration; the manifest alone is insufficient. File hashes cover all other artifacts; the manifest is not self-hashed.
+`proposedManifestUrlsOnly` are future URLs, **not public delivery**. Existing ESO/S. Brunier / CC BY4.0 provenance records remain intact; S22/S23 governs current credit presentation as described above. File hashes cover all other artifacts; the manifest is not self-hashed.
 
 The canonical bitmap uses SKY_REFERENCE, **not REGION-normalized UVs**. Preflight verifies the conversion; previews reuse `probe.crop_plane` and `constellation_review.sample` for the actual crops. CPU composites retain current profiles/colors/alpha/time0; opacity .12 is a single artistic-group fade over the existing sky color. Static +8/−6 CSS displacement is diagnostic only, never actual parallax. No alternate portrait framing, global blur, sharpening or second full-photo fallback is produced.
 

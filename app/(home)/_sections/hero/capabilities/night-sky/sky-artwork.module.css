@@ -58,25 +58,6 @@
   visibility: visible;
 }
 
-.credit {
-  position: absolute;
-  z-index: 1;
-  top: 0.75rem;
-  right: 0.75rem;
-  max-width: min(28rem, 90%);
-  color: rgb(255 255 255 / 0.88);
-  font-size: 0.625rem;
-  line-height: 1.4;
-  text-align: right;
-  text-shadow: 0 1px 3px #030712;
-}
-
-.credit a {
-  color: inherit;
-  text-decoration: underline;
-  text-underline-offset: 0.15em;
-}
-
 .host .artwork[data-hero-sky-photo-error='true'] .photoPlane {
   display: none;
 }

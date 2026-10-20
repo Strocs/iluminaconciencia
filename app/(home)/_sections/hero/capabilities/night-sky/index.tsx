@@ -32,10 +32,6 @@ export function HeroSky() {
         />
         <canvas data-hero-stars className={styles.canvas} aria-hidden="true" />
       </div>
-      <p className={cn(styles.credit, 'pointer-events-auto')}>
-        Fotografía: <a href="https://www.hq.eso.org/public/images/eso0932a/">ESO/S. Brunier</a>,{' '}
-        <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. Adaptación: reproyección y reconstrucción inferida selectiva.
-      </p>
     </div>
   )
 }
