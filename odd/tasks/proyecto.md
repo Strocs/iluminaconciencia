@@ -10,9 +10,9 @@ S4. User: «la ruta con /equipo redirigan a /proyecto a su sección específica 
 S5. Project rules: no new tests, no Playwright visual verification, no new branches. Preserve unrelated app/layout.tsx edits. Verify lint, types, build and bounded HTTP checks where available.
 
 ## Tasks
-T1 [done] S1-S5 | route: parent + read-only source research | commit: pending | corroborate content and implementation surfaces.
-T2 [done] S1-S4 | route: parent inline | commit: pending | implement coherent page, local navigation and grouped routes (forecast ~330 authored lines).
-T3 [done] S1-S5 | route: parent checks | commit: pending | check lint/types/build/HTTP, native assessment when enabled; independent verifier if named high risk.
+T1 [done] S1-S5 | route: parent + read-only source research | commit: c2a2ee0 | corroborate content and implementation surfaces.
+T2 [done] S1-S4 | route: parent inline | commit: c2a2ee0 | implement coherent page, local navigation and grouped routes (forecast ~330 authored lines).
+T3 [done] S1-S5 | route: parent checks | commit: c2a2ee0 | check lint/types/build/HTTP, native assessment when enabled; independent verifier if named high risk.
 
 ## Log
 L1. Original request: «Necesitamos trabajar en algunas rutas estáticas del proyecto. Una de ellas es Equipo, inicialmente teníá pensada que esta páginna consolidara no solo mostrar a los miembros del equipo si no construír una narrativa más profunda respecto a qué hace el equipo, cómo lo hace, por qué es importante, etc. Sería como una mezcla entre la sección equipo y la FAQ en https://iluminaconciencia.userena.digital/»
