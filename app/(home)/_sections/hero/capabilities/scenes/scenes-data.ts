@@ -25,8 +25,8 @@ export const heroScenes = [
     },
     copy: 'Generamos una red que mide la contaminación lumínica en tiempo real para apoyar la toma de decisiones.',
     cta: {
-      label: 'Quiénes somos',
-      href: '/equipo'
+      label: 'Conoce el proyecto',
+      href: '/proyecto'
     }
   },
   {

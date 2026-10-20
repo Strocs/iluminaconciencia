@@ -74,6 +74,14 @@ Los mecanismos especiales del framework se eligen por el comportamiento que nece
 
 **En síntesis:** ubicación por consumidores, límites por responsabilidad y abstracciones por necesidad comprobada.
 
+## Proyecto y equipo
+
+- `/proyecto` presenta el propósito, las actividades, recomendaciones y el equipo de IluminAconciencia.
+- `/equipo` utiliza la misma composición y, al hidratarse, cambia la URL a `/proyecto` y desplaza el foco al equipo, sin fragmentos ni identificadores de sección. Al recargar `/proyecto`, comienza desde arriba.
+- Ambas rutas están agrupadas en `app/(site)/(proyecto)/`. El contenido se renderiza en servidor; solo la navegación local y los `InfoPopover` necesitan interactividad cliente.
+- El índice del sidebar desplaza y enfoca las secciones sin modificar la URL. Sin JavaScript, el contenido completo sigue disponible para lectura.
+- Las fuentes institucionales están enlazadas en la página. La nómina refleja la publicación institucional, no una confirmación independiente de cargos actuales. No se presentan metas históricas de nodos ni promesas de actualización como hechos actuales.
+
 ## Getting Started
 
 First, run the development server:
