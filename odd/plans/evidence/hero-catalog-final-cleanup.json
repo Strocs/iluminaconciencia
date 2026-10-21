@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "task": "T24",
+  "specs": ["S2", "S7", "S20", "S26", "S27", "S33", "S34", "S35"],
+  "status": "applied-not-verified",
+  "backup": {
+    "source": "app/(home)/_sections/hero/capabilities/night-sky/development-star-catalog.ts",
+    "destination": "docs/backups/hero/development-star-catalog-4666.ts.bak",
+    "operation": "exclusive-create binary copy before any requested removal",
+    "exit": 0,
+    "postcopyComparison": "not performed"
+  },
+  "runtime": {
+    "activeCatalog": "Current 2,087-row starCatalog mapped with starCatalogOriginalIndices in every mode",
+    "temporaryComparison": "Hero mount, catalog selection, async renderer replacement, swap-pending branch, DEV listener, SVG selection, and selection-generation cleanup removed",
+    "retainedLifecycle": "Existing initialization guard, one-RAF loop, requestedRunning, timeMs, resize/context-loss/reduced-motion/photo-error/fade/draw/destroy paths preserved by scoped edits"
+  },
+  "preview": {
+    "runtime": "Existing embedded 558-byte photoPreview data URL and Next Image blurDataURL retained",
+    "physicalFile": "Unused public/images/hero/sky/t16-left-r1/background-preview.webp removed by parent after the required docs backup was present; inline preview retained"
+  },
+  "removedFiles": [
+    "app/(home)/_sections/hero/capabilities/night-sky/DevCatalogSwitch.tsx",
+    "app/(home)/_sections/hero/capabilities/night-sky/development-star-catalog.ts",
+    "public/images/hero/sky/t16-left-r1/background-preview.webp"
+  ],
+  "parentRemovalExit": 0,
+  "assessment": {
+    "risk": "high",
+    "nativeRisk": "unassessable",
+    "escalatedItem": 4,
+    "nativeReviewOutcome": "declined",
+    "independentVerifierRequired": true,
+    "independentVerifierExecuted": false,
+    "reason": "Lifecycle cleanup source-reviewed only; correctness checks not authorized. Native assessment unavailable due shared untracked files; no authority or approval."
+  },
+  "verification": "No functional/runtime checks performed per S20/S26/S27. Copy and removal command success records operations, not independent correctness proof."
+}

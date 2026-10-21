@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "task": "T21",
+  "specs": [
+    "S2",
+    "S7",
+    "S20",
+    "S26",
+    "S27",
+    "S28"
+  ],
+  "status": "applied-not-verified",
+  "selection": "mapped base sizePx inclusive [1.75, 2] CSS px",
+  "inputRows": 2800,
+  "removedRowsThisStep": 713,
+  "retainedRows": 2087,
+  "cumulativeRemovedFromOriginal": 2579,
+  "originalOrdinals": "retained rows and starCatalogOriginalIndices sliced in parallel; original ordinals preserved",
+  "svg": "fresh catalog-gt-2px-r1 generated from current exported 2087-row mapped data",
+  "runtime": "catalogStars URL updated; photo URLs, dimensions, bounds and renderer/helper logic unchanged",
+  "verification": "not-performed at user request; no correctness verdict or visual approval claimed",
+  "sourceSnapshotSha256": "70ec15fd4bb06894d630b5ec70cbbd5e3f7a74d2aaf6e36f48d0a325d147573e",
+  "svgSha256": "403fc3b15719f8745b9e12290ac40fb279d6145cb22c5f636cd70cf4f38496b6"
+}

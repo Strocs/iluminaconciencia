@@ -83,7 +83,10 @@ const bvToRgb = (bv: number): readonly [number, number, number] => {
   ]
 }
 
-export function mapStarCatalog(records: readonly StarCatalogRecord[]): MappedStarData {
+export function mapStarCatalog(
+  records: readonly StarCatalogRecord[],
+  originalIndices?: readonly number[]
+): MappedStarData {
   const count = records.length
   const origins = new Float32Array(count * 2)
   const stars = new Float32Array(count * 4)
@@ -122,10 +125,11 @@ export function mapStarCatalog(records: readonly StarCatalogRecord[]): MappedSta
     // Magnitude -> alpha along the same normalized scale.
     const alpha = ALPHA.min + brightness * (ALPHA.max - ALPHA.min)
 
-    // Deterministic golden-ratio hash from the catalog index (same family as
-    // the old procedural sky), driving the twinkle phase and speed.
-    const phase = fract(index * HASH.phase)
-    const speed = 0.5 + fract(index * HASH.speed) * 1.5
+    // Deterministic golden-ratio hash from the original catalog index (same
+    // family as the old procedural sky), driving twinkle phase and speed.
+    const profileIndex = originalIndices?.[index] ?? index
+    const phase = fract(profileIndex * HASH.phase)
+    const speed = 0.5 + fract(profileIndex * HASH.speed) * 1.5
 
     const starTarget = index * 4
     stars[starTarget] = phase

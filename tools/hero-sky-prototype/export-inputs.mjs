@@ -37,7 +37,7 @@ function load(filename) {
   )
   return result.exports
 }
-const { starCatalog } = load(path.join(sourceDir, 'star-catalog.ts'))
+const { starCatalog, starCatalogOriginalIndices } = load(path.join(sourceDir, 'star-catalog.ts'))
 const backup = load(path.join(sourceDir, 'star-catalog.ts.bak')).starCatalog
 if (!Array.isArray(backup)) throw new Error('Backup catalog export missing')
 const reference = load(path.join(sourceDir, 'sky-reference.ts'))
@@ -51,7 +51,7 @@ const shader = (name) => {
   if (!match) throw new Error(`Missing ${name}`)
   return match[1]
 }
-const mapped = Object.fromEntries(Object.entries(mapStarCatalog(starCatalog)).map(([k, v]) => [k, Array.from(v)]))
+const mapped = Object.fromEntries(Object.entries(mapStarCatalog(starCatalog, starCatalogOriginalIndices)).map(([k, v]) => [k, Array.from(v)]))
 if (mapped.origins.length !== 2 * starCatalog.length || mapped.stars.length !== 4 * starCatalog.length ||
     mapped.colors.length !== 4 * starCatalog.length) throw new Error('GPU buffer schema mismatch')
 const frames = [[1920, 1080, 1], [390, 844, 2], [1440, 1080, 1], [1920, 823, 1],

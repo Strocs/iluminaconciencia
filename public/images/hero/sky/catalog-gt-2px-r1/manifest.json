@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "version": "catalog-gt-2px-r1",
+  "catalogRows": 2087,
+  "removedRows": 713,
+  "removedRowsThisStep": 713,
+  "cumulativeRemovedRowsFromOriginal": 2579,
+  "selection": "mapped base sizePx in inclusive [1.75, 2] CSS px; selected from current 2800-row catalogue after prior cumulative 2579-row removal context through 1.75 CSS px",
+  "catalogueSha256": "a5d5c99685ef6dd42bd3acd54486932d76dbb8ff2da35557c1633750bafb23b6",
+  "retainedRawRecordsSha256": "a5d5c99685ef6dd42bd3acd54486932d76dbb8ff2da35557c1633750bafb23b6",
+  "retainedMappedProfileSubsetSha256": "dfaa64a03875fc2a85f90155628a6d83fb330db52eb948c87db744022f823128",
+  "photoUrlsUnchanged": [
+    "/images/hero/sky/t16-left-r1/background-1x.webp",
+    "/images/hero/sky/t16-left-r1/background-2x.webp"
+  ],
+  "historicalCatalogSvgUnchanged": {
+    "url": "/images/hero/sky/t13-texture-r1/catalog-stars.svg",
+    "sha256": "e6c806eaa3d07db8259a1c972bffca957b5310250ee9ba3eb68fde6c5068a83c"
+  },
+  "reference": "SKY_REFERENCE unchanged",
+  "recipe": "tools/hero-sky-prototype/production-recipe.json",
+  "svgGenerator": "tools/hero-sky-prototype/production_assets.py:svg (unchanged)",
+  "humanApproval": "not-claimed",
+  "browserVerification": "not-performed",
+  "photoSha256": {
+    "/images/hero/sky/t16-left-r1/background-1x.webp": "de1b2c87eac57f8ce5dfde9fe602e50ee66fb876873a600bb41c64e5fbcb3d7c",
+    "/images/hero/sky/t16-left-r1/background-2x.webp": "21d4314a0df31d2377727280735c3445792c2938a7ac4c1ebc54cb5880ed91ad"
+  },
+  "inheritedMetadataStatus": "photo URLs/hashes, reference and recipe bindings inherited from catalog-gt-1_75px-r1 manifest; not rechecked",
+  "referenceSourceSha256": "3e391cc7fb10b391d01869718e48cca21580c098d601c9974174fba6e8c6abf6",
+  "recipeSha256": "68e6e11353a09f0ae380caa9cb1eb4a1d313cbcb3c06cae95b0bd5d1bf4f4e4f",
+  "cumulativeRemovedRowsContext": "prior 1866 removals retained; 713 removed in this step",
+  "sourceSnapshot": "output/hero-sky-prototype/integration/catalog-gt-2px-r1/current-sky.json",
+  "sourceSnapshotSha256": "70ec15fd4bb06894d630b5ec70cbbd5e3f7a74d2aaf6e36f48d0a325d147573e",
+  "svgSha256": "403fc3b15719f8745b9e12290ac40fb279d6145cb22c5f636cd70cf4f38496b6",
+  "svgBytes": 6514003,
+  "svgPathsFormula": "2087 rows \u00d7 16 radial bands = 33392 expected path elements by generator formula; not XML-verified",
+  "backup": "app/(home)/_sections/hero/capabilities/night-sky/star-catalog.before-1_5px-filter.ts.bak (original 4666-row backup retained)",
+  "backupSha256": "251f2505448c089655f469588746b9fa53f00dc335c0cc6a11d53f151e17ac76",
+  "backupMetadataStatus": "inherited from prior manifest; not rechecked",
+  "sourceOrdinalHash": "omitted; not present in generated exporter payload",
+  "verification": "not-performed per S26/S27/S28"
+}

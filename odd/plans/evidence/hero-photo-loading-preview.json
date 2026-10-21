@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "task": "T23",
+  "status": "applied-not-verified",
+  "preview": {
+    "formerPath": "public/images/hero/sky/t16-left-r1/background-preview.webp",
+    "retirement": "Unused physical file removed under S34; embedded data URL retained.",
+    "width": 320,
+    "height": 180,
+    "bytes": 558,
+    "source": "public/images/hero/sky/t16-left-r1/background-2x.webp",
+    "quality": 25,
+    "blurSigma": 1.2,
+    "embeddedAsDataUrl": true,
+    "activeRuntimeSource": "nightSkyAssets.photoPreview inline data URL"
+  },
+  "implementation": {
+    "component": "Next Image inside a native picture",
+    "loading": "Framework-native placeholder=blur with the existing inline blurDataURL",
+    "unoptimized": true,
+    "loadingPriority": "loading=eager and fetchPriority=high; no preload prop",
+    "customPictureBackgroundRemoved": true,
+    "extraPreviewImageRequest": false,
+    "sourceSelection": "Existing DPR-based 1x/2x picture sources unchanged",
+    "cropAndFade": "Same photo plane and existing artwork opacity",
+    "customLoadingListeners": false,
+    "rendererChanges": false,
+    "finalPhotoFilesModified": false,
+    "deletedPhotoManifestRecreated": false,
+    "errorBehavior": "Existing photo-error plane hiding is unchanged"
+  },
+  "verification": "No tests, lint, typecheck, build or browser checks run under the existing user preference; dimensions/bytes are generation output, not runtime proof."
+}

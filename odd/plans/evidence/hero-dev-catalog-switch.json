@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "task": "T22",
+  "specs": [
+    "S2",
+    "S7",
+    "S20",
+    "S26",
+    "S27",
+    "S29"
+  ],
+  "status": "retired-runtime-and-temporary-files-removed",
+  "control": "Retired under S34: Hero mount, runtime swap/listener paths and temporary DevCatalogSwitch.tsx removed; the full data module was backed up under docs before removal.",
+  "catalogs": {
+    "actual": "current 2087-row catalog, mapped with starCatalogOriginalIndices",
+    "original": "Historical 4666 literal rows preserved at docs/backups/hero/development-star-catalog-4666.ts.bak per S35; the former app data module has been removed.",
+    "actualSvg": "/images/hero/sky/catalog-gt-2px-r1/catalog-stars.svg",
+    "originalSvg": "/images/hero/sky/t13-texture-r1/catalog-stars.svg"
+  },
+  "preservation": "Same photo, framing/crop, scroll/fade lifecycle, and shared-star profiles are retained by implementation bounds; no reload, persistence, global setting, or renderer helper changes.",
+  "verification": "No functional checks, production bundle proof, browser/runtime proof, or approval claimed. Runtime retirement was implemented without verification under S20/S26/S27.",
+  "risk": "Known item 4: live renderer replacement, async load versus destroy, requested start/stop, RAF, resize, and fallback ordering remain unverified.",
+  "parentSourceReadback": "Hero mount, DEV guard, native checkbox, generated-data header and local runtime selection/cleanup code read; no executable checks or browser inspection.",
+  "assessment": {
+    "risk": "high",
+    "nativeRisk": "unassessable",
+    "escalatedItem": 4,
+    "nativeReviewOutcome": "declined",
+    "independentVerifierRequired": true,
+    "independentVerifierExecuted": false,
+    "reason": "Shared worktree has undeclared untracked files; no native authority created. Functional checks were not authorized under the user no-verification constraint."
+  }
+}

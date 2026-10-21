@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "task": "T20",
+  "specs": [
+    "S2",
+    "S7",
+    "S20",
+    "S26",
+    "S27"
+  ],
+  "status": "applied",
+  "verification": "not-performed",
+  "verificationExplicitlyNotPerformedPer": "S27: \u00abquitemos esas tambi\u00e9n, no hagas verificaci\u00f3n\u00bb",
+  "selection": {
+    "rule": "mapStarCatalog current mapped base sizePx inclusive [1.5, 1.75] CSS px",
+    "inputRows": 3711,
+    "removedRowsThisStep": 911,
+    "retainedRows": 2800,
+    "cumulativeRemovedFromOriginal4666": 1866,
+    "retainedOriginalOrdinalsPreservedWithoutRenumbering": true
+  },
+  "history": {
+    "previousStep": {
+      "removedRows": 955,
+      "rule": "mapped base sizePx <=1.5 CSS px inclusive",
+      "resultingRows": 3711
+    },
+    "currentStep": {
+      "removedRows": 911,
+      "rule": "mapped base sizePx inclusive [1.5,1.75] CSS px",
+      "resultingRows": 2800
+    },
+    "original4666RowBackup": "app/(home)/_sections/hero/capabilities/night-sky/star-catalog.before-1_5px-filter.ts.bak",
+    "backupMutation": "not-performed; existing original backup kept immutable"
+  },
+  "assets": {
+    "version": "catalog-gt-1_75px-r1",
+    "svg": "public/images/hero/sky/catalog-gt-1_75px-r1/catalog-stars.svg",
+    "svgSha256": "5da9a19593036776d47020efdf12d2ca6cc9d7dcb686b9bb911d525e79cfa1e4",
+    "svgRows": 2800,
+    "expectedPathFormula": "2800 \u00d7 16 = 44800; not XML-verified",
+    "catalogueSha256": "a4de6f2754d03c19ae471427a2df4bc8c8c01b8ee448ad17b3d32324aaa8457b",
+    "sourceSnapshotSha256": "8fada88b3b375e4e600ab2cffa4700a4f82895eb2616081685b77603a8d8defa",
+    "retainedOrdinalsSha256": "ddc341e2d6f8ab437803d6880027e755c8234cfb64c9951e93f561e976d9575b",
+    "assetUrl": "/images/hero/sky/catalog-gt-1_75px-r1/catalog-stars.svg",
+    "photoUrlsInheritedUnchanged": [
+      "/images/hero/sky/t16-left-r1/background-1x.webp",
+      "/images/hero/sky/t16-left-r1/background-2x.webp"
+    ]
+  },
+  "priorT19": {
+    "verification": "cancelled by S26; not treated as pass or approval",
+    "independentVerifier": "cancelled; no verdict claimed"
+  }
+}

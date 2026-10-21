@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import type { CSSProperties } from 'react'
 import { cn } from '@/_utils/cn'
 import styles from './sky-artwork.module.css'
@@ -10,7 +11,7 @@ export function HeroSky() {
       <div data-hero-sky-artwork className={styles.artwork} aria-hidden="true">
         <picture className={styles.photoPlane} data-hero-sky-photo-plane>
           <source media="(min-resolution: 1.01dppx)" srcSet={nightSkyAssets.photo2x} />
-          <img
+          <Image
             data-hero-sky-photo
             src={nightSkyAssets.photo1x}
             width={nightSkyAssets.width}
@@ -18,7 +19,11 @@ export function HeroSky() {
             alt=""
             aria-hidden="true"
             decoding="async"
+            loading="eager"
             fetchPriority="high"
+            placeholder="blur"
+            blurDataURL={nightSkyAssets.photoPreview}
+            unoptimized
           />
         </picture>
         <img

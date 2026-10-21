@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from 'react'
-import { frontalSilhouette, frontalSilhouetteGeometry } from '../landscape/svg-path'
+import { frontalSilhouette, frontalSilhouetteGeometry } from './mask'
 
 const nearest = frontalSilhouette
 const { viewBoxWidth, viewBoxHeight, translateY, contourValleyY } = frontalSilhouetteGeometry

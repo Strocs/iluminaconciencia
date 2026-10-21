@@ -4,7 +4,7 @@ import { computeSkyArtworkPlacement } from './sky-crop'
 import { nightSkyAssets } from './sky-assets'
 import type { HeroSkyCapability } from './contracts'
 import { mapStarCatalog } from './star-mapper'
-import { starCatalog } from './star-catalog'
+import { starCatalog, starCatalogOriginalIndices } from './star-catalog'
 import { createWebglStarRenderer, type WebglStarRenderer } from './webgl-star-renderer'
 
 type NightSkyConfig = typeof nightSkyConfig
@@ -93,17 +93,17 @@ export function createNightSkyCapability({
     renderer = undefined
     setLifecycleState('fallback')
   }
-  const drawAndActivate = (timeMs: number): boolean => {
-    if (!renderer || !renderer.draw(timeMs)) return false
+  const drawAndActivate = (frameTimeMs: number): boolean => {
+    if (!renderer || !renderer.draw(frameTimeMs)) return false
     setLifecycleState('active')
     canvas.dataset.heroSkyReady = 'true'
     fallbackImage.dataset.heroSkyStarsVisible = 'false'
     return true
   }
-  const renderFrame = (timeMs: number): boolean => {
+  const renderFrame = (frameTimeMs: number): boolean => {
     if (lifecycleState !== 'active' || !renderer) return false
     try {
-      if (renderer.draw(timeMs)) return true
+      if (renderer.draw(frameTimeMs)) return true
     } catch {
       enterFallback()
       return false
@@ -129,7 +129,7 @@ export function createNightSkyCapability({
       return
     }
     try {
-      renderer = createWebglStarRenderer(canvas, mapStarCatalog(starCatalog))
+      renderer = createWebglStarRenderer(canvas, mapStarCatalog(starCatalog, starCatalogOriginalIndices))
       renderer.resize(size, placement.crop)
       if (!drawAndActivate(timeMs)) enterFallback()
       else if (requestedRunning) startLoop()
