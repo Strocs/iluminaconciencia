@@ -48,7 +48,17 @@ export function createNewsLayout(segments: NewsSegment[], excludedImageUrl?: str
     return roots
   }
 
-  return segments.map((segment) => {
+  const firstNarrative = segments.findIndex((segment) =>
+    segment.content.some(({ node }) => {
+      const visible = omitPrimaryImage(node)
+      return visible ? hasContent([visible]) : false
+    })
+  )
+  const openingBlocks = firstNarrative > 0 ? segments.slice(0, firstNarrative).flatMap((segment) => segment.source) : []
+  const readingSegments = firstNarrative > 0 ? segments.slice(firstNarrative) : segments
+
+  return readingSegments.map((segment, index) => {
+    const opening = project(index === 0 ? openingBlocks : [])
     const mediaIds = new Set(segment.media.map(({ node }) => node.id))
     const firstMedia = segment.source.findIndex(({ node }) => mediaIds.has(node.id))
     const lastMedia = segment.source.findLastIndex(({ node }) => mediaIds.has(node.id))
@@ -57,7 +67,9 @@ export function createNewsLayout(segments: NewsSegment[], excludedImageUrl?: str
     const after = project(firstMedia < 0 ? [] : segment.source.slice(lastMedia + 1))
 
     return {
-      id: segment.source[0].node.id,
+      id: index === 0 && openingBlocks.length > 0 ? openingBlocks[0].node.id : segment.source[0].node.id,
+      opening,
+      hasOpening: hasContent(opening),
       before,
       media,
       after,
