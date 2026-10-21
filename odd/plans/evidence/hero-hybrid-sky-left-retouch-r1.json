@@ -1,0 +1,76 @@
+{
+  "schema": 1,
+  "candidate": "output/hero-sky-prototype/production/t16-left-r1",
+  "codeCommit": "6d1312903eafcdaea38e7b6c02a51a70c276b9e1",
+  "baseImageVersion": "t13-texture-r1",
+  "generation": {
+    "job": "job-2",
+    "exitCode": 0,
+    "seconds": 55,
+    "targetCount": 31,
+    "groupCount": 30,
+    "editUnionPixels": 30797,
+    "changedPixels": 25081,
+    "outsideMaskDifferentPixels": 0
+  },
+  "completedValidation": {
+    "job": "job-3",
+    "exitCode": 0,
+    "seconds": 11,
+    "mode": "completed-artifact-validation",
+    "passed": true,
+    "writes": false,
+    "artifactsValidated": true
+  },
+  "passed": true,
+  "targetCount": 31,
+  "groupCount": 30,
+  "changedPixels": 25081,
+  "editUnionPixels": 30797,
+  "outsideNewMaskDifferentPixels": 0,
+  "maskEntirelyInsideMarkedRoi": true,
+  "renderBuffersAndFramesExact": true,
+  "approvedArtifactHashesPreserved": 53,
+  "all31PhotoCentresChanged": true,
+  "regionPlanSha256": "ffb76abf429f995cc85c94c9d3944780bf8ad702085068a1998f357e2067696b",
+  "assets": {
+    "background-1x.webp": {
+      "sha256": "de1b2c87eac57f8ce5dfde9fe602e50ee66fb876873a600bb41c64e5fbcb3d7c",
+      "bytes": 834324,
+      "dimensions": [
+        1920,
+        1080
+      ]
+    },
+    "background-2x.webp": {
+      "sha256": "21d4314a0df31d2377727280735c3445792c2938a7ac4c1ebc54cb5880ed91ad",
+      "bytes": 3100916,
+      "dimensions": [
+        3840,
+        2160
+      ]
+    }
+  },
+  "pages": [
+    "output/hero-sky-prototype/integration/validation-t17/t16-left-r1-review/local-before-after-01.png",
+    "output/hero-sky-prototype/integration/validation-t17/t16-left-r1-review/local-before-after-02.png",
+    "output/hero-sky-prototype/integration/validation-t17/t16-left-r1-review/local-before-after-03.png",
+    "output/hero-sky-prototype/integration/validation-t17/t16-left-r1-review/local-before-after-04.png"
+  ],
+  "approval": "pending",
+  "runtimePromoted": false,
+  "comparison": "output/hero-sky-prototype/integration/validation-t17/t16-left-r1-review/left-region-before-after.png",
+  "visualInspection": {
+    "nativePagesOpened": 4,
+    "targetsRepresented": 31,
+    "desktopMobileShiftedOpened": true,
+    "observation": "Selected photographic residual pairs are reduced by local retouch; no canvas/catalogue/camera change. This is offline CPU-composite inspection, not actual browser proof."
+  },
+  "nativeAssessment": {
+    "risk": "medium",
+    "nativeRisk": "unassessable",
+    "reason": "Unrelated untracked Proyecto files require declaration; no outside-owner files touched. Returned writer-self-verification stands; no independent verifier required.",
+    "nativeApproval": false
+  },
+  "creditPresentation": "Visible HTML/CSS removed; no footer/ALT credit added; existing license/provenance files preserved."
+}
