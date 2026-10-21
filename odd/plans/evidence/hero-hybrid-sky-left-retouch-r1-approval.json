@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "status": "user-approved",
+  "version": "t16-left-r1",
+  "answerVerbatim": "suficientemente bien. aprobada",
+  "questionVerbatim": "¿Aprobás esta versión para integrarla?",
+  "regionPlanSha256": "ffb76abf429f995cc85c94c9d3944780bf8ad702085068a1998f357e2067696b",
+  "sourceCodeCommit": "6d1312903eafcdaea38e7b6c02a51a70c276b9e1",
+  "sourceDirectory": "output/hero-sky-prototype/production/t16-left-r1",
+  "comparison": "output/hero-sky-prototype/integration/validation-t17/t16-left-r1-review/left-region-before-after.png",
+  "assets": {
+    "background-1x.webp": {
+      "sha256": "de1b2c87eac57f8ce5dfde9fe602e50ee66fb876873a600bb41c64e5fbcb3d7c",
+      "bytes": 834324,
+      "dimensions": [1920, 1080]
+    },
+    "background-2x.webp": {
+      "sha256": "21d4314a0df31d2377727280735c3445792c2938a7ac4c1ebc54cb5880ed91ad",
+      "bytes": 3100916,
+      "dimensions": [3840, 2160]
+    }
+  },
+  "heroIntegrationAuthorized": true,
+  "browserAutomationAuthorized": false,
+  "actualParallaxAuthorized": false,
+  "publishingAuthorized": false,
+  "externalTemporaryCleanupAuthorized": false,
+  "nativeReviewConsent": "provider-owned; this record is not native review consent"
+}

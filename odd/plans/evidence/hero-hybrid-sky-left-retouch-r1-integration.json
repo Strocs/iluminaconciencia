@@ -1,0 +1,143 @@
+{
+  "schema": 1,
+  "status": "integrated-photo-assets",
+  "version": "t16-left-r1",
+  "approvalRecord": "odd/plans/evidence/hero-hybrid-sky-left-retouch-r1-approval.json",
+  "sourceDirectory": "output/hero-sky-prototype/production/t16-left-r1",
+  "sourceCodeCommit": "6d1312903eafcdaea38e7b6c02a51a70c276b9e1",
+  "regionPlanSha256": "ffb76abf429f995cc85c94c9d3944780bf8ad702085068a1998f357e2067696b",
+  "comparison": "output/hero-sky-prototype/integration/validation-t17/t16-left-r1-review/left-region-before-after.png",
+  "assets": {
+    "background-1x.webp": {
+      "publicPath": "public/images/hero/sky/t16-left-r1/background-1x.webp",
+      "sha256": "de1b2c87eac57f8ce5dfde9fe602e50ee66fb876873a600bb41c64e5fbcb3d7c",
+      "bytes": 834324,
+      "dimensions": [1920, 1080]
+    },
+    "background-2x.webp": {
+      "publicPath": "public/images/hero/sky/t16-left-r1/background-2x.webp",
+      "sha256": "21d4314a0df31d2377727280735c3445792c2938a7ac4c1ebc54cb5880ed91ad",
+      "bytes": 3100916,
+      "dimensions": [3840, 2160]
+    }
+  },
+  "photo": {
+    "source": "ESO/S. Brunier, eso0932a",
+    "sourceUrl": "https://www.hq.eso.org/public/images/eso0932a/",
+    "sourceLicense": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "adaptations": [
+      "inherited canonical projection/reprojection and crop/resampling from approved t13-texture-r1",
+      "localized inferred photo-region reconstruction for 31 reviewed residual targets",
+      "WebP derivative assets copied byte-for-byte from the approved t16-left-r1 candidate"
+    ]
+  },
+  "catalogStars": {
+    "publicUrl": "/images/hero/sky/t13-texture-r1/catalog-stars.svg",
+    "publicPath": "public/images/hero/sky/t13-texture-r1/catalog-stars.svg",
+    "sha256": "e6c806eaa3d07db8259a1c972bffca957b5310250ee9ba3eb68fde6c5068a83c",
+    "catalogRows": 4666,
+    "newDuplicateCreated": false
+  },
+  "protectedContracts": {
+    "photoDimensions": [1920, 1080],
+    "bounds": {
+      "x0": -2.6601222222222223,
+      "y0": -1.4565,
+      "width": 5.443022222222221,
+      "height": 3.0617
+    },
+    "skyReference": "unchanged",
+    "rendererCropLifecycleProfileAndCatalogueFields": "unchanged",
+    "protectedCodeModules": {
+      "star-catalog.ts": "251f2505448c089655f469588746b9fa53f00dc335c0cc6a11d53f151e17ac76",
+      "star-mapper.ts": "1a92271f944bd9137c95835be7e4bfa0d01533db94513f4ff156a82c5b41ccf1",
+      "sky-reference.ts": "3e391cc7fb10b391d01869718e48cca21580c098d601c9974174fba6e8c6abf6"
+    },
+    "layoutSha256AtStart": "7f1d3223231eef618778278814816bef5141ec74e8176746eaa391611d8a508d"
+  },
+  "priorApprovedArtifactPreservation": {
+    "evidence": "output/hero-sky-prototype/integration/validation-t17/t16-left-r1-review/review.json",
+    "unchangedArtifactHashCount": 53,
+    "scope": "T17 candidate review evidence; promotion did not overwrite those candidate/history artifacts"
+  },
+  "browserVerification": "not-performed",
+  "finalHeroApproval": "not-claimed",
+  "publishingAuthorized": false,
+  "verification": {
+    "worker": {
+      "publicExportAndAssetContract": {
+        "exitCode": 0,
+        "stderr": ""
+      },
+      "typecheck": {
+        "command": "pnpm run typecheck",
+        "exitCode": 0
+      },
+      "scopedEslint": {
+        "exitCode": 0
+      },
+      "diffCheck": {
+        "exitCode": 0
+      }
+    },
+    "parent": {
+      "scopedEslintSpotCheck": {
+        "exitCode": 0,
+        "seconds": 3.1
+      },
+      "freshPreservationAndApprovalProbe": {
+        "exitCode": 0,
+        "seconds": 2.4,
+        "evidence": "output/hero-sky-prototype/integration/validation-t18/parent-check.json",
+        "approvedHistoricalArtifactHashesPreserved": 53
+      },
+      "rootLint": {
+        "job": "job-1",
+        "exitCode": 0,
+        "seconds": 19,
+        "errors": 0,
+        "warnings": 5,
+        "warningScope": "One intentional native-img warning; four unrelated Proyecto Tailwind shorthand warnings"
+      },
+      "initialBuildWrapper": {
+        "job": "job-2",
+        "exitCode": 1,
+        "seconds": 0,
+        "nextBuildExecuted": false,
+        "reason": "Obsolete parent guard refused .next/dev/lock; diagnosed against installed Next 16.3 documentation",
+        "resolution": "Development and production output directories are separate; no process/lock/config changes needed"
+      },
+      "compiledSsrReadback": {
+        "exitCode": 0,
+        "evidence": "output/hero-sky-prototype/integration/validation-t18/compiled-ssr.json",
+        "approvedPhoto1xAnd2x": true,
+        "existingSvgAndCanvasRetained": true,
+        "visibleCreditLinksAbsent": true,
+        "notBrowserProof": true
+      },
+      "actualProductionBuild": {
+        "job": "job-3",
+        "status": "passed",
+        "exitCode": 0,
+        "seconds": 19,
+        "timeoutSeconds": 900,
+        "guard": "Production .next/lock only",
+        "developmentServerUntouched": true
+      }
+    },
+    "nativeAssessment": {
+      "risk": "medium",
+      "nativeRisk": "unassessable",
+      "candidate": null,
+      "reason": "Untracked files require explicit declaration in shared worktree; other owners' files were not staged or declared",
+      "writerSelfVerification": true,
+      "independentVerifier": false,
+      "nativeApproval": false
+    },
+    "manualRuntime": {
+      "status": "pending-user-review",
+      "browserAutomationPerformed": false
+    }
+  }
+}

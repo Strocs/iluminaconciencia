@@ -1,6 +1,10 @@
-# Approved hero sky delivery (`t13-texture-r1`)
+# Current approved hero sky photo (`t16-left-r1`)
 
-The only promoted photo files are byte-identical copies from the explicitly approved production directory. Their approval record is `odd/plans/evidence/hero-hybrid-sky-background-approval.json`; public `manifest.json` binds the approval plan hash, photo hashes, canonical bounds and CC BY 4.0 source/adaptations. The photo files/history remain unchanged.
+The current photo URLs use the separately approved localized `t16-left-r1` derivative. Only `photo1x`/`photo2x` changed; the existing `t13-texture-r1` 4,666-row external catalog SVG remains shared at `/images/hero/sky/t13-texture-r1/catalog-stars.svg`. Approval and exact assets/provenance are recorded in `odd/plans/evidence/hero-hybrid-sky-left-retouch-r1-approval.json` and `odd/plans/evidence/hero-hybrid-sky-left-retouch-r1-integration.json`. The visible credit remains removed per S22/S23; the legal attribution stays in public CREDITS/manifest records. This photo integration is not browser verification, final runtime-hero approval, actual parallax, publishing or external cleanup consent.
+
+## Historical approved delivery (`t13-texture-r1`)
+
+The original promoted photo files were byte-identical copies from the explicitly approved production directory. Their approval record is `odd/plans/evidence/hero-hybrid-sky-background-approval.json`; public `manifest.json` binds the approval plan hash, photo hashes, canonical bounds and CC BY 4.0 source/adaptations. The photo files/history remain unchanged.
 
 The transparent catalog-star fallback was generated with the existing `production_assets.svg` helper, from the immutable exported `current-sky.json` catalog/mapped profiles/projection and `production-recipe.json` radial bands. Its manifest records snapshot, catalog, mapper, reference, recipe, and generator hashes. **Do not refresh/overwrite the historical input snapshot.** The approved snapshot SHA-256 is `dc331ea71325bb99b7e95ca3e8e779f0429a34020f8eef2b35da0b889a3c9535`; only regenerate after validating that identity, using the existing helper:
 
