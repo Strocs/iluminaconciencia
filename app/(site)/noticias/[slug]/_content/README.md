@@ -39,4 +39,10 @@ Mixed paragraphs and links are indivisible. Figures retain their captions; parag
 
 ## Rendering boundary
 
-`NewsHtml` renders the sanitized nodes without retagging or regrouping them. The existing primary-image suppression is a rendering-only option; the parser retains every source image. Existing external-link behavior and image dimension fallbacks also remain rendering policies, not invented parser attributes. This delivery deliberately leaves the current column layout unchanged. Segment-based columns and sticky behavior are a subsequent presentation change.
+`NewsHtml` renders sanitized nodes without retagging. Primary-image suppression, external-link behavior, and dimension fallbacks remain rendering policies, not invented parser attributes.
+
+`createNewsLayout` projects each segment into `before`, `media`, and `after` groups without mutating the canonical tree. Ancestor wrappers retain their tags; when split across layout fragments, their HTML IDs appear only on the first fragment. Consecutive resources retain their intervening spacing. Suppressing the primary image removes only its presentation copy, not the parser node or unrelated caption text.
+
+`NewsSegments` renders those three groups in source order. Mobile stacks them in that order; desktop places both text groups in the left rail and the resource group in the right rail. Both occupied rails have equal width. With one rail empty, CSS lets the occupied rail grow up to 65ch while retaining the empty side. No semantic content is generated to fill it.
+
+Media sticks only inside its segment. `NewsMedia` is the narrow client boundary: a callback-ref `ResizeObserver` and window resize listener toggle a fit marker, with cleanup on unmount. If the complete group is taller than the viewport space below the header, it remains in normal flow. No clipping, nested scrolling, autoplay, forced section height, or JavaScript width calculation is used. Without JavaScript or ResizeObserver, the source remains readable and media stays non-sticky.

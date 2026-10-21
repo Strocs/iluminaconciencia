@@ -2,7 +2,7 @@ import 'server-only'
 import Image from 'next/image'
 import type { News } from '@/_dal/news/types'
 import { cn } from '@/_utils/cn'
-import { NewsHtml } from './NewsHtml'
+import { NewsSegments } from './NewsSegments'
 import { getNewsMediaUrl } from '../_utils/newsContentUrls'
 import { parseNewsContent } from '../_content/parseNewsContent'
 
@@ -26,7 +26,7 @@ export function NewsContent({ news }: { news: News }) {
       )}
       <div
         className={cn([
-          'columns-1 gap-12 space-y-6 py-12 font-body text-base leading-relaxed text-foreground sm:text-lg md:columns-2',
+          'py-12 font-body text-base leading-relaxed text-foreground sm:text-lg',
           '[&_a]:text-primary [&_a:focus-visible]:ring-2 [&_a:focus-visible]:ring-accent [&_a:hover]:text-accent',
           '[&_blockquote]:space-y-2 [&_blockquote]:border-l-2 [&_blockquote]:border-primary [&_blockquote]:pl-4 [&_blockquote]:text-sm',
           '[&_figcaption]:text-sm [&_figcaption]:text-text',
@@ -41,7 +41,7 @@ export function NewsContent({ news }: { news: News }) {
           '[&_ul]:list-disc [&_ul]:space-y-2 [&_ul]:pl-6'
         ])}
       >
-        <NewsHtml nodes={content.nodes} excludedImageUrl={primaryImageUrl} />
+        <NewsSegments content={content} excludedImageUrl={primaryImageUrl} />
       </div>
     </div>
   )
