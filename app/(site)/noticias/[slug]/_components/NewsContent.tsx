@@ -1,23 +1,14 @@
 import 'server-only'
 import Image from 'next/image'
-import { DomUtils, parseDocument } from 'htmlparser2'
 import type { News } from '@/_dal/news/types'
 import { cn } from '@/_utils/cn'
 import { NewsHtml } from './NewsHtml'
 import { getNewsMediaUrl } from '../_utils/newsContentUrls'
+import { parseNewsContent } from '../_content/parseNewsContent'
 
 export function NewsContent({ news }: { news: News }) {
-  const document = parseDocument(news.content.sourceHtml)
+  const content = parseNewsContent(news.content.sourceHtml, news.sourceUrl)
   const primaryImageUrl = getNewsMediaUrl(news.image?.url, news.sourceUrl)
-  if (primaryImageUrl) {
-    const primaryImages = DomUtils.findAll(
-      (element) =>
-        element.name === 'img' &&
-        getNewsMediaUrl(element.attribs.src || element.attribs['data-src'], news.sourceUrl) === primaryImageUrl,
-      document.children
-    )
-    primaryImages.forEach((image) => DomUtils.removeElement(image))
-  }
 
   return (
     <div>
@@ -40,6 +31,7 @@ export function NewsContent({ news }: { news: News }) {
           '[&_blockquote]:space-y-2 [&_blockquote]:border-l-2 [&_blockquote]:border-primary [&_blockquote]:pl-4 [&_blockquote]:text-sm',
           '[&_figcaption]:text-sm [&_figcaption]:text-text',
           '[&_figure]:break-inside-avoid [&_figure]:space-y-2',
+          '[&_h1]:break-after-avoid [&_h1]:font-heading [&_h1]:text-2xl [&_h1]:font-semibold',
           '[&_h2]:break-after-avoid [&_h2]:font-heading [&_h2]:text-2xl [&_h2]:font-semibold',
           '[&_h3]:break-after-avoid [&_h3]:font-heading [&_h3]:text-xl [&_h3]:font-semibold',
           '[&_h4]:break-after-avoid [&_h4]:font-heading [&_h4]:font-semibold',
@@ -49,7 +41,7 @@ export function NewsContent({ news }: { news: News }) {
           '[&_ul]:list-disc [&_ul]:space-y-2 [&_ul]:pl-6'
         ])}
       >
-        <NewsHtml nodes={document.children} baseUrl={news.sourceUrl} />
+        <NewsHtml nodes={content.nodes} excludedImageUrl={primaryImageUrl} />
       </div>
     </div>
   )
