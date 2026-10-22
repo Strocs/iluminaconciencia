@@ -1,7 +1,7 @@
 export function Background() {
   return (
     <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_100%_at_50%_100%,#3b1f45_0%,#170d2f_40%,#010005_100%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_100%_60%_at_50%_100%,#3b1f45_0%,#170d2f_40%,#010005_100%)]" />
       <svg className="absolute inset-0 size-full opacity-40" focusable="false">
         <defs>
           <filter id="noise">
