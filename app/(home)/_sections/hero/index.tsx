@@ -1,14 +1,14 @@
 import { HeroRuntime } from './components/HeroRuntime'
 import { BortleScale } from './capabilities/bortle-scale'
 import { HeroFrame } from './capabilities/framing'
-import { LightPollution } from './capabilities/light-pollution'
+import { LightPollution, LightPollutionBacklight } from './capabilities/light-pollution'
 import { HeroSky } from './capabilities/night-sky'
 import { HeroNarrative } from './capabilities/scenes'
 
 export function Hero() {
   return (
     <HeroRuntime>
-      <HeroFrame>
+      <HeroFrame overlay={<LightPollutionBacklight />}>
         <div className="pointer-events-none absolute inset-0 z-0">
           <HeroSky />
         </div>

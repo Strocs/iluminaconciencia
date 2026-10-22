@@ -4,7 +4,7 @@ import type { lightPollutionConfig } from './config'
 
 type LightPollutionConfig = typeof lightPollutionConfig
 
-const horizonSelector = '[data-hero-light-pollution-horizon]'
+const pollutionSelector = '[data-hero-light-pollution-horizon], [data-hero-light-pollution-backlight]'
 
 export function createLightPollutionCapability({
   root,
@@ -13,12 +13,12 @@ export function createLightPollutionCapability({
   root: HTMLElement
   config: LightPollutionConfig
 }): HeroCapability {
-  const horizon = root.querySelector<HTMLElement>(horizonSelector)
+  const layers = root.querySelectorAll<HTMLElement>(pollutionSelector)
   const timeline = gsap.timeline({ paused: true })
 
-  if (horizon) {
+  if (layers.length) {
     timeline.fromTo(
-      horizon,
+      layers,
       { opacity: config.horizon.initialOpacity },
       {
         opacity: 0,
