@@ -1,14 +1,16 @@
 import 'server-only'
 import Image from 'next/image'
 import type { News } from '@/_dal/news/types'
+import { getApiBaseUrl } from '@/_dal/api'
 import { cn } from '@/_utils/cn'
 import { NewsSegments } from './NewsSegments'
 import { getNewsMediaUrl } from '../_utils/newsContentUrls'
 import { parseNewsContent } from '../_content/parseNewsContent'
 
 export function NewsContent({ news }: { news: News }) {
-  const content = parseNewsContent(news.content.sourceHtml, news.sourceUrl)
-  const primaryImageUrl = getNewsMediaUrl(news.image?.url, news.sourceUrl)
+  const baseUrl = getApiBaseUrl().origin
+  const content = parseNewsContent(news.body, baseUrl)
+  const primaryImageUrl = getNewsMediaUrl(news.image?.url, baseUrl)
 
   return (
     <div>

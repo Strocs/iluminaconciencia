@@ -2,6 +2,8 @@
 
 `parseNewsContent(sourceHtml, baseUrl)` returns a safe source tree (`nodes`) and reading associations (`segments`). It does not choose columns, sticky positioning, or resource heights.
 
+The detail consumer supplies only `News.body`, mapped from the API's `cuerpo`, as HTML input. The configured API origin is the URL resolution base; there is no per-record source-page URL or snapshot content metadata. Parsing and sanitization rules remain unchanged.
+
 ## Pipeline
 
 1. Parse HTML with the existing `htmlparser2` dependency.

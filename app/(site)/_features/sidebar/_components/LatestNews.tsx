@@ -5,7 +5,7 @@ import { SidebarSection } from './SidebarSection'
 
 export async function LatestNews() {
   const news = await getNews()
-  const latestNews = news.toSorted((a, b) => b.publishedAt.localeCompare(a.publishedAt)).slice(0, 5)
+  const latestNews = news.slice(0, 5)
 
   return (
     <SidebarSection title="Últimas noticias" href="/noticias" linkLabel="Ver todas las noticias">

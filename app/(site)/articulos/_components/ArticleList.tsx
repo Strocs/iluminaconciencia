@@ -31,7 +31,6 @@ export function ArticleList({ articles }: ArticleListProps) {
               title={article.title}
               image={article.image}
               publishedAt={article.publishedAt}
-              publishedAtLabel={article.publishedAtLabel}
               href={article.resourceUrl}
               external
               linkLabel={`Ver publicación: ${article.title} (se abre en una nueva pestaña)`}

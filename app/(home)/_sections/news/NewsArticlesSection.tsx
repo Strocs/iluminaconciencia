@@ -25,7 +25,6 @@ export async function NewsArticlesSection() {
                 title={item.title}
                 image={item.image}
                 publishedAt={item.publishedAt}
-                publishedAtLabel={item.publishedAtLabel}
                 href={`/noticias/${item.slug}`}
                 linkLabel={`Leer ${item.title}`}
                 description={item.description}
@@ -55,7 +54,6 @@ export async function NewsArticlesSection() {
                 title={item.title}
                 image={item.image}
                 publishedAt={item.publishedAt}
-                publishedAtLabel={item.publishedAtLabel}
                 href={item.resourceUrl}
                 external
                 linkLabel={`Ver publicación: ${item.title} (se abre en una nueva pestaña)`}

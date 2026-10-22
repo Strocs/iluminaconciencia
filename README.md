@@ -82,6 +82,25 @@ Los mecanismos especiales del framework se eligen por el comportamiento que nece
 - El índice del sidebar desplaza y enfoca las secciones sin modificar la URL. Sin JavaScript, el contenido completo sigue disponible para lectura.
 - Las fuentes institucionales están enlazadas en la página. La nómina refleja la publicación institucional, no una confirmación independiente de cargos actuales. No se presentan metas históricas de nodos ni promesas de actualización como hechos actuales.
 
+## Noticias: API y caché
+
+Configurá `API_BASE_URL` en `.env.local` para desarrollo y en el entorno de build y ejecución del despliegue:
+
+```dotenv
+API_BASE_URL=https://iluminaconciencia.userena.digital/api/v1/
+```
+
+La variable es exclusiva del servidor. El DAL consulta `noticias/?format=json` y usa el schema de Zod en `app/_dal/news/schemas/` para validar y transformar la respuesta; los tipos se derivan del schema. No hay un mapper separado ni un snapshot de respaldo. La API debe estar disponible durante el build, que genera las rutas de detalle.
+
+- **Caché:** tag `noticias`, revalidación SWR a los 7 días y expiración a los 30 días totales; el router cliente puede reutilizar el resultado durante 5 minutos.
+- **Eventos:** el tag permite invalidación desde un contexto de servidor. El receptor del evento y su autenticación no están incluidos; al conectarlos, hay que elegir explícitamente la ventana de contenido desactualizado.
+- **Límites:** la revalidación necesita una lectura; no es un cron ni garantiza frescura semanal si la API falla. La caché en memoria puede perderse con reinicios o despliegues.
+- **Presentación:** se respeta `mostrar`, se ignora `mostrar_principal` y se ordena por fecha descendente. Home muestra las últimas 3 noticias y el sidebar las últimas 5.
+- **Identidad:** ID basado en el timestamp de publicación; URL con título normalizado sin timestamp. Las colisiones entre noticias visibles se resuelven en orden de respuesta con sufijos incrementales `-2`, `-3`, etc., saltando los slugs ya ocupados, sin solicitudes adicionales. Cambiar el título o el orden de entrada puede reasignar slugs existentes. Las URLs anteriores con timestamp no tienen redirección.
+- **Contenido y fechas:** el detalle procesa únicamente `cuerpo` con la sanitización existente. Los enlaces relativos usan el origen configurado de la API, sin inventar URLs de detalle. La fecha conserva el offset recibido y se formatea al consumirla, sin convertir de nuevo su hora chilena ni agregar un polyfill.
+
+Los errores HTTP, timeouts y respuestas inválidas se propagan: no se sustituyen por una lista vacía ni por un snapshot.
+
 ## Getting Started
 
 First, run the development server:
