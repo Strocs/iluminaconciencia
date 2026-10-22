@@ -2,11 +2,11 @@ import { createHash } from 'node:crypto'
 import { readFile, writeFile } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
-import { projectStar, SKY_REFERENCE } from './sky-reference.ts'
+import { projectStar, SKY_REFERENCE } from '../../app/(home)/_sections/hero/capabilities/night-sky/sky-reference.ts'
 
-const directory = dirname(fileURLToPath(import.meta.url))
-const backupPath = join(directory, 'star-catalog.ts.bak')
-const outputPath = join(directory, 'star-catalog.ts')
+const root = join(dirname(fileURLToPath(import.meta.url)), '../..')
+const backupPath = join(root, 'docs/backups/hero/star-catalog.ts.bak')
+const outputPath = join(root, 'app/(home)/_sections/hero/capabilities/night-sky/star-catalog.ts')
 const expectedBackupSha256 = '047dc4db80b635aae871633276dde9ab077bd7daaaf078467627d0b24b8f93da'
 const expectedSourceRows = 5530
 const referenceWidthPx = 1920
@@ -54,8 +54,8 @@ const header = `/**
  * Southern sky static sample for the fixed safe 16:9 hero composition.
  * Retained rows are original BSC5 literals and remain in original catalog order.
  *
- * Source: star-catalog.ts.bak (BSC5), SHA-256 ${expectedBackupSha256}; ${rows.length} source records.
- * Selection: explicit offline command \`node --experimental-strip-types 'app/(home)/_sections/hero/capabilities/night-sky/prefilter-star-catalog.mjs'\`.
+ * Source: docs/backups/hero/star-catalog.ts.bak (BSC5), SHA-256 ${expectedBackupSha256}; ${rows.length} source records.
+ * Selection: explicit offline command \`node --experimental-strip-types 'tools/hero-sky-prototype/prefilter-star-catalog.mjs'\`.
  * The generator parses record literals without evaluation and shares the runtime stereographic projection/reference.
  * Keep centers within the reference plus a ${conservativeHaloCssPx}px projected halo margin, calibrated for ${referenceWidthPx}x${referenceHeightPx}.
  * Shader quad maximum is 9px * 1.06 twinkle = 9.54px; 10px is conservative. Coverage at other canvas sizes is aspect/size-dependent and not guaranteed.

@@ -71,7 +71,8 @@ export function createNightSkyCapability({
     return placement
   }
   const showFallback = (): void => {
-    fallbackImage.dataset.heroSkyStarsVisible = 'true'
+    photoPlane.style.visibility = 'hidden'
+    fallbackImage.dataset.heroSkyFallbackVisible = 'true'
   }
   const setLifecycleState = (next: HeroSkyLifecycleState): void => {
     lifecycleState = next
@@ -97,7 +98,8 @@ export function createNightSkyCapability({
     if (!renderer || !renderer.draw(frameTimeMs)) return false
     setLifecycleState('active')
     canvas.dataset.heroSkyReady = 'true'
-    fallbackImage.dataset.heroSkyStarsVisible = 'false'
+    photoPlane.style.visibility = 'visible'
+    fallbackImage.dataset.heroSkyFallbackVisible = 'false'
     return true
   }
   const renderFrame = (frameTimeMs: number): boolean => {
@@ -161,6 +163,7 @@ export function createNightSkyCapability({
   }
   const onPhotoError = (): void => {
     artwork.dataset.heroSkyPhotoError = 'true'
+    enterFallback()
   }
   const onResize = (): void => {
     const currentResize = ++resizeGeneration

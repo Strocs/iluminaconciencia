@@ -12,7 +12,7 @@
 }
 
 .photoPlane,
-.catalogStars {
+.fallbackImage {
   position: absolute;
   display: block;
   width: 100cqw;
@@ -22,6 +22,7 @@
 }
 
 .photoPlane {
+  visibility: hidden;
   top: calc((100cqh - var(--sky-wide-height-cqw)) / 2);
   left: 0;
 }
@@ -35,13 +36,13 @@
   max-width: none;
 }
 
-.catalogStars {
+.fallbackImage {
   top: calc((100cqh - var(--sky-wide-height-cqw)) / 2);
   left: 0;
   visibility: visible;
 }
 
-.catalogStars[data-hero-sky-stars-visible='false'] {
+.fallbackImage[data-hero-sky-fallback-visible='false'] {
   visibility: hidden;
 }
 
@@ -64,7 +65,7 @@
 
 @container (max-aspect-ratio: 16 / 9) {
   .photoPlane,
-  .catalogStars {
+  .fallbackImage {
     top: 0;
     left: clamp(
       calc(100cqw - 177.7777777778cqh),
@@ -78,7 +79,7 @@
 
 @container (aspect-ratio < 1) {
   .photoPlane,
-  .catalogStars {
+  .fallbackImage {
     left: clamp(
       calc(100cqw - 177.7777777778cqh),
       calc(50cqw - var(--sky-reference-center-cqh)),

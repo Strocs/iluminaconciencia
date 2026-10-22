@@ -26,15 +26,23 @@ export function HeroSky() {
             unoptimized
           />
         </picture>
-        <img
-          data-hero-sky-fallback
-          src={nightSkyAssets.catalogStars}
-          width={nightSkyAssets.width}
-          height={nightSkyAssets.height}
-          alt=""
-          aria-hidden="true"
-          className={styles.catalogStars}
-        />
+        <picture>
+          <source media="(min-resolution: 1.01dppx)" srcSet={nightSkyAssets.fallback2x} />
+          <Image
+            data-hero-sky-fallback
+            src={nightSkyAssets.fallback1x}
+            width={nightSkyAssets.width}
+            height={nightSkyAssets.height}
+            alt=""
+            aria-hidden="true"
+            decoding="async"
+            loading="eager"
+            placeholder="blur"
+            blurDataURL={nightSkyAssets.photoPreview}
+            unoptimized
+            className={styles.fallbackImage}
+          />
+        </picture>
         <canvas data-hero-stars className={styles.canvas} aria-hidden="true" />
       </div>
     </div>

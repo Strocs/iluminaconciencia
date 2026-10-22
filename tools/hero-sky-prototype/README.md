@@ -1,22 +1,41 @@
-# Current approved hero sky photo (`t16-left-r1`)
+# Current hero sky and raster fallback
 
-The current photo URLs use the separately approved localized `t16-left-r1` derivative. The live external catalog SVG now contains 2,087 stars after the cumulative removal of 2,579 mapped profiles through 2 CSS px: 955 at ≤1.5 px, 911 in inclusive [1.5, 1.75] px, and 713 in inclusive [1.75, 2] px. Its byte-exact 4,666-row prefilter source is `app/(home)/_sections/hero/capabilities/night-sky/star-catalog.before-1_5px-filter.ts.bak`; this backup is distinct from the older 5,530-record `star-catalog.ts.bak`. Earlier 3,711-row `catalog-gt-1_5px-r1` and 2,800-row `catalog-gt-1_75px-r1` outputs and the original `/images/hero/sky/t13-texture-r1/catalog-stars.svg` remain immutable historical versions. Historical generated-photo approval and provenance are recorded in `odd/plans/evidence/hero-hybrid-sky-left-retouch-r1-approval.json` and `odd/plans/evidence/hero-hybrid-sky-left-retouch-r1-integration.json`. The user subsequently retouched and exported the current public WebPs; those earlier hash records describe the pre-retouch snapshots. The obsolete current photo manifest was removed at the user's request; `CREDITS.txt` remains. The visible credit remains removed per S22/S23; the legal attribution stays in public CREDITS/manifest records. This photo integration is not browser verification, final runtime-hero approval, actual parallax, publishing or external cleanup consent.
+The live catalogue contains 2,087 stars after removing 2,579 mapped profiles through 2 CSS px: 955 at ≤1.5 px, 911 in inclusive [1.5, 1.75] px, and 713 in inclusive [1.75, 2] px. Original row ordinals preserve retained phases, sizes, alpha, speeds and colors. The photo URLs retain the user's final manual WebP exports in `t16-left-r1`; the source photographs are not rewritten.
 
-## Initial photograph loading preview
+## Runtime presentation
 
-The 320×180, 558-byte blurred WebP preview is embedded as `nightSkyAssets.photoPreview` and passed to Next `Image` through `placeholder="blur"` and `blurDataURL`; the runtime uses this inline data URL and makes no extra preview request. The unused physical `public/images/hero/sky/t16-left-r1/background-preview.webp` has been removed; only the embedded data URL remains active. The exterior native `<picture>` retains manual 1×/2× DPR selection. `unoptimized` serves final WebPs as-is; `loading="eager"` and `fetchPriority="high"` retain eager hero loading. Next handles placeholder removal. The crop, artwork fade, canvas, data attributes, SVG fallback, and photo-error contract are unchanged. No custom loading listeners or renderer changes were added. The final photo files are not rewritten and the deleted photo manifest is not recreated. Runtime/browser inspection was not performed under the existing no-verification instruction.
+`HeroSky` declares a photograph plane, one full-image raster fallback and the WebGL canvas. The photograph and fallback each use Next `Image` inside native `picture` with manual 1×/2× selection, `unoptimized`, eager loading and the existing inline blur preview. No SVG participates in the live fallback.
 
-## Current catalog filter (`catalog-gt-2px-r1`)
+Before the first valid draw, without JavaScript/WebGL, with reduced motion, after context loss/draw failure, or after a photograph error, only the opaque composite image is visible. The live photo and canvas are hidden. A valid draw shows the photo + canvas and hides the composite; all planes keep the same artwork crop. The single group fade stays 0.12→1 by progress 0.7 and canvas opacity stays 1. No custom React effects or loading callbacks are added.
 
-The runtime catalogue retains original BSC5 literals and row order for every selected star. `starCatalogOriginalIndices` records their original 0-based ordinals so the mapper's deterministic phase/speed hashes—and therefore complete mapped profiles—remain unchanged. The mapper's optional ordinal argument leaves legacy one-argument calls unchanged. The historical 4,666-row SVG, frozen `input/current-sky.json`, old 5,530-record backup, photos, projection/reference, crop and shaders are not rewritten.
+## Archived data and offline tools
 
-To reproduce an isolated live export without touching the frozen default input, use:
+All catalogue backups are outside `app/`:
+
+- `docs/backups/hero/star-catalog.ts.bak`: original 5,530-record source.
+- `docs/backups/hero/star-catalog.before-1_5px-filter.ts.bak`: byte-exact 4,666-row pre-size-filter snapshot.
+- `docs/backups/hero/development-star-catalog-4666.ts.bak`: retired comparison-module backup.
+- `docs/backups/hero/catalog-gt-2px-r1/`: retired current SVG and its historical manifest.
+
+`tools/hero-sky-prototype/prefilter-star-catalog.mjs` retains its historical geometric prefilter. Its source and output paths now resolve from the repository root. **Do not run its write mode to rebuild the current sample:** it does not reapply the later size filters or preserve their ordinal array. It is not invoked by the app, build or raster export. The source catalogue's header records this original selection step, not a full recipe for the current filtered sample.
+
+`export-inputs.mjs` keeps its `--output DIRECTORY` CLI and payload schema. The pure application-module loader remains restricted to the source directory; the archived control catalogue is parsed as numeric TypeScript literals, without evaluating archive code. The repository ignores `docs/`; explicitly retain only the requested archive paths when preparing any future commit.
+
+## Generate the complete raster fallback
+
+Use a fresh isolated snapshot directory; never overwrite the frozen `input/current-sky.json` or an existing version:
 
 ```sh
-node tools/hero-sky-prototype/export-inputs.mjs --output output/hero-sky-prototype/integration/catalog-gt-2px-r1
+mkdir output/hero-sky-prototype/integration/raster-fallback-2087-r1
+node tools/hero-sky-prototype/export-inputs.mjs --output output/hero-sky-prototype/integration/raster-fallback-2087-r1
+PYTHONDONTWRITEBYTECODE=1 output/hero-sky-prototype/venv/bin/python -B tools/hero-sky-prototype/export-raster-fallback.py --input output/hero-sky-prototype/integration/raster-fallback-2087-r1/current-sky.json --output public/images/hero/sky/composite-2087-r1 --quality 75
 ```
 
-The exporter keeps its existing `--output DIRECTORY` CLI and schema. For SVG generation use that fresh exported `current-sky.json` with the existing `production_assets.svg(data, out, recipe)` helper and pinned `production-recipe.json`; do not use the no-argument historical export or regenerate old version directories. The versioned public SVG is external-image-only, carries 2,087 rows × 16 bands (33,392 expected path elements by generator formula; not XML-verified), and does not change photo bytes or approval status. The prior 2,800-row `catalog-gt-1_75px-r1` and 3,711-row `catalog-gt-1_5px-r1` versions remain immutable intermediates. This T21 data application was not verified per S26/S27/S28; see `odd/plans/evidence/hero-catalog-size-filter-2.json`.
+The Python CLI requires `--input` and `--output`; `--help` describes them. It refuses an existing output directory and uses existing dependencies only. `--quality` accepts integers from 1 to 100 and defaults to 75; the value is validated before the output directory is created. The generator uses lossy WebP at the selected quality (75 in the command above), trading some image fidelity for smaller files; fixed inputs, quality, and encoder method make the output reproducible. The JSON report records the actual mode and selected quality. It reuses `probe.render_stars` and `production_assets.canonical_frame` to compose the current buffers over each final photograph: 1920×1080 at DPR 1 and 3840×2160 at DPR 2. This is a CPU reproduction of the current shader at time zero, **not a WebGL screenshot or an SVG rasterization**. Output credits preserve the source attribution and identify the extra adaptation. No visual approval or measured byte-size claim is implied.
+
+The original 4,666-star SVG and earlier 3,711/2,800-star outputs remain historical; their public files and immutable evidence are not refreshed. The retired 2,087-star SVG/manifest move to the documented archive without changing their bytes. Historical photo approval hashes predate the user's manual retouch and are not hashes of the current public WebPs. The user-deleted photo manifest is not recreated.
+
+No new tests, lint/type/build checks or browser/visual verification were run, as requested. Asset generation is not runtime validation or manual approval.
 
 ## Historical approved delivery (`t13-texture-r1`)
 
@@ -32,7 +51,7 @@ This deterministic one-off adds no CLI or dependency. The external SVG retains a
 
 ## Hero delivery usage
 
-`HeroSky` renders Next `Image` inside a native `<picture>` for the photograph, plus the current 2,087-star external SVG catalog image in SSR. It selects the approved 1x/2x files directly (no Next optimizer), retains the photo on all runtime paths, and uses the current filtered catalogue in every mode. The temporary DEV comparison switch and its live renderer-swap/listener wiring are retired; the 4,666-row module is preserved at `docs/backups/hero/development-star-catalog-4666.ts.bak`. If restoration is needed, copy that backup back to `app/(home)/_sections/hero/capabilities/night-sky/development-star-catalog.ts` and restore the corresponding switch/runtime wiring from source history. The temporary switch component and app data module have been removed; the full sample remains only in the documented backup. `computeSkyCrop` produces the one crop shared with the renderer and an asset-plane placement; canvas geometry remains the untransformed host box. CSS container-query placement derives its coefficients from `SKY_REFERENCE` and `PORTRAIT_GROUP`. The group fade is 0.12→1 by progress 0.7; canvas opacity remains 1. Per S22/S23, the HTML credit overlay and its unused CSS are removed, without relocation into the footer or decorative ALT. Empty ALT, aria-hidden decoration, photo layering and all existing license/provenance files remain unchanged. This presentation change makes no new license interpretation.
+`HeroSky` renders Next `Image` inside native `<picture>` elements for the photograph and the full-image WebP fallback, plus the canvas. It selects the 1x/2x files directly (no Next optimizer): normal mode shows photo + canvas; fallback mode shows only the static composition. The temporary DEV comparison switch and its live renderer-swap/listener wiring are retired; the 4,666-row module is preserved at `docs/backups/hero/development-star-catalog-4666.ts.bak`. If restoration is needed, copy that backup back to `app/(home)/_sections/hero/capabilities/night-sky/development-star-catalog.ts` and restore the corresponding switch/runtime wiring from source history. The temporary switch component and app data module have been removed; the full sample remains only in the documented backup. `computeSkyCrop` produces the one crop shared with the renderer and an asset-plane placement; canvas geometry remains the untransformed host box. CSS container-query placement derives its coefficients from `SKY_REFERENCE` and `PORTRAIT_GROUP`. The group fade is 0.12→1 by progress 0.7; canvas opacity remains 1. Per S22/S23, the HTML credit overlay and its unused CSS are removed, without relocation into the footer or decorative ALT. Empty ALT, aria-hidden decoration and existing license/provenance records are preserved. The static fallback contains both layers; it is not a separate star overlay. This presentation change makes no new license interpretation.
 
 # Local left-photo retouch — T16 tooling, T17 approval pending
 

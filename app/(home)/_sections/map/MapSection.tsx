@@ -11,7 +11,7 @@ export async function MapSection() {
       id="explorar"
       data-header-solid-start
       tabIndex={-1}
-      className="relative z-10 flex h-dvh w-full scroll-mt-20 flex-col px-4 text-foreground outline-none sm:px-5 lg:max-h-220"
+      className="relative z-10 -mt-12 flex h-dvh w-full scroll-mt-20 flex-col px-4 text-foreground outline-none sm:px-5 lg:max-h-220"
     >
       <SectionHeading
         eyebrow="02 / EXPLORAR"

@@ -2,14 +2,14 @@
  * Southern sky static sample for the fixed safe 16:9 hero composition.
  * Retained rows are original BSC5 literals and remain in original catalog order.
  *
- * Source: star-catalog.ts.bak (BSC5), SHA-256 047dc4db80b635aae871633276dde9ab077bd7daaaf078467627d0b24b8f93da; 5530 source records.
- * Selection: explicit offline command `node --experimental-strip-types 'app/(home)/_sections/hero/capabilities/night-sky/prefilter-star-catalog.mjs'`.
+ * Source: docs/backups/hero/star-catalog.ts.bak (BSC5), SHA-256 047dc4db80b635aae871633276dde9ab077bd7daaaf078467627d0b24b8f93da; 5530 source records.
+ * Selection: explicit offline command `node --experimental-strip-types 'tools/hero-sky-prototype/prefilter-star-catalog.mjs'`.
  * The generator parses record literals without evaluation and shares the runtime stereographic projection/reference.
  * Keep centers within the reference plus a 10px projected halo margin, calibrated for 1920x1080.
  * Shader quad maximum is 9px * 1.06 twinkle = 9.54px; 10px is conservative. Coverage at other canvas sizes is aspect/size-dependent and not guaranteed.
  * No runtime/build-time filtering occurs.
  * Persisted sample: 2087 rows after cumulatively removing 2579 mapped profiles <= 2 CSS px.
- * Original 4666-row source bytes are preserved in star-catalog.before-1_5px-filter.ts.bak.
+ * Original 4666-row source bytes are preserved in docs/backups/hero/star-catalog.before-1_5px-filter.ts.bak.
  */
 
 export interface StarCatalogRecord {

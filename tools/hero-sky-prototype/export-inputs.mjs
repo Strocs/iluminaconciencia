@@ -38,8 +38,32 @@ function load(filename) {
   return result.exports
 }
 const { starCatalog, starCatalogOriginalIndices } = load(path.join(sourceDir, 'star-catalog.ts'))
-const backup = load(path.join(sourceDir, 'star-catalog.ts.bak')).starCatalog
-if (!Array.isArray(backup)) throw new Error('Backup catalog export missing')
+// Backups are archival data, not executable modules in the application's loader.
+const backupPath = path.join(root, 'docs/backups/hero/star-catalog.ts.bak')
+const backupSource = fs.readFileSync(backupPath, 'utf8')
+hashes['star-catalog.ts.bak'] = createHash('sha256').update(backupSource).digest('hex')
+const backupFile = ts.createSourceFile(backupPath, backupSource, ts.ScriptTarget.Latest, true)
+const backupDeclaration = backupFile.statements.filter(ts.isVariableStatement)
+  .flatMap((statement) => Array.from(statement.declarationList.declarations))
+  .find((declaration) => ts.isIdentifier(declaration.name) && declaration.name.text === 'starCatalog')
+const backupArray = backupDeclaration?.initializer
+if (!backupArray || !ts.isArrayLiteralExpression(backupArray)) throw new Error('Backup catalog array missing')
+const readNumber = (node) => {
+  if (ts.isNumericLiteral(node)) return Number(node.text)
+  if (ts.isPrefixUnaryExpression(node) && node.operator === ts.SyntaxKind.MinusToken &&
+      ts.isNumericLiteral(node.operand)) return -Number(node.operand.text)
+  throw new Error('Backup catalog must contain numeric literals only')
+}
+const backup = Array.from(backupArray.elements, (entry) => {
+  if (!ts.isObjectLiteralExpression(entry)) throw new Error('Backup catalog record must be a literal object')
+  const record = Object.fromEntries(Array.from(entry.properties, (property) => {
+    if (!ts.isPropertyAssignment(property) || !ts.isIdentifier(property.name) ||
+        !['ra', 'dec', 'mag', 'bv'].includes(property.name.text)) throw new Error('Unexpected backup catalog field')
+    return [property.name.text, readNumber(property.initializer)]
+  }))
+  if (!['ra', 'dec', 'mag', 'bv'].every((key) => Number.isFinite(record[key]))) throw new Error('Incomplete backup catalog record')
+  return record
+})
 const reference = load(path.join(sourceDir, 'sky-reference.ts'))
 const { computeSkyCrop } = load(path.join(sourceDir, 'sky-crop.ts'))
 const { mapStarCatalog } = load(path.join(sourceDir, 'star-mapper.ts'))
