@@ -3,11 +3,12 @@ import { BortleScale } from './capabilities/bortle-scale'
 import { HeroFrame } from './capabilities/framing'
 import { LightPollution, LightPollutionBacklight } from './capabilities/light-pollution'
 import { HeroSky } from './capabilities/night-sky'
+import { StarBadges } from './capabilities/night-sky/StarBadges'
 import { HeroNarrative } from './capabilities/scenes'
 
 export function Hero() {
   return (
-    <HeroRuntime>
+    <HeroRuntime overlay={<StarBadges />}>
       <HeroFrame overlay={<LightPollutionBacklight />}>
         <div className="pointer-events-none absolute inset-0 z-0">
           <HeroSky />

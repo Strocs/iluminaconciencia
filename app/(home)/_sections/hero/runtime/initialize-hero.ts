@@ -6,6 +6,7 @@ import { createHeroMapTransitionCapability } from '../capabilities/hero-map-tran
 import { heroMapTransitionConfig } from '../capabilities/hero-map-transition/config'
 import { createLightPollutionCapability } from '../capabilities/light-pollution/light-pollution'
 import { lightPollutionConfig } from '../capabilities/light-pollution/config'
+import { createStarBadgesCapability } from '../capabilities/night-sky/star-badges'
 import { createScenesCapability } from '../capabilities/scenes/scenes'
 import { scenesConfig } from '../capabilities/scenes/config'
 import type { HeroCapability, HeroLifecycle } from '../core/contracts'
@@ -24,11 +25,13 @@ function composeHero(root: HTMLElement, sky?: HeroSkyCapability | null): HeroLif
     inert: scene.hasAttribute('inert')
   }))
   const horizonTiming = lightPollutionConfig.horizon
+  const starBadges = createStarBadgesCapability(root)
   const capabilities: readonly HeroCapability[] = [
     createScenesCapability({ root, config: scenesConfig }),
     createLightPollutionCapability({ root, config: { ...lightPollutionConfig, horizon: horizonTiming } }),
     createBortleCapability({ root, classes: bortleClasses, config: bortleConfig }),
     ...(sky ? [sky] : []),
+    ...(starBadges ? [starBadges] : []),
     createHeroMapTransitionCapability({ root, config: heroMapTransitionConfig })
   ]
   const matchMedia = gsap.matchMedia(root)

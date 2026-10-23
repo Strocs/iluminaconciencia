@@ -9,7 +9,7 @@ import { initializeHero } from '../runtime/initialize-hero'
 
 gsap.registerPlugin(useGSAP)
 
-export function HeroRuntime({ children }: { children: ReactNode }) {
+export function HeroRuntime({ children, overlay }: { children: ReactNode; overlay?: ReactNode }) {
   const rootRef = useRef<HTMLElement>(null)
 
   useGSAP(
@@ -30,8 +30,14 @@ export function HeroRuntime({ children }: { children: ReactNode }) {
   )
 
   return (
-    <section id="hero" ref={rootRef} className="group/hero relative min-h-[400lvh] portrait:min-h-[300lvh]" aria-labelledby="hero-title">
+    <section
+      id="hero"
+      ref={rootRef}
+      className="group/hero relative min-h-[400lvh] portrait:min-h-[300lvh]"
+      aria-labelledby="hero-title"
+    >
       <div className="h-lvh motion-safe:sticky motion-safe:top-0">{children}</div>
+      {overlay}
     </section>
   )
 }
