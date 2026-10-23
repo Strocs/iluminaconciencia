@@ -74,6 +74,14 @@ Los mecanismos especiales del framework se eligen por el comportamiento que nece
 
 **En síntesis:** ubicación por consumidores, límites por responsabilidad y abstracciones por necesidad comprobada.
 
+## Composición institucional y header
+
+- `UserenaLayout`, en `app/_features/userena/`, compone la franja institucional, el contenido recibido y el pie institucional sin agregar un contenedor DOM.
+- `HeaderLayout`, en `app/_features/header/`, incorpora el header y superpone el contenido recibido mediante una grilla. Su límite excluye la franja y el pie institucionales; el footer del proyecto sigue siendo contenido del layout raíz.
+- Ambos layouts son Server Components. `HeaderRuntime` mantiene la frontera cliente para la navegación y los estados visuales.
+- El header usa `sticky` para comenzar debajo de la franja institucional desde el primer render, sin calcular un `top` en el cliente ni desplazar el hero. El menú abierto conserva su posición fija y ocupa el viewport completo.
+- En la home permanece transparente y visible hasta que el marcador `data-header-solid-start` del mapa entra en el viewport. Desde ese punto es sólido y se oculta al bajar o reaparece al subir, con el umbral existente de 6 px. En rutas sin marcador es sólido cuando `scrollY > 0`; al inicio de la página o con el menú abierto permanece visible. La animación de ocultamiento sigue usando `translate`.
+
 ## Proyecto y equipo
 
 - `/proyecto` presenta el propósito, las actividades, recomendaciones y el equipo de IluminAconciencia.

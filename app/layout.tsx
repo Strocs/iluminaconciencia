@@ -1,10 +1,9 @@
 import type { Metadata } from 'next'
 import { Ubuntu_Sans, Baskervville } from 'next/font/google'
-import { Footer as UserenaFooter } from '@/_features/userena/footer/Footer'
+import { UserenaLayout } from '@/_features/userena'
 import { ProjectFooter } from '@/_features/footer/ProjectFooter'
-import { NavUSerena } from '@/_features/userena/nav-userena/NavUSerena'
 import '@/_styles/globals.css'
-import { Header } from '@/_features/header'
+import { HeaderLayout } from '@/_features/header'
 import { Background } from './_components/Background'
 import { cn } from './_utils/cn'
 
@@ -31,13 +30,14 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
     <html lang="es" className={cn('h-full antialiased', ubuntuSans.variable, baskervilleSerif.variable)}>
       <body className="relative isolate flex min-h-dvh flex-col font-body">
         <Background />
-        <NavUSerena />
-        <Header />
-        {children}
-        <footer className="border-t border-border bg-background">
-          <ProjectFooter />
-          <UserenaFooter />
-        </footer>
+        <UserenaLayout>
+          <HeaderLayout>
+            {children}
+            <footer className="border-t border-border bg-background">
+              <ProjectFooter />
+            </footer>
+          </HeaderLayout>
+        </UserenaLayout>
       </body>
     </html>
   )

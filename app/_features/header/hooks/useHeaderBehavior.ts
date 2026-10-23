@@ -56,7 +56,6 @@ export function useHeaderBehavior() {
       header.dataset.headerPathname = pathname
       header.dataset.hidden = 'false'
 
-      const banner = document.querySelector<HTMLElement>('[data-site-banner]')
       const menuToggle = header.querySelector<HTMLInputElement>('[data-menu-toggle]')
       let frameId: number | null = null
       let referenceScrollY = Math.max(0, window.scrollY)
@@ -68,10 +67,8 @@ export function useHeaderBehavior() {
           (element) => element.getClientRects().length > 0
         )
         const solid = solidStart ? solidStart.getBoundingClientRect().top < window.innerHeight : currentScrollY > 0
-        const top = menuToggle?.checked ? '0px' : `${Math.max(0, banner?.getBoundingClientRect().bottom ?? 0)}px`
 
         header.dataset.appearance = solid ? 'solid' : 'transparent'
-        if (header.style.top !== top) header.style.top = top
 
         if (!solid || currentScrollY === 0 || menuToggle?.checked) {
           header.dataset.hidden = 'false'
@@ -115,7 +112,6 @@ export function useHeaderBehavior() {
       })
       const resizeObserver = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(scheduleUpdate)
       resizeObserver?.observe(document.body)
-      if (banner) resizeObserver?.observe(banner)
 
       window.addEventListener('resize', scheduleUpdate)
       window.addEventListener('scroll', handleScroll, { passive: true })
