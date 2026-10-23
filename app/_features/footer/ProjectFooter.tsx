@@ -6,7 +6,7 @@ import mincienciaLogo from './assets/minciencia-user-selected.png'
 import minrelLogo from './assets/minrel-user-selected.png'
 import projectLogo from '../../_assets/images/logo.png'
 import sochiasLogo from './assets/sochias-user-selected.png'
-import { Link } from '@/_components/Link'
+import { TextLink } from '@/_components/TextLink'
 import { Separator } from '@/_components/Separator'
 import { navigationItems } from '../navigation/navigation'
 
@@ -48,7 +48,7 @@ export function ProjectFooter() {
             <ul>
               {socialLinks.map(({ href, label }) => (
                 <li key={label}>
-                  <Link
+                  <TextLink
                     href={href}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -56,7 +56,7 @@ export function ProjectFooter() {
                     className="text-xs font-extralight tracking-wider text-text/90 uppercase hover:accent-primary"
                   >
                     {label}
-                  </Link>
+                  </TextLink>
                 </li>
               ))}
             </ul>
@@ -67,13 +67,13 @@ export function ProjectFooter() {
             <ul>
               {navigationItems.map(({ href, label, section }) => (
                 <li key={label}>
-                  <Link
+                  <TextLink
                     href={section ? href + '#' + section : href}
                     size="sm"
                     className="text-xs font-extralight tracking-wider text-text/90 uppercase hover:accent-primary"
                   >
                     {label}
-                  </Link>
+                  </TextLink>
                 </li>
               ))}
             </ul>

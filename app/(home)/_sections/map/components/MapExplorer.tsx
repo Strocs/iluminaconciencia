@@ -5,7 +5,7 @@ import { MapMarkDrawer } from './MarkDrawer'
 import { FilterPanel } from './FilterPanel'
 
 import { MapCanvas } from './MapCanvas'
-import { LinkButton } from '@/_components/LinkButton'
+import { Button } from '@/_components/Button'
 
 export function MapExplorer() {
   const {
@@ -53,7 +53,7 @@ export function MapExplorer() {
           <div className="absolute inset-y-0 left-0 w-full md:w-[100cqw]">
             <MapCanvas selectedId={selectedId} onSelect={openDrawer} panelOpen={mobileOverlayOpen} />
           </div>
-          <LinkButton
+          <Button
             as="btn"
             ref={filterOpenRef}
             type="button"
@@ -63,7 +63,7 @@ export function MapExplorer() {
             onClick={openFilters}
           >
             Filtros
-          </LinkButton>
+          </Button>
         </div>
         <MapMarkDrawer
           mark={drawerMark}

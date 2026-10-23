@@ -41,7 +41,7 @@ Mixed paragraphs and links are indivisible. Figures retain their captions; parag
 
 ## Rendering boundary
 
-`NewsHtml` renders sanitized nodes without retagging. Primary-image suppression, external-link behavior, and dimension fallbacks remain rendering policies, not invented parser attributes.
+`NewsHtml` renders sanitized nodes without retagging. Links with an `href` preserve the sanitized source target (`_self` or `_blank`) and default to `_blank` when none is retained, with `rel="noopener noreferrer"`. Primary-image suppression, link-target defaults, and dimension fallbacks remain rendering policies, not invented parser attributes.
 
 `createNewsLayout` projects each segment into `opening`, `before`, `media`, and `after` groups without mutating the canonical tree. Leading media-only segments join the first narrative interval in this presentation projection, not in the parser. Their opening resources appear above that interval's closing resources in the right rail; media-only articles remain unchanged. Ancestor wrappers retain their tags; when split across layout fragments, their HTML IDs appear only on the first fragment. Consecutive resources retain their intervening spacing. Suppressing the primary image removes only its presentation copy, not the parser node or unrelated caption text.
 

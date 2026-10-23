@@ -12,7 +12,7 @@ import tess4C from '../_assets/tess4c.png'
 import { SectionHeading } from '@/_components/SectionHeading'
 import { Separator } from '@/_components/Separator'
 import { InfoPopover } from '@/_components/InfoPopover'
-import { LinkButton } from '@/_components/LinkButton'
+import { Button } from '@/_components/Button'
 import { Breadcrumbs } from '../../_components/Breadcrumbs'
 import { SiteSidebar } from '../../_features/sidebar/_components/SiteSidebar'
 import { ProjectNavigation } from './ProjectNavigation'
@@ -205,9 +205,9 @@ export function ProjectContent({ teamEntry = false }: { teamEntry?: boolean }) {
                     Instrumentos para observar el brillo del cielo. Descubre qué registran y cómo se interpreta la
                     información.
                   </p>
-                  <LinkButton href="/medicion" size="sm">
+                  <Button href="/medicion" size="sm">
                     Cómo medimos
-                  </LinkButton>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -255,10 +255,10 @@ export function ProjectContent({ teamEntry = false }: { teamEntry?: boolean }) {
               formas de seguir conociendo nuestros cielos.
             </p>
             <div className="flex flex-wrap gap-4">
-              <LinkButton href="/medicion">Cómo medimos</LinkButton>
-              <LinkButton href="/#explorar" variant="neutral">
+              <Button href="/medicion">Cómo medimos</Button>
+              <Button href="/#explorar" variant="neutral">
                 Explorar el mapa
-              </LinkButton>
+              </Button>
             </div>
             <p className="text-base italic">
               Fuentes del proyecto:{' '}

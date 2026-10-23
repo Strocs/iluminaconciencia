@@ -2,7 +2,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import logo from '@/_assets/images/logo.png'
 import { BrandStarIcon } from '@/_components/BrandStarIcon'
-import { LinkButton } from '@/_components/LinkButton'
+import { Button } from '@/_components/Button'
 import { HeaderRuntime } from './components/HeaderRuntime'
 import { NavLink } from './navigation/NavLink'
 import { navigationItems } from '../navigation/navigation'
@@ -43,13 +43,13 @@ export function Header() {
             ))}
           </nav>
 
-          <LinkButton
+          <Button
             className="hidden shrink-0 justify-self-end tracking-wider lg:inline-flex"
             href="#"
             variant="important"
           >
             Ir a <strong>CALUZ</strong>
-          </LinkButton>
+          </Button>
 
           <label
             htmlFor="site-menu-toggle"
@@ -79,9 +79,9 @@ export function Header() {
               {label}
             </NavLink>
           ))}
-          <LinkButton className="mt-4 tracking-wider" href="#" variant="important">
+          <Button className="mt-4 tracking-wider" href="#" variant="important">
             Ir a <strong>CALUZ</strong>
-          </LinkButton>
+          </Button>
         </nav>
       </div>
     </HeaderRuntime>

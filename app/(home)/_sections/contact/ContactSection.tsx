@@ -1,4 +1,4 @@
-import { Link } from '@/_components/Link'
+import { TextLink } from '@/_components/TextLink'
 import { SectionHeading } from '@/_components/SectionHeading'
 
 export function ContactSection() {
@@ -21,9 +21,9 @@ export function ContactSection() {
 
             <div className="space-y-2">
               <h3 className="leading-4 font-light tracking-wider text-primary uppercase">CORREO</h3>
-              <Link className="tracking-wider" href="mailto:iluminaconciencia@userena.cl">
+              <TextLink className="tracking-wider" href="mailto:iluminaconciencia@userena.cl">
                 iluminaconciencia@userena.cl
-              </Link>
+              </TextLink>
             </div>
           </div>
 

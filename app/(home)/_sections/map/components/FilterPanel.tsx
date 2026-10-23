@@ -1,6 +1,6 @@
 'use client'
 
-import { LinkButton } from '@/_components/LinkButton'
+import { Button } from '@/_components/Button'
 import { bortleClasses } from '@/_features/bortle/bortle-classes'
 import { InfoPopover } from '@/_components/InfoPopover'
 import { MapFilteredCount } from './FilteredCount'
@@ -52,7 +52,7 @@ export function FilterPanel({
         <div className="flex items-center justify-between">
           <h3 className="text-xl font-medium text-primary">Filtros</h3>
 
-          <LinkButton
+          <Button
             as="btn"
             data-filter-close
             size="sm"
@@ -61,7 +61,7 @@ export function FilterPanel({
             className="md:hidden"
           >
             Cerrar
-          </LinkButton>
+          </Button>
         </div>
         <p className="text-sm leading-snug font-light text-text">
           Acota las mediciones visibles filtrando por escala e instrumento
@@ -132,12 +132,12 @@ export function FilterPanel({
         <p className="mx-auto w-fit text-sm leading-none font-light text-text">
           <MapFilteredCount />
         </p>
-        <LinkButton as="btn" size="sm" className="w-full" onClick={() => onFiltersChanged(selectAll())}>
+        <Button as="btn" size="sm" className="w-full" onClick={() => onFiltersChanged(selectAll())}>
           Seleccionar todo
-        </LinkButton>
-        <LinkButton href="/medicion/tabla-de-datos" variant="important" size="sm" className="w-full">
+        </Button>
+        <Button href="/medicion/tabla-de-datos" variant="important" size="sm" className="w-full">
           Tabla de datos
-        </LinkButton>
+        </Button>
       </div>
     </aside>
   )

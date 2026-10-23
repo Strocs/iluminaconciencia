@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, type RefObject } from 'react'
-import { LinkButton } from '@/_components/LinkButton'
+import { Button } from '@/_components/Button'
 import { getBortleClass } from '@/_features/bortle/lookup'
 import type { MapMark } from '../types'
 
@@ -130,12 +130,12 @@ export function MapMarkDrawer({ mark, open, mobile, inert, closeButtonRef, onClo
           </div>
         )}
         <div className="mt-auto space-y-2">
-          <LinkButton href={mark ? `/medicion/${encodeURIComponent(mark.id)}` : '/medicion'} variant="important" size="sm" className="w-full">
+          <Button href={mark ? `/medicion/${encodeURIComponent(mark.id)}` : '/medicion'} variant="important" size="sm" className="w-full">
             Más información
-          </LinkButton>
-          <LinkButton as="btn" size="sm" onClick={onClose} data-drawer-close className="w-full">
+          </Button>
+          <Button as="btn" size="sm" onClick={onClose} data-drawer-close className="w-full">
             Cerrar
-          </LinkButton>
+          </Button>
         </div>
       </aside>
     </div>

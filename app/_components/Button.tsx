@@ -1,12 +1,12 @@
 import type { ComponentPropsWithRef, ReactNode } from 'react'
 import { tv, type VariantProps } from 'tailwind-variants'
 import { cn } from '@/_utils/cn'
-import Link from 'next/link'
+import NextLink from 'next/link'
 import { ArrowIcon } from './icons/Arrow'
 
-type LinkButtonVariantProps = VariantProps<typeof linkButtonVariants>
+type ButtonVariantProps = VariantProps<typeof buttonVariants>
 
-type CommonProps = LinkButtonVariantProps & {
+type CommonProps = ButtonVariantProps & {
   children: ReactNode
   className?: string
 }
@@ -22,7 +22,7 @@ type ButtonProps = CommonProps &
   }
 type Props = LinkProps | ButtonProps
 
-const linkButtonVariants = tv({
+const buttonVariants = tv({
   base: 'group/link-button inline-flex items-center justify-center rounded border font-body transition-colors focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background motion-reduce:transition-none',
   variants: {
     size: {
@@ -63,9 +63,9 @@ const linkButtonVariants = tv({
   }
 })
 
-export function LinkButton(props: Props) {
+export function Button(props: Props) {
   const { as = 'link', children, className, disabled = false, size, variant, ...rest } = props
-  const classNames = cn(linkButtonVariants({ size, variant, disabled }), className)
+  const classNames = cn(buttonVariants({ size, variant, disabled }), className)
 
   if (as === 'btn') {
     const { type, ...buttonProps } = rest as Omit<ButtonProps, keyof CommonProps | 'as'>
@@ -83,7 +83,7 @@ export function LinkButton(props: Props) {
 
   const { href, type, ...anchorProps } = rest as Omit<LinkProps, keyof CommonProps | 'as'>
   return (
-    <Link
+    <NextLink
       {...anchorProps}
       href={disabled ? '#' : href}
       type={type}
@@ -99,6 +99,6 @@ export function LinkButton(props: Props) {
             'pointer-events-none transition-transform duration-200 group-hover/link-button:-rotate-45 motion-reduce:transform-none motion-reduce:transition-none'
         )}
       />
-    </Link>
+    </NextLink>
   )
 }

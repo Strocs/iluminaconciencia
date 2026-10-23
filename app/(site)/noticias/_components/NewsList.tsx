@@ -1,6 +1,6 @@
 'use client'
 
-import { LinkButton } from '@/_components/LinkButton'
+import { Button } from '@/_components/Button'
 import { PublicationCard } from '@/_features/publications/PublicationCard'
 import { usePagination } from '@/_hooks/usePagination'
 import type { NewsSummary } from '@/_dal/news/types'
@@ -42,7 +42,7 @@ export function NewsList({ news }: NewsListProps) {
           aria-label="Paginación de noticias"
           className="order-last col-span-full flex flex-wrap items-center justify-center gap-4"
         >
-          <LinkButton
+          <Button
             as="btn"
             variant="neutral"
             size="sm"
@@ -51,11 +51,11 @@ export function NewsList({ news }: NewsListProps) {
             aria-label="Mostrar noticias anteriores"
           >
             Anterior
-          </LinkButton>
+          </Button>
           <p aria-live="polite" aria-atomic="true" className="font-body text-sm text-text">
             Página {page} de {pageCount}
           </p>
-          <LinkButton
+          <Button
             as="btn"
             variant="neutral"
             size="sm"
@@ -64,7 +64,7 @@ export function NewsList({ news }: NewsListProps) {
             aria-label="Mostrar noticias siguientes"
           >
             Siguiente
-          </LinkButton>
+          </Button>
         </nav>
       )}
     </>

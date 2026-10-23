@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { LinkButton } from '@/_components/LinkButton'
+import { Button } from '@/_components/Button'
 import { Breadcrumbs } from '../../_components/Breadcrumbs'
 import { DefaultSidebar } from '../../_features/sidebar'
 import { SectionHeading } from '@/_components/SectionHeading'
@@ -47,9 +47,9 @@ export default async function NewsDetailPage({ params }: PageProps<'/noticias/[s
         </article>
         <DefaultSidebar />
         <div className="col-span-full flex justify-center">
-          <LinkButton href="/noticias" variant="neutral">
+          <Button href="/noticias" variant="neutral">
             Volver a noticias
-          </LinkButton>
+          </Button>
         </div>
       </div>
     </div>

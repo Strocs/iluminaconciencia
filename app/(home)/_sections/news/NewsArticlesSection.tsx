@@ -1,4 +1,4 @@
-import { LinkButton } from '@/_components/LinkButton'
+import { Button } from '@/_components/Button'
 import { SectionHeading } from '@/_components/SectionHeading'
 import { getArticles } from '@/_dal/articles/getArticles'
 import { getNews } from '@/_dal/news/getNews'
@@ -33,9 +33,9 @@ export async function NewsArticlesSection() {
           </div>
 
           <div className="mt-8 text-center">
-            <LinkButton href="/noticias" variant="important">
+            <Button href="/noticias" variant="important">
               Más Noticias
-            </LinkButton>
+            </Button>
           </div>
         </section>
 
@@ -62,9 +62,9 @@ export async function NewsArticlesSection() {
           </div>
 
           <div className="mt-8 text-center">
-            <LinkButton href="/articulos" variant="important">
+            <Button href="/articulos" variant="important">
               Más Artículos
-            </LinkButton>
+            </Button>
           </div>
         </section>
       </div>

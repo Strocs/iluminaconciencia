@@ -1,6 +1,6 @@
 'use client'
 
-import { LinkButton } from '@/_components/LinkButton'
+import { Button } from '@/_components/Button'
 import { ArrowIcon } from '@/_components/icons/Arrow'
 import { cn } from '@/_utils/cn'
 import type { HeroScene as HeroSceneData } from './scenes-data'
@@ -36,7 +36,7 @@ export function HeroScene({ scene, index }: Props) {
           </p>
         )}
         {scene.cta.section ? (
-          <LinkButton
+          <Button
             as="btn"
             onClick={() => {
               const target = document.getElementById(scene.cta.section!)
@@ -48,9 +48,9 @@ export function HeroScene({ scene, index }: Props) {
           >
             {scene.cta.label}
             <ArrowIcon size={20} className="pointer-events-none transition-transform duration-200 group-hover/link-button:-rotate-45 motion-reduce:transform-none motion-reduce:transition-none" />
-          </LinkButton>
+          </Button>
         ) : (
-          <LinkButton href={scene.cta.href}>{scene.cta.label}</LinkButton>
+          <Button href={scene.cta.href}>{scene.cta.label}</Button>
         )}
       </div>
     </article>

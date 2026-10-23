@@ -126,7 +126,7 @@ export function createNightSkyCapability({
   const initializeWhenSized = (size: NightSkyViewport, placement: ReturnType<typeof computeSkyArtworkPlacement>): void => {
     if (attemptedInitialization || lifecycleState !== 'initializing' || destroyed || !(size.width > 0) || !(size.height > 0)) return
     attemptedInitialization = true
-    if (reducedMotionMedia.matches || !document.createElement('canvas').getContext('webgl2')) {
+    if (reducedMotionMedia.matches) {
       setLifecycleState('fallback')
       return
     }

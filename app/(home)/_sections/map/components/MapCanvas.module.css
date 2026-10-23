@@ -1,0 +1,65 @@
+.map :global(.maplibregl-cooperative-gesture-screen) {
+  text-align: center;
+}
+
+.map :global(.maplibregl-ctrl-group:has(> .maplibregl-ctrl-zoom-in)) {
+  display: grid;
+  gap: calc(var(--spacing) * 1.5);
+  margin: 0 !important;
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.map :global(.maplibregl-ctrl-top-left:has(.maplibregl-ctrl-zoom-in)) {
+  top: calc(var(--spacing) * 3) !important;
+  right: calc(var(--spacing) * 3) !important;
+  left: auto !important;
+}
+
+.map :global(.maplibregl-ctrl-group:has(> .maplibregl-ctrl-zoom-in)) button {
+  width: calc(var(--spacing) * 11);
+  height: calc(var(--spacing) * 11);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-background);
+}
+
+.map :global(.maplibregl-ctrl-group:has(> .maplibregl-ctrl-zoom-in)) button:focus-visible {
+  outline: 2px solid var(--color-primary);
+}
+
+.map :global(.maplibregl-ctrl-group:has(> .maplibregl-ctrl-zoom-in)) button:hover {
+  border-color: var(--color-primary);
+}
+
+.map :global(.maplibregl-ctrl-zoom-in .maplibregl-ctrl-icon),
+.map :global(.maplibregl-ctrl-zoom-out .maplibregl-ctrl-icon) {
+  background-color: var(--color-primary);
+  background-image: none;
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: 29px 29px;
+}
+
+.map :global(.maplibregl-ctrl-zoom-in .maplibregl-ctrl-icon) {
+  mask-image: url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%3E%3Cpath%20d=%22M12%205v14M5%2012h14%22%20stroke=%22black%22%20stroke-width=%222%22%20stroke-linecap=%22round%22/%3E%3C/svg%3E');
+}
+
+.map :global(.maplibregl-ctrl-zoom-out .maplibregl-ctrl-icon) {
+  mask-image: url('data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2024%2024%22%3E%3Cpath%20d=%22M5%2012h14%22%20stroke=%22black%22%20stroke-width=%222%22%20stroke-linecap=%22round%22/%3E%3C/svg%3E');
+}
+
+.controlsHidden :global(.maplibregl-ctrl) {
+  display: none !important;
+}
+
+@media (width >= 48rem) {
+  .map :global(.maplibregl-ctrl-top-left:has(.maplibregl-ctrl-zoom-in)) {
+    right: auto !important;
+    left: calc(var(--spacing) * 3) !important;
+  }
+
+  .controlsHidden :global(.maplibregl-ctrl) {
+    display: block !important;
+  }
+}

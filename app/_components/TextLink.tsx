@@ -4,7 +4,7 @@ import { tv, type VariantProps } from 'tailwind-variants'
 import { cn } from '@/_utils/cn'
 import { ArrowIcon } from './icons/Arrow'
 
-const linkVariants = tv({
+const textLinkVariants = tv({
   slots: {
     base: 'group/link inline-flex items-center justify-center rounded font-body text-foreground transition-colors focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background motion-reduce:transition-none',
     icon: 'pointer-events-none shrink-0'
@@ -33,13 +33,13 @@ const linkVariants = tv({
   }
 })
 
-type LinkProps = VariantProps<typeof linkVariants> &
+type TextLinkProps = VariantProps<typeof textLinkVariants> &
   Omit<ComponentPropsWithRef<typeof NextLink>, 'aria-disabled' | 'className'> & {
     className?: string
   }
 
-export function Link({ children, className, size, arrow = true, disabled = false, href, ...props }: LinkProps) {
-  const { base, icon } = linkVariants({ size, arrow, disabled })
+export function TextLink({ children, className, size, arrow = true, disabled = false, href, ...props }: TextLinkProps) {
+  const { base, icon } = textLinkVariants({ size, arrow, disabled })
 
   return (
     <NextLink

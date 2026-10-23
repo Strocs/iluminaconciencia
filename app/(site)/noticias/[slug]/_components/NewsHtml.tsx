@@ -22,7 +22,9 @@ export function NewsHtml({ nodes, excludedImageUrl }: { nodes: NewsNode[]; exclu
     }
     switch (node.tag) {
       case 'a':
-        if (node.attributes.href) Object.assign(attributes, { target: '_blank', rel: 'noopener noreferrer' })
+        if (node.attributes.href) {
+          Object.assign(attributes, { target: node.attributes.target ?? '_blank', rel: 'noopener noreferrer' })
+        }
         break
       case 'img': {
         const sourceWidth = Number(node.attributes.width)
