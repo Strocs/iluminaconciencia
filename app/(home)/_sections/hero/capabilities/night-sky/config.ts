@@ -10,10 +10,12 @@ export const nightSkyConfig = {
   },
   starOpacity: {
     /** Opacity multiplier at the initial position (scroll progress 0) */
-    initial: 0.12,
+    initial: 0.05,
     /** Opacity multiplier at the full-opacity phase. */
     full: 1,
-    /** Progress at which the canvas reaches full opacity and remains there. */
-    fullProgress: 0.7
+    /** Progress at which the sky artwork reaches full opacity and remains there. */
+    fullProgress: 0.8,
+    /** Reveal slowly at first, then accelerate toward full opacity. */
+    ease: 'power2.in'
   }
 } as const

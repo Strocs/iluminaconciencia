@@ -46,7 +46,7 @@ export function createNightSkyCapability({
   fadeTimeline.fromTo(artwork, { opacity: config.starOpacity.initial }, {
     opacity: config.starOpacity.full,
     duration: config.starOpacity.fullProgress,
-    ease: 'none'
+    ease: config.starOpacity.ease
   }, 0)
   fadeTimeline.add(() => undefined, 1)
 

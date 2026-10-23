@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import type { CSSProperties } from 'react'
 import { cn } from '@/_utils/cn'
+import { nightSkyConfig } from './config'
 import { nightSkyAssets } from './sky-assets'
 import { skyArtworkCssVariables } from './sky-crop'
 
@@ -19,7 +20,12 @@ export function HeroSky() {
       className="[container-type:size] pointer-events-none absolute inset-0 isolate overflow-hidden"
       style={skyArtworkCssVariables() as CSSProperties}
     >
-      <div data-hero-sky-artwork className="absolute inset-0 overflow-hidden opacity-12" aria-hidden="true">
+      <div
+        data-hero-sky-artwork
+        className="absolute inset-0 overflow-hidden"
+        style={{ opacity: nightSkyConfig.starOpacity.initial }}
+        aria-hidden="true"
+      >
         <picture
           className={cn(skyPlaneClasses, 'invisible [[data-hero-sky-photo-error=true]_&]:hidden')}
           data-hero-sky-photo-plane
