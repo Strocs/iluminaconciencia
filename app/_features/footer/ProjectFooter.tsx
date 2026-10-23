@@ -28,21 +28,21 @@ const socialLinks = [
 export function ProjectFooter() {
   return (
     <section className="container mx-auto space-y-12 px-4 py-12 sm:px-6">
-      <div className="flex items-center justify-around">
-        <div className="flex items-center">
+      <div className="flex flex-col items-center justify-around gap-8 lg:flex-row lg:gap-0">
+        <div className="flex w-full min-w-0 items-center lg:w-auto">
           <Image
-            className="mx-auto h-auto w-42 sm:w-68"
+            className="mx-auto h-auto w-42 shrink-0 sm:w-68"
             src={projectLogo}
             width={projectLogo.width}
             height={projectLogo.height}
             alt="IluminAconciencia"
           />
-          <p className="max-w-xs text-sm font-extralight text-text/80">
+          <p className="max-w-xs min-w-0 text-sm font-extralight text-text/80">
             IluminAconciencia es un proyecto de la Región de Coquimbo que monitorea la contaminación lumínica y promueve
             el cuidado del cielo y la salud.
           </p>
         </div>
-        <section className="flex gap-12">
+        <section className="flex w-full justify-center gap-12 lg:w-auto">
           <div className="space-y-2">
             <h4 className="text-primary uppercase underline underline-offset-4">Redes Sociales</h4>
             <ul>
