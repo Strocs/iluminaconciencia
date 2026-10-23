@@ -56,12 +56,22 @@ export function useHeaderBehavior() {
       header.dataset.headerPathname = pathname
       header.dataset.hidden = 'false'
 
+      const headerLayout = header.parentElement
       const menuToggle = header.querySelector<HTMLInputElement>('[data-menu-toggle]')
       let frameId: number | null = null
       let referenceScrollY = Math.max(0, window.scrollY)
 
       const updateHeader = (trackDirection = false) => {
         const currentScrollY = Math.max(0, window.scrollY)
+        // Use our own layout, not the expanding header, so height changes cannot shift the measurement.
+        const layoutBounds = headerLayout?.getBoundingClientRect()
+        const visibleTop = Math.max(0, layoutBounds?.top ?? 0)
+        const visibleBottom = Math.min(window.innerHeight, layoutBounds?.bottom ?? window.innerHeight)
+        const openHeight = `${Math.max(0, visibleBottom - visibleTop)}px`
+        if (header.style.getPropertyValue('--header-open-height') !== openHeight) {
+          header.style.setProperty('--header-open-height', openHeight)
+        }
+
         // Cached route trees may remain mounted but must not supply the active marker.
         const solidStart = Array.from(document.querySelectorAll<HTMLElement>('[data-header-solid-start]')).find(
           (element) => element.getClientRects().length > 0
@@ -112,6 +122,7 @@ export function useHeaderBehavior() {
       })
       const resizeObserver = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(scheduleUpdate)
       resizeObserver?.observe(document.body)
+      if (headerLayout) resizeObserver?.observe(headerLayout)
 
       window.addEventListener('resize', scheduleUpdate)
       window.addEventListener('scroll', handleScroll, { passive: true })
@@ -131,6 +142,7 @@ export function useHeaderBehavior() {
         menuToggle?.removeEventListener('change', handleMenuChange)
         header.removeEventListener('click', handleAnchorClick)
         delete header.dataset.headerPathname
+        header.style.removeProperty('--header-open-height')
         if (frameId !== null) window.cancelAnimationFrame(frameId)
       }
     },

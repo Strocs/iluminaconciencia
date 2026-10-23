@@ -16,7 +16,7 @@ export function Header() {
         className="pointer-events-none absolute inset-0 -z-10 opacity-0 transition-opacity duration-600 ease-[cubic-bezier(0.76,0,0.24,1)] group-has-checked:opacity-100 group-data-[appearance=solid]:opacity-100 motion-reduce:transition-none"
         aria-hidden="true"
       >
-        <div className="absolute inset-x-0 top-0 h-dvh bg-[radial-gradient(ellipse_at_50%_100%,#3b1f45_0%,#170d2f_40%,#010005_100%)]" />
+        <div className="absolute inset-x-0 top-0 h-(--header-open-height,100dvh) min-h-full bg-[radial-gradient(ellipse_at_50%_100%,#3b1f45_0%,#170d2f_40%,#010005_100%)]" />
         <span className="absolute inset-x-0 bottom-0 border-b border-border" />
       </div>
 
@@ -72,7 +72,7 @@ export function Header() {
         </div>
       </div>
 
-      <div className="pointer-events-none invisible absolute inset-x-0 top-24 z-10 h-[calc(100dvh-6rem)] overflow-y-auto transition-[visibility] duration-600 group-data-[appearance=solid]:top-20 group-data-[appearance=solid]:h-[calc(100dvh-5rem)] peer-checked:pointer-events-auto peer-checked:visible motion-reduce:transition-none lg:hidden">
+      <div className="pointer-events-none invisible absolute inset-x-0 top-24 z-10 h-[max(0px,calc(var(--header-open-height,100dvh)-6rem))] overflow-y-auto transition-[visibility] duration-600 group-data-[appearance=solid]:top-20 group-data-[appearance=solid]:h-[max(0px,calc(var(--header-open-height,100dvh)-5rem))] peer-checked:pointer-events-auto peer-checked:visible motion-reduce:transition-none lg:hidden">
         <nav className="flex h-full flex-col items-center justify-center gap-6" aria-label="Navegación móvil">
           {navigationItems.map(({ label, href, section }) => (
             <NavLink key={label} href={href} section={section} variant="mobile">
