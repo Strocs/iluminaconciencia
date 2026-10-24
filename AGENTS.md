@@ -20,6 +20,7 @@ DONT do visual verification with playwright unless user tells you to do so.
 
 ## Styles
 For conditional classes use cn() utility function. DONT use template strings.
+ONLY use css modules to override styles from a external package, for inner components prefer tailwind
 
 ## Data Fetching and Server Composition
 
