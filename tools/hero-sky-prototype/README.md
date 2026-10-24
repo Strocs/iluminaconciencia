@@ -10,6 +10,12 @@ Before the first valid draw, without JavaScript/WebGL, with reduced motion, afte
 
 The shared stereographic projection and its region/artwork/portrait bounds use the same 180° orientation as the files. This preserves the previous rotated appearance at every aspect ratio, including the off-center portrait star group. Neither the artwork nor the badge coordinates apply a separate rotation; labels consume the same mapped star positions as the renderer and remain upright.
 
+### Runtime work allocation
+
+Badge layout selects the nearest eligible target before measuring its label, so it reads at most one label's width and height per update, without caching dimensions. Existing pointer/touch selection, terrain/control exclusions and resize observation remain unchanged.
+
+The dedicated WebGL renderer sets blending, clear color and twinkle constants once at creation. Viewport/crop uniforms update on resize; each animation frame updates only the time uniform before drawing. Shaders, DPR, context/error checks and fallback behavior remain unchanged.
+
 ## Archived data and offline tools
 
 All catalogue backups are outside `app/`:

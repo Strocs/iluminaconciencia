@@ -161,6 +161,15 @@ export function createWebglStarRenderer(canvas: HTMLCanvasElement, data: MappedS
 
   const starResources = buildStarResources(gl, data)
 
+  // This renderer owns the context; blending and twinkle configuration stay constant.
+  gl.useProgram(starResources.program)
+  gl.enable(gl.BLEND)
+  gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA)
+  gl.clearColor(0, 0, 0, 0)
+  gl.uniform1f(starResources.twinkleAmplitude, nightSkyConfig.twinkle.amplitude)
+  gl.uniform1f(starResources.twinkleBaseFrequency, nightSkyConfig.twinkle.baseFrequency)
+  gl.uniform1f(starResources.twinkleSpeedMultiplier, nightSkyConfig.twinkle.speedMultiplier)
+
   const releaseStars = (value: StarResources): void => {
     for (const buffer of value.buffers) gl.deleteBuffer(buffer)
     gl.deleteBuffer(value.indexBuffer)
@@ -169,34 +178,28 @@ export function createWebglStarRenderer(canvas: HTMLCanvasElement, data: MappedS
   }
 
   let viewport: WebglStarViewport | null = null
-  let crop: SkyCrop = { scaleX: 1, scaleY: 1, offsetX: 0, offsetY: 0 }
   let destroyed = false
 
   return {
     resize: (nextViewport, nextCrop) => {
       if (destroyed || !(nextViewport.width > 0) || !(nextViewport.height > 0)) return
       viewport = nextViewport
-      crop = nextCrop
       canvas.width = Math.max(1, Math.round(nextViewport.width * nextViewport.devicePixelRatio))
       canvas.height = Math.max(1, Math.round(nextViewport.height * nextViewport.devicePixelRatio))
       gl.viewport(0, 0, canvas.width, canvas.height)
+      // Projection uniforms change with the viewport, not with animation time.
+      gl.useProgram(starResources.program)
+      gl.uniform2f(starResources.viewport, Math.max(1, nextViewport.width), Math.max(1, nextViewport.height))
+      gl.uniform2f(starResources.cropScale, nextCrop.scaleX, nextCrop.scaleY)
+      gl.uniform2f(starResources.cropOffset, nextCrop.offsetX, nextCrop.offsetY)
     },
     draw: (timeMs) => {
       if (destroyed || !viewport || gl.isContextLost()) return false
-      gl.clearColor(0, 0, 0, 0)
       gl.clear(gl.COLOR_BUFFER_BIT)
-      gl.enable(gl.BLEND)
-      gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA)
 
       gl.useProgram(starResources.program)
       gl.bindVertexArray(starResources.vao)
-      gl.uniform2f(starResources.viewport, Math.max(1, viewport.width), Math.max(1, viewport.height))
-      gl.uniform2f(starResources.cropScale, crop.scaleX, crop.scaleY)
-      gl.uniform2f(starResources.cropOffset, crop.offsetX, crop.offsetY)
       gl.uniform1f(starResources.time, timeMs / 1_000)
-      gl.uniform1f(starResources.twinkleAmplitude, nightSkyConfig.twinkle.amplitude)
-      gl.uniform1f(starResources.twinkleBaseFrequency, nightSkyConfig.twinkle.baseFrequency)
-      gl.uniform1f(starResources.twinkleSpeedMultiplier, nightSkyConfig.twinkle.speedMultiplier)
       gl.drawElementsInstanced(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0, starCount)
       gl.bindVertexArray(null)
       return !gl.isContextLost() && gl.getError() === gl.NO_ERROR

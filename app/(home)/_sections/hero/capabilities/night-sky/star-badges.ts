@@ -89,7 +89,6 @@ export function createStarBadgesCapability(root: HTMLElement): HeroCapability | 
       hide()
       return
     }
-    // Read every label size before writing styles; text and panels are not obstacles.
     let memberIndex = 0
     const points = entries.map((entry) => {
       const projected = entry.members.map((member) => {
@@ -116,9 +115,7 @@ export function createStarBadgesCapability(root: HTMLElement): HeroCapability | 
         x,
         y,
         radius,
-        visible: visibleMembers.length > 0,
-        width: entry.name.offsetWidth,
-        height: entry.name.offsetHeight
+        visible: visibleMembers.length > 0
       }
     })
     let selected = -1
@@ -131,9 +128,20 @@ export function createStarBadgesCapability(root: HTMLElement): HeroCapability | 
         selected = index
       }
     })
+    // Measure only the selected label, before writing any individual badge styles.
+    const selectedPoint = points[selected]
+    const selectedBox = selectedPoint
+      ? placeStarBadge(
+          selectedPoint,
+          selectedPoint.entry.name.offsetWidth,
+          selectedPoint.entry.name.offsetHeight,
+          bounds,
+          controls
+        )
+      : null
     points.forEach((point, index) => {
       const { entry, x, y, radius } = point
-      const box = index === selected ? placeStarBadge(point, point.width, point.height, bounds, controls) : null
+      const box = index === selected ? selectedBox : null
       entry.element.dataset.visible = String(Boolean(box))
       if (!box) return
       entry.element.style.transform = `translate(${x}px, ${y}px)`
