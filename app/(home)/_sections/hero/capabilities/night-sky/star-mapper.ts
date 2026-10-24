@@ -6,8 +6,9 @@ import { projectStar, REGION_BBOX, STAR_MAGNITUDE_RANGE } from './sky-reference.
  * Star catalog -> GPU-ready mapper.
  *
  * Pure, deterministic, side-effect free (no DOM, no GL, no I/O). Runs once at
- * startup and turns the static BSC5 `starCatalog` into flat typed arrays that
- * `createWebglStarRenderer` uploads directly as instanced vertex attributes.
+ * startup and turns the static BSC5 `starCatalog` into full flat typed arrays.
+ * `createWebglStarRenderer` retains them and uploads a visible instance prefix
+ * when the viewport changes; source profiles and ordering remain unchanged.
  *
  * Coordinate convention: every origin (and constellation-line vertex) lives in
  * normalized 0..1 space where y = 0 is the TOP of the viewport. This matches

@@ -16,6 +16,10 @@ Badge layout selects the nearest eligible target before measuring its label, so 
 
 The dedicated WebGL renderer sets blending, clear color and twinkle constants once at creation. Viewport/crop uniforms update on resize; each animation frame updates only the time uniform before drawing. Shaders, DPR, context/error checks and fallback behavior remain unchanged.
 
+On resize, the renderer conservatively selects quads that can intersect the viewport, using each star's maximum size over the entire twinkle cycle plus one CSS pixel for rounding. It compacts the existing mapped attributes in source order into reusable arrays and uploads their selected prefix to three capacity-reserved dynamic buffers. Each frame draws only that prefix, without filtering or uploading buffers again. A zero-instance frame still clears the canvas, and resizing can restore previously excluded stars. Catalogue data, phases, colors, labels and static fallback images are not filtered or regenerated.
+
+This trades additional CPU storage and resize-time work for fewer submitted vertices per frame. GPU buffer capacity and the full downloaded catalogue remain unchanged; a lower instance count alone is not a measured improvement in overall GPU time.
+
 ## Archived data and offline tools
 
 All catalogue backups are outside `app/`:

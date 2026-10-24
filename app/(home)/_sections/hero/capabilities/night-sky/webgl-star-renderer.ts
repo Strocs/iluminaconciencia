@@ -18,6 +18,9 @@ interface StarResources {
   readonly program: WebGLProgram
   readonly vao: WebGLVertexArrayObject
   readonly buffers: readonly WebGLBuffer[]
+  readonly originBuffer: WebGLBuffer
+  readonly starBuffer: WebGLBuffer
+  readonly colorBuffer: WebGLBuffer
   readonly indexBuffer: WebGLBuffer
   readonly viewport: WebGLUniformLocation
   readonly cropScale: WebGLUniformLocation
@@ -104,13 +107,14 @@ const requiredUniform = (gl: WebGL2RenderingContext, program: WebGLProgram, name
 const createBuffer = (
   gl: WebGL2RenderingContext,
   target: number,
-  data: Float32Array | Uint16Array,
+  data: Float32Array | Uint16Array | number,
   usage: number
 ): WebGLBuffer => {
   const buffer = gl.createBuffer()
   if (!buffer) throw new Error('Hero sky WebGL: buffer allocation failed')
   gl.bindBuffer(target, buffer)
-  gl.bufferData(target, data, usage)
+  if (typeof data === 'number') gl.bufferData(target, data, usage)
+  else gl.bufferData(target, data, usage)
   return buffer
 }
 
@@ -120,9 +124,10 @@ const buildStarResources = (gl: WebGL2RenderingContext, data: MappedStarData): S
   if (!vao) throw new Error('Hero sky WebGL: vertex array allocation failed')
   gl.bindVertexArray(vao)
   const corners = createBuffer(gl, gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW)
-  const originBuffer = createBuffer(gl, gl.ARRAY_BUFFER, data.origins, gl.STATIC_DRAW)
-  const starBuffer = createBuffer(gl, gl.ARRAY_BUFFER, data.stars, gl.STATIC_DRAW)
-  const colorBuffer = createBuffer(gl, gl.ARRAY_BUFFER, data.colors, gl.STATIC_DRAW)
+  // Reserve full capacity once; resize uploads only the selected instance prefix.
+  const originBuffer = createBuffer(gl, gl.ARRAY_BUFFER, data.origins.byteLength, gl.DYNAMIC_DRAW)
+  const starBuffer = createBuffer(gl, gl.ARRAY_BUFFER, data.stars.byteLength, gl.DYNAMIC_DRAW)
+  const colorBuffer = createBuffer(gl, gl.ARRAY_BUFFER, data.colors.byteLength, gl.DYNAMIC_DRAW)
   const indexBuffer = createBuffer(gl, gl.ELEMENT_ARRAY_BUFFER, new Uint16Array([0, 1, 2, 2, 1, 3]), gl.STATIC_DRAW)
   const buffers = [corners, originBuffer, starBuffer, colorBuffer]
   const layouts: readonly [number, WebGLBuffer, number][] = [
@@ -142,6 +147,9 @@ const buildStarResources = (gl: WebGL2RenderingContext, data: MappedStarData): S
     program,
     vao,
     buffers,
+    originBuffer,
+    starBuffer,
+    colorBuffer,
     indexBuffer,
     viewport: requiredUniform(gl, program, 'u_viewport'),
     cropScale: requiredUniform(gl, program, 'u_cropScale'),
@@ -158,6 +166,12 @@ export function createWebglStarRenderer(canvas: HTMLCanvasElement, data: MappedS
   if (!gl) throw new Error('Hero sky WebGL: WebGL2 is unavailable')
 
   const starCount = data.stars.length / 4
+  const visibleOrigins = new Float32Array(data.origins.length)
+  const visibleStars = new Float32Array(data.stars.length)
+  const visibleColors = new Float32Array(data.colors.length)
+  const amplitude = nightSkyConfig.twinkle.amplitude
+  const maximumTwinkle = Math.abs(1 - amplitude) + Math.abs(amplitude)
+  let visibleStarCount = 0
 
   const starResources = buildStarResources(gl, data)
 
@@ -192,6 +206,39 @@ export function createWebglStarRenderer(canvas: HTMLCanvasElement, data: MappedS
       gl.uniform2f(starResources.viewport, Math.max(1, nextViewport.width), Math.max(1, nextViewport.height))
       gl.uniform2f(starResources.cropScale, nextCrop.scaleX, nextCrop.scaleY)
       gl.uniform2f(starResources.cropOffset, nextCrop.offsetX, nextCrop.offsetY)
+
+      // Keep any quad that can touch the viewport during its entire twinkle cycle.
+      const width = Math.max(1, nextViewport.width)
+      const height = Math.max(1, nextViewport.height)
+      visibleStarCount = 0
+      for (let index = 0; index < starCount; index += 1) {
+        const originIndex = index * 2
+        const starIndex = index * 4
+        const x = (data.origins[originIndex] * nextCrop.scaleX - nextCrop.offsetX) * width
+        const y = (data.origins[originIndex + 1] * nextCrop.scaleY - nextCrop.offsetY) * height
+        // One CSS-pixel guard preserves edge coverage despite floating-point rounding.
+        const margin = data.stars[starIndex + 1] * maximumTwinkle + 1
+        if (x + margin < 0 || x - margin > width || y + margin < 0 || y - margin > height) continue
+
+        const targetOrigin = visibleStarCount * 2
+        const targetStar = visibleStarCount * 4
+        visibleOrigins[targetOrigin] = data.origins[originIndex]
+        visibleOrigins[targetOrigin + 1] = data.origins[originIndex + 1]
+        // Copy existing attributes in source order; never reseed retained stars.
+        for (let component = 0; component < 4; component += 1) {
+          visibleStars[targetStar + component] = data.stars[starIndex + component]
+          visibleColors[targetStar + component] = data.colors[starIndex + component]
+        }
+        visibleStarCount += 1
+      }
+      if (visibleStarCount > 0) {
+        gl.bindBuffer(gl.ARRAY_BUFFER, starResources.originBuffer)
+        gl.bufferSubData(gl.ARRAY_BUFFER, 0, visibleOrigins, 0, visibleStarCount * 2)
+        gl.bindBuffer(gl.ARRAY_BUFFER, starResources.starBuffer)
+        gl.bufferSubData(gl.ARRAY_BUFFER, 0, visibleStars, 0, visibleStarCount * 4)
+        gl.bindBuffer(gl.ARRAY_BUFFER, starResources.colorBuffer)
+        gl.bufferSubData(gl.ARRAY_BUFFER, 0, visibleColors, 0, visibleStarCount * 4)
+      }
     },
     draw: (timeMs) => {
       if (destroyed || !viewport || gl.isContextLost()) return false
@@ -200,7 +247,7 @@ export function createWebglStarRenderer(canvas: HTMLCanvasElement, data: MappedS
       gl.useProgram(starResources.program)
       gl.bindVertexArray(starResources.vao)
       gl.uniform1f(starResources.time, timeMs / 1_000)
-      gl.drawElementsInstanced(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0, starCount)
+      gl.drawElementsInstanced(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0, visibleStarCount)
       gl.bindVertexArray(null)
       return !gl.isContextLost() && gl.getError() === gl.NO_ERROR
     },
