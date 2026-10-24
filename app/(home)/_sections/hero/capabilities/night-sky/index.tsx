@@ -30,36 +30,30 @@ export function HeroSky() {
           className={cn(skyPlaneClasses, 'invisible [[data-hero-sky-photo-error=true]_&]:hidden')}
           data-hero-sky-photo-plane
         >
-          <source media="(min-resolution: 1.01dppx)" srcSet={nightSkyAssets.photo2x} />
+          <source media="(min-resolution: 1.01dppx)" srcSet={nightSkyAssets.photo2x.src} />
           <Image
             data-hero-sky-photo
             className="absolute inset-0 block size-full max-w-none"
             src={nightSkyAssets.photo1x}
-            width={nightSkyAssets.width}
-            height={nightSkyAssets.height}
             alt=""
             aria-hidden="true"
             decoding="async"
             loading="eager"
             fetchPriority="high"
             placeholder="blur"
-            blurDataURL={nightSkyAssets.photoPreview}
             unoptimized
           />
         </picture>
         <picture>
-          <source media="(min-resolution: 1.01dppx)" srcSet={nightSkyAssets.fallback2x} />
+          <source media="(min-resolution: 1.01dppx)" srcSet={nightSkyAssets.fallback2x.src} />
           <Image
             data-hero-sky-fallback
             src={nightSkyAssets.fallback1x}
-            width={nightSkyAssets.width}
-            height={nightSkyAssets.height}
             alt=""
             aria-hidden="true"
             decoding="async"
             loading="eager"
             placeholder="blur"
-            blurDataURL={nightSkyAssets.photoPreview}
             unoptimized
             className={cn(skyPlaneClasses, 'visible data-[hero-sky-fallback-visible=false]:invisible')}
           />

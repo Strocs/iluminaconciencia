@@ -1,9 +1,12 @@
 ESO/S. Brunier — eso0932a — CC BY 4.0
 https://www.hq.eso.org/public/images/eso0932a/
 https://creativecommons.org/licenses/by/4.0/
-Adaptations: inherited projection/reprojection and canonical crop/resampling; localized inferred photo-region reconstruction for 31 reviewed residual targets; WebP derivative assets copied byte-for-byte from the approved t16-left-r1 candidate.
+Adaptations: inherited projection/reprojection and canonical crop/resampling; localized inferred photo-region reconstruction for 31 reviewed residual targets; WebP derivative assets originally copied byte-for-byte from the approved t16-left-r1 candidate, before the subsequent adaptation below.
 Approval: odd/plans/evidence/hero-hybrid-sky-left-retouch-r1-approval.json
 Region plan SHA-256: ffb76abf429f995cc85c94c9d3944780bf8ad702085068a1998f357e2067696b
 The existing 4,666-row catalog-star SVG is separately served from /images/hero/sky/t13-texture-r1/catalog-stars.svg; it is not an ESO asset.
 
 Additional adaptation: static photograph + BSC5 star composition, CPU reproduction of the current shader at time zero; not a WebGL screenshot.
+
+Subsequent adaptation: Existing composite WebPs rotated 180 degrees for an illustrative north-facing view from Coquimbo; dimensions preserved, WebP re-encoded at quality 75, method 6. No star recomposition.
+The historical approval above covers the pre-rotation candidate, not a new visual approval of these rotated derivatives.

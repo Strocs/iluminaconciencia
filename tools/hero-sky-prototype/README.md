@@ -1,12 +1,14 @@
 # Current hero sky and raster fallback
 
-The live catalogue contains 2,087 stars after removing 2,579 mapped profiles through 2 CSS px: 955 at ≤1.5 px, 911 in inclusive [1.5, 1.75] px, and 713 in inclusive [1.75, 2] px. Original row ordinals preserve retained phases, sizes, alpha, speeds and colors. The photo URLs retain the user's final manual WebP exports in `t16-left-r1`; the source photographs are not rewritten.
+The live catalogue contains 2,087 stars after removing 2,579 mapped profiles through 2 CSS px: 955 at ≤1.5 px, 911 in inclusive [1.5, 1.75] px, and 713 in inclusive [1.75, 2] px. Original row ordinals preserve retained phases, sizes, alpha, speeds and colors. The active WebPs in `t16-left-r1` and `composite-2087-r1` are the user's final photo exports and existing composites rotated 180° for an illustrative view looking north from Coquimbo. No photographic reconstruction or star recomposition is involved; original source photographs and historical assets remain unchanged. Saving the rotated WebPs requires lossy re-encoding (photo quality 95, composite quality 75, method 6), with the original 1×/2× dimensions preserved.
 
 ## Runtime presentation
 
-`HeroSky` declares a photograph plane, one full-image raster fallback and the WebGL canvas. The photograph and fallback each use Next `Image` inside native `picture` with manual 1×/2× selection, `unoptimized`, eager loading and the existing inline blur preview. No SVG participates in the live fallback.
+`HeroSky` declares a photograph plane, one full-image raster fallback and the WebGL canvas. The photograph and fallback each use Next `Image` inside native `picture` with manual 1×/2× selection, `unoptimized` and eager loading. Static image imports supply dimensions and build-time blur metadata; the 2× `source` uses the imported asset's `.src`. There is no manually stored base64 preview. No SVG participates in the live fallback.
 
 Before the first valid draw, without JavaScript/WebGL, with reduced motion, after context loss/draw failure, or after a photograph error, only the opaque composite image is visible. The live photo and canvas are hidden. A valid draw shows the photo + canvas and hides the composite; all planes keep the same artwork crop. The single group fade stays 0.12→1 by progress 0.7 and canvas opacity stays 1. No custom React effects or loading callbacks are added.
+
+The shared stereographic projection and its region/artwork/portrait bounds use the same 180° orientation as the files. This preserves the previous rotated appearance at every aspect ratio, including the off-center portrait star group. Neither the artwork nor the badge coordinates apply a separate rotation; labels consume the same mapped star positions as the renderer and remain upright.
 
 ## Archived data and offline tools
 
@@ -35,7 +37,7 @@ The Python CLI requires `--input` and `--output`; `--help` describes them. It re
 
 The original 4,666-star SVG and earlier 3,711/2,800-star outputs remain historical; their public files and immutable evidence are not refreshed. The retired 2,087-star SVG/manifest move to the documented archive without changing their bytes. Historical photo approval hashes predate the user's manual retouch and are not hashes of the current public WebPs. The user-deleted photo manifest is not recreated.
 
-No new tests, lint/type/build checks or browser/visual verification were run, as requested. Asset generation is not runtime validation or manual approval.
+The original raster-generation delivery did not run new tests, lint/type/build checks or browser/visual verification, as requested at that time. Asset generation is not runtime validation or manual approval.
 
 ## Historical approved delivery (`t13-texture-r1`)
 
