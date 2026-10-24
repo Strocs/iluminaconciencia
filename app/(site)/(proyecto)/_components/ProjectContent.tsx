@@ -192,12 +192,12 @@ export function ProjectContent({ teamEntry = false }: { teamEntry?: boolean }) {
                   <Image
                     src={tessW}
                     alt="Ilustración de un fotómetro TESS-W"
-                    className="h-24 w-24 rounded-sm object-contain"
+                    className="size-24 rounded-sm object-contain"
                   />
                   <Image
                     src={tess4C}
                     alt="Ilustración de un fotómetro TESS-4C"
-                    className="h-24 w-24 rounded-sm object-contain"
+                    className="size-24 rounded-sm object-contain"
                   />
                 </div>
                 <div className="flex-1 space-y-3">

@@ -17,7 +17,7 @@ export function HeroSky() {
   return (
     <div
       data-hero-sky-host
-      className="[container-type:size] pointer-events-none absolute inset-0 isolate overflow-hidden"
+      className="@container-size pointer-events-none absolute inset-0 isolate overflow-hidden"
       style={skyArtworkCssVariables() as CSSProperties}
     >
       <div
@@ -27,7 +27,7 @@ export function HeroSky() {
         aria-hidden="true"
       >
         <picture
-          className={cn(skyPlaneClasses, 'invisible [[data-hero-sky-photo-error=true]_&]:hidden')}
+          className={cn(skyPlaneClasses, 'invisible in-data-[hero-sky-photo-error=true]:hidden')}
           data-hero-sky-photo-plane
         >
           <source media="(min-resolution: 1.01dppx)" srcSet={nightSkyAssets.photo2x.src} />
