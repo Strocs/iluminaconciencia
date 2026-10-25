@@ -30,7 +30,10 @@ export function createScenesCapability({ root, config }: { root: HTMLElement; co
   })
   const boundaries = scenes.slice(1).map((_, index) => (index + 1) / scenes.length)
 
+  let previousActiveIndex = -1
   const setActiveScene = (index: number): void => {
+    if (index === previousActiveIndex) return
+    previousActiveIndex = index
     scenes.forEach((scene, sceneIndex) => {
       const active = sceneIndex === index
       scene.setAttribute('aria-hidden', String(!active))

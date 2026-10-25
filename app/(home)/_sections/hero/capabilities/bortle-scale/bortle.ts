@@ -47,6 +47,29 @@ export function createBortleCapability({
     return { onProgress: () => undefined, destroy: () => undefined }
   }
 
+  const nodeViews = nodes.map((node) => {
+    const dot = node.querySelector<HTMLElement>('[data-hero-bortle-dot]')
+    return {
+      node,
+      dot,
+      label: node.lastElementChild,
+      setOpacity: gsap.quickSetter(node, 'opacity'),
+      setDotScale: dot ? gsap.quickSetter(dot, 'scale') : undefined
+    }
+  })
+  const setBaseOpacities = baseConnectors.map((connector) => gsap.quickSetter(connector, 'opacity'))
+  const connectorViews = connectors.map((connector) => ({
+    setScale: gsap.quickSetter(connector, 'scaleX'),
+    setOpacity: gsap.quickSetter(connector, 'opacity')
+  }))
+  gsap.set(track, { force3D: true })
+  const setTrackX = gsap.quickSetter(track, 'x', 'px')
+  let previousCurrentIndex = -1
+  let previousVisualIndex = -1
+  let previousVisualPosition = -1
+  let previousTravelProgress = -1
+  let previousArrivalProgress = -1
+
   const render = (progress: number): void => {
     const localProgress = clamp(progress / config.endProgress, 0, 1)
     const scaledProgress = localProgress * SEGMENT_COUNT
@@ -54,52 +77,79 @@ export function createBortleCapability({
     const segmentProgress = currentIndex === classes.length - 1 ? 0 : scaledProgress - currentIndex
     const travelProgress = clamp((segmentProgress - HOLD_END) / (TRAVEL_END - HOLD_END), 0, 1)
     const arrivalProgress = clamp((segmentProgress - TRAVEL_END) / (1 - TRAVEL_END), 0, 1)
+    if (
+      currentIndex === previousCurrentIndex &&
+      travelProgress === previousTravelProgress &&
+      arrivalProgress === previousArrivalProgress
+    )
+      return
+
     const visualIndex = arrivalProgress > 0 ? currentIndex + 1 : currentIndex
-    const nextIndex = Math.min(currentIndex + 1, classes.length - 1)
     const visualPosition = currentIndex + arrivalProgress
-    const { focusX, nodeSpacing } = config.visual
-    const offset = focusX - visualPosition * nodeSpacing
+    const currentChanged = currentIndex !== previousCurrentIndex
+    const visualChanged = visualIndex !== previousVisualIndex
 
-    panels.forEach((panel, index) => {
-      const active = index === currentIndex
-      panel.hidden = !active
-      if (active) panel.setAttribute('aria-current', 'true')
-      else panel.removeAttribute('aria-current')
-    })
-
-    nodes.forEach((node, index) => {
-      const active = index === visualIndex
-      node.toggleAttribute('data-active', active)
-      gsap.set(node, { opacity: opacityAtDistance(Math.abs(index - visualPosition)) })
-      const dot = node.querySelector<HTMLElement>('[data-hero-bortle-dot]')
-      const label = node.lastElementChild
-      if (dot) {
-        const arriving = index === nextIndex && arrivalProgress > 0
-        gsap.set(dot, {
-          scale: active ? gsap.utils.interpolate(0.56, 1, arriving ? arrivalProgress : 1) : 0.56,
-          backgroundColor: active ? '#f4bd63' : '#616268',
-          boxShadow: active
-            ? `0 0 ${gsap.utils.interpolate(2, 7, arriving ? arrivalProgress : 1)}px #f4bd63, 0 0 22px rgba(244, 189, 99, ${0.55 * (arriving ? arrivalProgress : 1)})`
-            : 'none'
-        })
-      }
-      if (label) gsap.set(label, { color: active ? '#f4bd63' : '#87888d' })
-    })
-
-    baseConnectors.forEach((connector, index) => {
-      const distance = Math.min(Math.abs(index - visualPosition), Math.abs(index + 1 - visualPosition))
-      gsap.set(connector, { opacity: opacityAtDistance(distance) * 0.55 })
-    })
-
-    connectors.forEach((connector, index) => {
-      const active = index === currentIndex && currentIndex < classes.length - 1
-      gsap.set(connector, {
-        scaleX: active ? travelProgress : 0,
-        opacity: active && travelProgress > 0 ? 1 : 0
+    // Panel state and colors change at boundaries, not on every scroll update.
+    if (currentChanged) {
+      panels.forEach((panel, index) => {
+        const active = index === currentIndex
+        panel.hidden = !active
+        if (active) panel.setAttribute('aria-current', 'true')
+        else panel.removeAttribute('aria-current')
       })
-    })
+      connectorViews.forEach((connector, index) => {
+        if (index === currentIndex && currentIndex < classes.length - 1) return
+        connector.setScale(0)
+        connector.setOpacity(0)
+      })
+    }
 
-    gsap.set(track, { x: offset, force3D: true })
+    if (visualChanged) {
+      nodeViews.forEach(({ node, dot, label, setDotScale }, index) => {
+        const active = index === visualIndex
+        node.toggleAttribute('data-active', active)
+        if (dot) {
+          gsap.set(dot, { backgroundColor: active ? '#f4bd63' : '#616268' })
+          if (!active) {
+            setDotScale?.(0.56)
+            dot.style.boxShadow = 'none'
+          }
+        }
+        if (label) gsap.set(label, { color: active ? '#f4bd63' : '#87888d' })
+      })
+    }
+
+    if (visualPosition !== previousVisualPosition) {
+      nodeViews.forEach(({ setOpacity }, index) => {
+        setOpacity(opacityAtDistance(Math.abs(index - visualPosition)))
+      })
+      setBaseOpacities.forEach((setOpacity, index) => {
+        const distance = Math.min(Math.abs(index - visualPosition), Math.abs(index + 1 - visualPosition))
+        setOpacity(opacityAtDistance(distance) * 0.55)
+      })
+      setTrackX(config.visual.focusX - visualPosition * config.visual.nodeSpacing)
+    }
+
+    if (visualChanged || arrivalProgress !== previousArrivalProgress) {
+      const activeNode = nodeViews[visualIndex]
+      if (activeNode?.dot) {
+        const strength = arrivalProgress > 0 ? arrivalProgress : 1
+        activeNode.setDotScale?.(gsap.utils.interpolate(0.56, 1, strength))
+        activeNode.dot.style.boxShadow = `0 0 ${gsap.utils.interpolate(2, 7, strength)}px #f4bd63, 0 0 22px rgba(244, 189, 99, ${0.55 * strength})`
+      }
+    }
+
+    if (currentChanged || travelProgress !== previousTravelProgress) {
+      const connector = currentIndex < classes.length - 1 ? connectorViews[currentIndex] : undefined
+      connector?.setScale(travelProgress)
+      connector?.setOpacity(travelProgress > 0 ? 1 : 0)
+    }
+
+    previousCurrentIndex = currentIndex
+    previousVisualIndex = visualIndex
+    previousVisualPosition = visualPosition
+    previousTravelProgress = travelProgress
+    previousArrivalProgress = arrivalProgress
   }
 
   render(0)
