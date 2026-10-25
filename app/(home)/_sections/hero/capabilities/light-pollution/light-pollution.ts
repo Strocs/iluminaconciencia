@@ -8,12 +8,14 @@ const pollutionSelector = '[data-hero-light-pollution-horizon], [data-hero-light
 
 export function createLightPollutionCapability({
   root,
-  config
+  config,
+  selector = pollutionSelector
 }: {
   root: HTMLElement
   config: LightPollutionConfig
+  selector?: string
 }): HeroCapability {
-  const layers = root.querySelectorAll<HTMLElement>(pollutionSelector)
+  const layers = root.querySelectorAll<HTMLElement>(selector)
   const timeline = gsap.timeline({ paused: true })
 
   if (layers.length) {

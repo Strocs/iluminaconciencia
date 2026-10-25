@@ -10,6 +10,10 @@ Before the first valid draw, without JavaScript/WebGL, with reduced motion, afte
 
 The shared stereographic projection and its region/artwork/portrait bounds use the same 180° orientation as the files. This preserves the previous rotated appearance at every aspect ratio, including the off-center portrait star group. Neither the artwork nor the badge coordinates apply a separate rotation; labels consume the same mapped star positions as the renderer and remain upright.
 
+### Debug controls
+
+The fixed top bar has five initially enabled native switches plus the FPS readout. **Pollution** controls only the radial horizon gradient; **Backlight** controls only the mountain blur and rim light. Each independently hides its layer and skips its progress updates while disabled; reenabling synchronizes that layer to the current hero progress without rebuilding the shared timeline. Night sky, Bortle and Twinkle retain their existing behavior.
+
 ### Runtime work allocation
 
 Badge layout selects the nearest eligible target before measuring its label, so it reads at most one label's width and height per update, without caching dimensions. Existing pointer/touch selection, terrain/control exclusions and resize observation remain unchanged.

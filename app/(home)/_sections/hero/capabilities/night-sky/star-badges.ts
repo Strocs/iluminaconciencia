@@ -46,7 +46,7 @@ export function createStarBadgesCapability(root: HTMLElement): HeroCapability | 
   }
   const layout = (): void => {
     frame = 0
-    if (destroyed) return
+    if (destroyed || root.hasAttribute('data-debug-night-sky-disabled')) return
     const bounds = canvas.getBoundingClientRect()
     const heroBounds = root.getBoundingClientRect()
     const { width, height } = bounds
@@ -151,7 +151,9 @@ export function createStarBadgesCapability(root: HTMLElement): HeroCapability | 
     })
   }
   const schedule = (): void => {
-    if (!destroyed && frame === 0) frame = requestAnimationFrame(layout)
+    if (!destroyed && !root.hasAttribute('data-debug-night-sky-disabled') && frame === 0) {
+      frame = requestAnimationFrame(layout)
+    }
   }
   const clear = (): void => {
     pointer = null
