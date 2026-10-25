@@ -110,14 +110,36 @@ export function useHeaderBehavior() {
         updateHeader()
       }
 
-      // Re-evaluate streamed content and route changes without observing our own writes.
+      // Keep streamed/cached route visibility updates, but ignore animation-only styles.
+      const previousStyle = document.createElement('div').style
       const mutationObserver = new MutationObserver((records) => {
-        if (records.some((record) => !header.contains(record.target))) scheduleUpdate()
+        const relevant = records.some((record) => {
+          if (header.contains(record.target)) return false
+          if (record.type === 'childList' || record.attributeName === 'data-header-solid-start') return true
+          if (!(record.target instanceof HTMLElement)) return false
+          if (record.attributeName === 'hidden') {
+            return record.oldValue !== record.target.getAttribute('hidden')
+          }
+          if (record.attributeName !== 'style') return false
+          const style = record.target.style
+          // Most hero writes only change transforms, opacity or CSS variables.
+          if (
+            !style.display &&
+            !style.contentVisibility &&
+            !/(?:^|;)\s*(?:display|content-visibility)\s*:/i.test(record.oldValue ?? '')
+          ) {
+            return false
+          }
+          previousStyle.cssText = record.oldValue ?? ''
+          return previousStyle.display !== style.display || previousStyle.contentVisibility !== style.contentVisibility
+        })
+        if (relevant) scheduleUpdate()
       })
       mutationObserver.observe(document.body, {
         childList: true,
         subtree: true,
         attributes: true,
+        attributeOldValue: true,
         attributeFilter: ['data-header-solid-start', 'hidden', 'style']
       })
       const resizeObserver = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(scheduleUpdate)

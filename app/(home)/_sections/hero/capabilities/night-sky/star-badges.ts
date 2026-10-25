@@ -38,28 +38,44 @@ export function createStarBadgesCapability(root: HTMLElement): HeroCapability | 
   let frame = 0
   let destroyed = false
 
+  const setStyle = (element: HTMLElement, property: string, value: string): void => {
+    if (element.style.getPropertyValue(property) !== value) element.style.setProperty(property, value)
+  }
   const hide = (): void => {
-    layer.style.opacity = '0'
+    setStyle(layer, 'opacity', '0')
     entries.forEach(({ element }) => {
-      element.dataset.visible = 'false'
+      if (element.dataset.visible !== 'false') element.dataset.visible = 'false'
     })
   }
   const layout = (): void => {
     frame = 0
     if (destroyed || root.hasAttribute('data-debug-night-sky-disabled')) return
-    const bounds = canvas.getBoundingClientRect()
-    const heroBounds = root.getBoundingClientRect()
-    const { width, height } = bounds
-    if (!pointer || !(width > 0 && height > 0) || heroBounds.bottom <= 0 || heroBounds.top >= window.innerHeight) {
+    if (!pointer) {
       hide()
       return
     }
-    // Outside the sticky stacking context, but aligned to the real sky canvas.
-    layer.style.left = `${bounds.left}px`
-    layer.style.top = `${bounds.top}px`
-    layer.style.width = `${width}px`
-    layer.style.height = `${height}px`
-    layer.style.opacity = getComputedStyle(artwork).opacity
+    const bounds = canvas.getBoundingClientRect()
+    const heroBounds = root.getBoundingClientRect()
+    const { width, height } = bounds
+    if (!(width > 0 && height > 0) || heroBounds.bottom <= 0 || heroBounds.top >= window.innerHeight) {
+      hide()
+      return
+    }
+    // Terrain and container-sized labels must be measured in the aligned layer.
+    // If its geometry changed, commit it now and defer all dependent reads a frame.
+    const layerGeometry = [
+      ['left', `${bounds.left}px`],
+      ['top', `${bounds.top}px`],
+      ['width', `${width}px`],
+      ['height', `${height}px`]
+    ] as const
+    if (layerGeometry.some(([property, value]) => layer.style.getPropertyValue(property) !== value)) {
+      hide()
+      layerGeometry.forEach(([property, value]) => setStyle(layer, property, value))
+      schedule()
+      return
+    }
+    const opacity = getComputedStyle(artwork).opacity
     const matrix = terrain.getScreenCTM()
     if (!matrix) {
       hide()
@@ -139,19 +155,27 @@ export function createStarBadgesCapability(root: HTMLElement): HeroCapability | 
           controls
         )
       : null
+    // All geometry and computed-style reads are complete before these writes.
+    setStyle(layer, 'opacity', opacity)
     points.forEach((point, index) => {
       const { entry, x, y, radius } = point
       const box = index === selected ? selectedBox : null
-      entry.element.dataset.visible = String(Boolean(box))
+      const visible = String(Boolean(box))
+      if (entry.element.dataset.visible !== visible) entry.element.dataset.visible = visible
       if (!box) return
-      entry.element.style.transform = `translate(${x}px, ${y}px)`
-      entry.ring.style.width = `${radius * 2}px`
-      entry.ring.style.height = `${radius * 2}px`
-      entry.name.style.transform = `translate(${box.x - x}px, ${box.y - y}px)`
+      setStyle(entry.element, 'transform', `translate(${x}px, ${y}px)`)
+      setStyle(entry.ring, 'width', `${radius * 2}px`)
+      setStyle(entry.ring, 'height', `${radius * 2}px`)
+      setStyle(entry.name, 'transform', `translate(${box.x - x}px, ${box.y - y}px)`)
     })
   }
   const schedule = (): void => {
-    if (!destroyed && !root.hasAttribute('data-debug-night-sky-disabled') && frame === 0) {
+    if (
+      !destroyed &&
+      !root.hasAttribute('data-debug-night-sky-disabled') &&
+      (pointer || layer.style.opacity !== '0') &&
+      frame === 0
+    ) {
       frame = requestAnimationFrame(layout)
     }
   }

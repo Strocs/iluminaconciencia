@@ -249,7 +249,8 @@ export function createWebglStarRenderer(canvas: HTMLCanvasElement, data: MappedS
       gl.uniform1f(starResources.time, timeMs / 1_000)
       gl.drawElementsInstanced(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0, visibleStarCount)
       gl.bindVertexArray(null)
-      return !gl.isContextLost() && gl.getError() === gl.NO_ERROR
+      // Context loss still triggers fallback without synchronizing GPU diagnostics per frame.
+      return !gl.isContextLost()
     },
     destroy: () => {
       if (destroyed) return

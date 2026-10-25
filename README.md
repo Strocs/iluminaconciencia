@@ -87,6 +87,7 @@ Los mecanismos especiales del framework se eligen por el comportamiento que nece
 - El contenedor del mapa conserva su tamaño desde el render inicial. `DeferredMapCanvas` activa la descarga de MapLibre y su montaje cuando el mapa se aproxima a un viewport de distancia; después permanece montado. Si `IntersectionObserver` no está disponible, se carga directamente. Los filtros y el detalle conservan su estado en `MapExplorer`.
 - Las imágenes del cielo usan la optimización responsive de Next y un `sizes` que contempla el ancho real del plano 16:9 también en pantallas verticales. No se fuerza el archivo 2x por resolución de pantalla. El composite inicial/fallback tiene prioridad alta; los originales generados se conservan sin cambios.
 - Los logos del header y de la franja institucional declaran tamaños de descarga acordes a su presentación. Se mantienen las dimensiones y estilos existentes.
+- El renderer del cielo no consulta errores WebGL en cada frame; mantiene las comprobaciones de pérdida de contexto y el fallback existente. Los badges separan la alineación del contenedor y las mediciones dependientes, y evitan trabajo sin un puntero activo. El header descarta notificaciones de estilos que solo animan transformaciones u opacidad, pero conserva las de visibilidad de rutas y contenido insertado.
 
 La validación visual y los nuevos resultados de Lighthouse se realizan sobre el despliegue de producción; las comprobaciones de compilación no prueban una mejora de puntuación.
 
