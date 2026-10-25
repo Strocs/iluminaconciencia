@@ -4,7 +4,7 @@ import { useMapOverlays } from '../hooks/useMapOverlays'
 import { MapMarkDrawer } from './MarkDrawer'
 import { FilterPanel } from './FilterPanel'
 
-import { MapCanvas } from './MapCanvas'
+import { DeferredMapCanvas } from './DeferredMapCanvas'
 import { Button } from '@/_components/Button'
 
 export function MapExplorer() {
@@ -51,7 +51,7 @@ export function MapExplorer() {
           aria-hidden={mobileOverlayOpen}
         >
           <div className="absolute inset-y-0 left-0 w-full md:w-[100cqw]">
-            <MapCanvas selectedId={selectedId} onSelect={openDrawer} panelOpen={mobileOverlayOpen} />
+            <DeferredMapCanvas selectedId={selectedId} onSelect={openDrawer} panelOpen={mobileOverlayOpen} />
           </div>
           <Button
             as="btn"
