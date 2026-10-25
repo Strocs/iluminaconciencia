@@ -1,6 +1,6 @@
 # Current hero sky and raster fallback
 
-The live catalogue contains 2,087 stars after removing 2,579 mapped profiles through 2 CSS px: 955 at ≤1.5 px, 911 in inclusive [1.5, 1.75] px, and 713 in inclusive [1.75, 2] px. Original row ordinals preserve retained phases, sizes, alpha, speeds and colors. The active WebPs in `t16-left-r1` and `composite-2087-r1` are the user's final photo exports and existing composites rotated 180° for an illustrative view looking north from Coquimbo. No photographic reconstruction or star recomposition is involved; original source photographs and historical assets remain unchanged. Saving the rotated WebPs requires lossy re-encoding (photo quality 95, composite quality 75, method 6), with the original 1×/2× dimensions preserved.
+The active catalogue contains 60 distinct source records: 50 named stars/systems and the 10 existing Pléyades members, shown as 51 label targets. `star-catalog.ts` contains only these 60 static literal records and their original source ordinals. The renderer, badges and offline exporter consume it directly, with no runtime catalogue selection. The full 2,087-record predecessor is preserved only in `docs/backups/hero/star-catalog.before-labeled-60.ts.bak`, outside the application import graph. Original row ordinals preserve retained phases, sizes, alpha, speeds and colors. The active photographs are the prepared edited WebPs in `labeled-60-r1` (quality 90, existing orientation and ICC preserved); the matching static composites are in `labeled-60-r1/fallback`. No new rotation, crop, shader or canvas-resolution change is applied. Original source photographs and historical assets remain unchanged.
 
 ## Runtime presentation
 
@@ -22,32 +22,35 @@ The dedicated WebGL renderer sets blending, clear color and twinkle constants on
 
 On resize, the renderer conservatively selects quads that can intersect the viewport, using each star's maximum size over the entire twinkle cycle plus one CSS pixel for rounding. It compacts the existing mapped attributes in source order into reusable arrays and uploads their selected prefix to three capacity-reserved dynamic buffers. Each frame draws only that prefix, without filtering or uploading buffers again. A zero-instance frame still clears the canvas, and resizing can restore previously excluded stars. Catalogue data, phases, colors, labels and static fallback images are not filtered or regenerated.
 
-This trades additional CPU storage and resize-time work for fewer submitted vertices per frame. GPU buffer capacity and the full downloaded catalogue remain unchanged; a lower instance count alone is not a measured improvement in overall GPU time.
+This trades additional CPU storage and resize-time work for fewer submitted vertices per frame. The renderer receives only the 60 static profiles; no full catalogue remains a runtime module dependency. A lower instance count alone is not a measured improvement in overall GPU time or a guarantee of 60 FPS on phones.
 
 ## Archived data and offline tools
 
 All catalogue backups are outside `app/`:
 
+- `docs/backups/hero/star-catalog.before-labeled-60.ts.bak`: byte-exact 2,087-record predecessor of the static 60-record catalogue (SHA-256 `ed3b8aff9b1eec11d9242cc12175afb2f934089b5d6c92e3a36418d43af0349d`).
 - `docs/backups/hero/star-catalog.ts.bak`: original 5,530-record source.
 - `docs/backups/hero/star-catalog.before-1_5px-filter.ts.bak`: byte-exact 4,666-row pre-size-filter snapshot.
 - `docs/backups/hero/development-star-catalog-4666.ts.bak`: retired comparison-module backup.
 - `docs/backups/hero/catalog-gt-2px-r1/`: retired current SVG and its historical manifest.
 
-`tools/hero-sky-prototype/prefilter-star-catalog.mjs` retains its historical geometric prefilter. Its source and output paths now resolve from the repository root. **Do not run its write mode to rebuild the current sample:** it does not reapply the later size filters or preserve their ordinal array. It is not invoked by the app, build or raster export. The source catalogue's header records this original selection step, not a full recipe for the current filtered sample.
+`tools/hero-sky-prototype/prefilter-star-catalog.mjs` retains its historical geometric prefilter. Its source and output paths now resolve from the repository root. **Do not run its write mode to rebuild the current sample:** it does not reapply the later size filters or preserve their ordinal array. It is not invoked by the app, build or raster export. The archived catalogue's header records this original selection step, not a recipe for the current static 60-record sample.
 
-`export-inputs.mjs` keeps its `--output DIRECTORY` CLI and payload schema. The pure application-module loader remains restricted to the source directory; the archived control catalogue is parsed as numeric TypeScript literals, without evaluating archive code. The repository ignores `docs/`; explicitly retain only the requested archive paths when preparing any future commit.
+`export-inputs.mjs` reads the active 60-record `star-catalog.ts` directly and keeps its no-argument/`--output DIRECTORY` behavior and payload schema, including the 5,530-record offline control catalogue. The pure application-module loader remains restricted to the source directory; the archived control catalogue is parsed as numeric TypeScript literals, without evaluating archive code. The repository ignores `docs/`; explicitly retain only the requested archive paths when preparing any future commit.
 
 ## Generate the complete raster fallback
 
 Use a fresh isolated snapshot directory; never overwrite the frozen `input/current-sky.json` or an existing version:
 
 ```sh
-mkdir output/hero-sky-prototype/integration/raster-fallback-2087-r1
-node tools/hero-sky-prototype/export-inputs.mjs --output output/hero-sky-prototype/integration/raster-fallback-2087-r1
-PYTHONDONTWRITEBYTECODE=1 output/hero-sky-prototype/venv/bin/python -B tools/hero-sky-prototype/export-raster-fallback.py --input output/hero-sky-prototype/integration/raster-fallback-2087-r1/current-sky.json --output public/images/hero/sky/composite-2087-r1 --quality 75
+# The public fallback directory must not already exist.
+snapshot=$(mktemp -d)
+node tools/hero-sky-prototype/export-inputs.mjs --output "$snapshot"
+PYTHONDONTWRITEBYTECODE=1 output/hero-sky-prototype/venv/bin/python -B tools/hero-sky-prototype/export-raster-fallback.py --input "$snapshot/current-sky.json" --photos public/images/hero/sky/labeled-60-r1 --output public/images/hero/sky/labeled-60-r1/fallback --quality 90
+# Remove the temporary snapshot after inspection.
 ```
 
-The Python CLI requires `--input` and `--output`; `--help` describes them. It refuses an existing output directory and uses existing dependencies only. `--quality` accepts integers from 1 to 100 and defaults to 75; the value is validated before the output directory is created. The generator uses lossy WebP at the selected quality (75 in the command above), trading some image fidelity for smaller files; fixed inputs, quality, and encoder method make the output reproducible. The JSON report records the actual mode and selected quality. It reuses `probe.render_stars` and `production_assets.canonical_frame` to compose the current buffers over each final photograph: 1920×1080 at DPR 1 and 3840×2160 at DPR 2. This is a CPU reproduction of the current shader at time zero, **not a WebGL screenshot or an SVG rasterization**. Output credits preserve the source attribution and identify the extra adaptation. No visual approval or measured byte-size claim is implied.
+The Python CLI requires `--input` and `--output`; optional `--photos DIRECTORY` selects prepared photographs and retains `public/images/hero/sky/t16-left-r1` as its historical default. `--help` describes these options. The current command explicitly selects the edited photos and preserves their ICC in each composite. It refuses an existing output directory and uses existing dependencies only. `--quality` accepts integers from 1 to 100 and defaults to 75; the value is validated before the output directory is created. The generator uses lossy WebP at the selected quality (90 in the command above), trading some image fidelity for smaller files; fixed inputs, quality, and encoder method make the output reproducible. The JSON report records the actual mode and selected quality. It reuses `probe.render_stars` and `production_assets.canonical_frame` to compose the current buffers over each final photograph: 1920×1080 at DPR 1 and 3840×2160 at DPR 2. This is a CPU reproduction of the current shader at time zero, **not a WebGL screenshot or an SVG rasterization**. Output credits preserve the source attribution and identify the extra adaptation. No visual approval or measured byte-size claim is implied.
 
 The original 4,666-star SVG and earlier 3,711/2,800-star outputs remain historical; their public files and immutable evidence are not refreshed. The retired 2,087-star SVG/manifest move to the documented archive without changing their bytes. Historical photo approval hashes predate the user's manual retouch and are not hashes of the current public WebPs. The user-deleted photo manifest is not recreated.
 
@@ -71,13 +74,13 @@ This deterministic one-off adds no CLI or dependency. The external SVG retains a
 
 ### Named star badges
 
-The hero labels 45 selected stars/systems from `night-sky/named-stars.ts`, plus one cluster target in `night-sky/star-badge-targets.ts`, for 46 badges. All members are keyed by preserved original catalogue ordinals (not HR identifiers). Alpha Centauri, Castor, Mizar, Algieba and Gamma Velorum each have one system badge, not separate labels for unresolved components. Gamma Velorum uses its designation rather than the informal nickname Regor. No catalogue records or rendered components are removed.
+The hero labels 50 selected stars/systems from `night-sky/named-stars.ts`, plus one cluster target in `night-sky/star-badge-targets.ts`, for 51 badges. The five latest additions are Algol (160), Menkar (146), Alphecca (4309), Zosma (3075) and Arneb (871). All members are keyed by preserved original catalogue ordinals (not HR identifiers). Alpha Centauri, Castor, Mizar, Algieba and Gamma Velorum each have one system badge, not separate labels for unresolved components. Gamma Velorum uses its designation rather than the informal nickname Regor. Only these 60 source records remain in the static application catalogue and matching fallback; the full predecessor is retained only in the documented archive.
 
 The cluster badge shows only **Pléyades**. Selecting it draws one circle around its 10 identified members already present in the bright-star sample: Celaeno, Electra, 18 Tauri, Taygeta, Maia, Merope, Alcyone, HD 23753, Atlas and Pleione. There are no individual member rings, individual member labels or extra GPU stars. The circle uses the visible members' centroid and enclosing radius, including their halo sizes and padding, with terrain/control exclusions applied per member. This does not claim to render every physical member of the cluster.
 
 Names are hidden initially on every device. Mouse proximity reveals one name and its enclosing highlight circle; a touch/pen tap selects one star, another tap changes the selection, and tapping elsewhere dismisses it. Movement over 10 CSS px, scroll, cancellation and window blur clear the selection without cancelling native gestures. Passive document capture detects stars through noninteractive hero/header text and panels, but links, buttons and other native controls remain excluded. Labels have no focus stops, click handlers or pointer interception.
 
-The fixed, pointer-transparent badge layer sits outside the hero's sticky stacking context, above content/header text, and follows the actual canvas bounds and artwork opacity. Placement shares `computeSkyCrop`, flips/clamps at the edges and avoids controls. A non-painted copy of the existing foreground silhouette supplies terrain hit testing; obscured stars do not get labels. Labels work with the static fallback. There are no new dependencies or changes to the star renderer. The 45 labels include the two approved expansion groups (10 and 12 names); every added label refers to stars already rendered, without adding GPU star instances.
+The fixed, pointer-transparent badge layer sits outside the hero's sticky stacking context, above content/header text, and follows the actual canvas bounds and artwork opacity. Placement shares `computeSkyCrop`, flips/clamps at the edges and avoids controls. A non-painted copy of the existing foreground silhouette supplies terrain hit testing; obscured stars do not get labels. Labels work with the static fallback. There are no new dependencies or changes to the star renderer. The original 45 labels include the two earlier approved expansion groups (10 and 12 names); those labels and the existing cluster are preserved alongside the five latest names. The selected 60 GPU profiles match the static fallback.
 
 # Local left-photo retouch — T16 tooling, T17 approval pending
 

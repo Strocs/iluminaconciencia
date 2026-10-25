@@ -33,7 +33,9 @@ function load(filename) {
     return load(path.extname(target) ? target : `${target}.ts`)
   }
   vm.runInNewContext(`(function(require,module,exports){${js}\n})`, {}, { filename: resolved })(
-    localRequire, result, result.exports
+    localRequire,
+    result,
+    result.exports
   )
   return result.exports
 }
@@ -43,25 +45,37 @@ const backupPath = path.join(root, 'docs/backups/hero/star-catalog.ts.bak')
 const backupSource = fs.readFileSync(backupPath, 'utf8')
 hashes['star-catalog.ts.bak'] = createHash('sha256').update(backupSource).digest('hex')
 const backupFile = ts.createSourceFile(backupPath, backupSource, ts.ScriptTarget.Latest, true)
-const backupDeclaration = backupFile.statements.filter(ts.isVariableStatement)
+const backupDeclaration = backupFile.statements
+  .filter(ts.isVariableStatement)
   .flatMap((statement) => Array.from(statement.declarationList.declarations))
   .find((declaration) => ts.isIdentifier(declaration.name) && declaration.name.text === 'starCatalog')
 const backupArray = backupDeclaration?.initializer
 if (!backupArray || !ts.isArrayLiteralExpression(backupArray)) throw new Error('Backup catalog array missing')
 const readNumber = (node) => {
   if (ts.isNumericLiteral(node)) return Number(node.text)
-  if (ts.isPrefixUnaryExpression(node) && node.operator === ts.SyntaxKind.MinusToken &&
-      ts.isNumericLiteral(node.operand)) return -Number(node.operand.text)
+  if (
+    ts.isPrefixUnaryExpression(node) &&
+    node.operator === ts.SyntaxKind.MinusToken &&
+    ts.isNumericLiteral(node.operand)
+  )
+    return -Number(node.operand.text)
   throw new Error('Backup catalog must contain numeric literals only')
 }
 const backup = Array.from(backupArray.elements, (entry) => {
   if (!ts.isObjectLiteralExpression(entry)) throw new Error('Backup catalog record must be a literal object')
-  const record = Object.fromEntries(Array.from(entry.properties, (property) => {
-    if (!ts.isPropertyAssignment(property) || !ts.isIdentifier(property.name) ||
-        !['ra', 'dec', 'mag', 'bv'].includes(property.name.text)) throw new Error('Unexpected backup catalog field')
-    return [property.name.text, readNumber(property.initializer)]
-  }))
-  if (!['ra', 'dec', 'mag', 'bv'].every((key) => Number.isFinite(record[key]))) throw new Error('Incomplete backup catalog record')
+  const record = Object.fromEntries(
+    Array.from(entry.properties, (property) => {
+      if (
+        !ts.isPropertyAssignment(property) ||
+        !ts.isIdentifier(property.name) ||
+        !['ra', 'dec', 'mag', 'bv'].includes(property.name.text)
+      )
+        throw new Error('Unexpected backup catalog field')
+      return [property.name.text, readNumber(property.initializer)]
+    })
+  )
+  if (!['ra', 'dec', 'mag', 'bv'].every((key) => Number.isFinite(record[key])))
+    throw new Error('Incomplete backup catalog record')
   return record
 })
 const reference = load(path.join(sourceDir, 'sky-reference.ts'))
@@ -75,24 +89,57 @@ const shader = (name) => {
   if (!match) throw new Error(`Missing ${name}`)
   return match[1]
 }
-const mapped = Object.fromEntries(Object.entries(mapStarCatalog(starCatalog, starCatalogOriginalIndices)).map(([k, v]) => [k, Array.from(v)]))
-if (mapped.origins.length !== 2 * starCatalog.length || mapped.stars.length !== 4 * starCatalog.length ||
-    mapped.colors.length !== 4 * starCatalog.length) throw new Error('GPU buffer schema mismatch')
-const frames = [[1920, 1080, 1], [390, 844, 2], [1440, 1080, 1], [1920, 823, 1],
-  [360, 800, 2], [1920, 1440, 1], [1920, 2160, 1]].map(([width, height, dpr]) => ({
-  width, height, dpr, crop: computeSkyCrop(width / height)
+const mapped = Object.fromEntries(
+  Object.entries(mapStarCatalog(starCatalog, starCatalogOriginalIndices)).map(([k, v]) => [k, Array.from(v)])
+)
+if (
+  mapped.origins.length !== 2 * starCatalog.length ||
+  mapped.stars.length !== 4 * starCatalog.length ||
+  mapped.colors.length !== 4 * starCatalog.length
+)
+  throw new Error('GPU buffer schema mismatch')
+const frames = [
+  [1920, 1080, 1],
+  [390, 844, 2],
+  [1440, 1080, 1],
+  [1920, 823, 1],
+  [360, 800, 2],
+  [1920, 1440, 1],
+  [1920, 2160, 1]
+].map(([width, height, dpr]) => ({
+  width,
+  height,
+  dpr,
+  crop: computeSkyCrop(width / height)
 }))
-const evidence = JSON.parse(fs.readFileSync(path.join(root, 'odd/plans/evidence/hero-hybrid-sky-feasibility.json'), 'utf8'))
+const evidence = JSON.parse(
+  fs.readFileSync(path.join(root, 'odd/plans/evidence/hero-hybrid-sky-feasibility.json'), 'utf8')
+)
 const payload = {
-  schema: 1, hashes, catalog: starCatalog, controlCatalog: backup,
-  projected: starCatalog.map(reference.projectStar), mapped, frames,
-  reference: reference.SKY_REFERENCE, region: reference.REGION_BBOX,
-  tangent: reference.PROJECTION_TANGENT, config: nightSkyConfig,
+  schema: 1,
+  hashes,
+  catalog: starCatalog,
+  controlCatalog: backup,
+  projected: starCatalog.map(reference.projectStar),
+  mapped,
+  frames,
+  reference: reference.SKY_REFERENCE,
+  region: reference.REGION_BBOX,
+  tangent: reference.PROJECTION_TANGENT,
+  config: nightSkyConfig,
   candidateMasterWcs: evidence.candidateMasterWcs,
   shaders: { vertex: shader('vertexShader'), fragment: shader('fragmentShader') }
 }
 fs.mkdirSync(output, { recursive: true })
 fs.writeFileSync(path.join(output, 'current-sky.json'), `${JSON.stringify(payload)}\n`)
-console.log(JSON.stringify({ output: args.length ? path.relative(root, path.join(output, 'current-sky.json')) : 'output/hero-sky-prototype/input/current-sky.json',
-  currentStars: starCatalog.length, controlStars: backup.length, frames: frames.length,
-  buffers: Object.fromEntries(Object.entries(mapped).map(([k, v]) => [k, v.length])) }))
+console.log(
+  JSON.stringify({
+    output: args.length
+      ? path.relative(root, path.join(output, 'current-sky.json'))
+      : 'output/hero-sky-prototype/input/current-sky.json',
+    currentStars: starCatalog.length,
+    controlStars: backup.length,
+    frames: frames.length,
+    buffers: Object.fromEntries(Object.entries(mapped).map(([k, v]) => [k, v.length]))
+  })
+)

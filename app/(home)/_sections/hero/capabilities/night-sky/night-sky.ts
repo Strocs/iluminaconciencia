@@ -43,11 +43,16 @@ export function createNightSkyCapability({
   let timeMs = 0
   let rafId = 0
   const fadeTimeline = gsap.timeline({ paused: true })
-  fadeTimeline.fromTo(artwork, { opacity: config.starOpacity.initial }, {
-    opacity: config.starOpacity.full,
-    duration: config.starOpacity.fullProgress,
-    ease: config.starOpacity.ease
-  }, 0)
+  fadeTimeline.fromTo(
+    artwork,
+    { opacity: config.starOpacity.initial },
+    {
+      opacity: config.starOpacity.full,
+      duration: config.starOpacity.fullProgress,
+      ease: config.starOpacity.ease
+    },
+    0
+  )
   fadeTimeline.add(() => undefined, 1)
 
   const getViewport = (): NightSkyViewport => {
@@ -123,8 +128,18 @@ export function createNightSkyCapability({
     if (!requestedRunning || rafId !== 0 || lifecycleState !== 'active') return
     rafId = requestAnimationFrame(loop)
   }
-  const initializeWhenSized = (size: NightSkyViewport, placement: ReturnType<typeof computeSkyArtworkPlacement>): void => {
-    if (attemptedInitialization || lifecycleState !== 'initializing' || destroyed || !(size.width > 0) || !(size.height > 0)) return
+  const initializeWhenSized = (
+    size: NightSkyViewport,
+    placement: ReturnType<typeof computeSkyArtworkPlacement>
+  ): void => {
+    if (
+      attemptedInitialization ||
+      lifecycleState !== 'initializing' ||
+      destroyed ||
+      !(size.width > 0) ||
+      !(size.height > 0)
+    )
+      return
     attemptedInitialization = true
     if (reducedMotionMedia.matches) {
       setLifecycleState('fallback')

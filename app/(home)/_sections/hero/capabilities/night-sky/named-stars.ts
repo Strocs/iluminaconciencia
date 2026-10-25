@@ -44,5 +44,10 @@ export const namedStars = [
   { sourceIndex: 3021, name: 'Merak' },
   { sourceIndex: 3260, name: 'Phecda' },
   { sourceIndex: 3697, name: 'Mizar' },
-  { sourceIndex: 2799, name: 'Algieba' }
+  { sourceIndex: 2799, name: 'Algieba' },
+  { sourceIndex: 160, name: 'Algol' },
+  { sourceIndex: 146, name: 'Menkar' },
+  { sourceIndex: 4309, name: 'Alphecca' },
+  { sourceIndex: 3075, name: 'Zosma' },
+  { sourceIndex: 871, name: 'Arneb' }
 ] as const

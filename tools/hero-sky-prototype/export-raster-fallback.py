@@ -17,11 +17,13 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--input', required=True, type=Path, help='Isolated current-sky.json exported from the active catalogue.')
     parser.add_argument('--output', required=True, type=Path, help='New output directory; existing directories are refused.')
+    parser.add_argument('--photos', type=Path, default=ROOT / 'public/images/hero/sky/t16-left-r1',
+                        help='Prepared photograph directory (default: public/images/hero/sky/t16-left-r1).')
     parser.add_argument('--quality', type=int, choices=range(1, 101), default=75,
                         help='Lossy WebP quality from 1 to 100 (default: 75).')
     args = parser.parse_args()
     data = json.loads(args.input.read_text())
-    photos = ROOT / 'public/images/hero/sky/t16-left-r1'
+    photos = args.photos
     args.output.mkdir(parents=True, exist_ok=False)
     files = []
     for dpr in (1, 2):
@@ -31,15 +33,17 @@ def main():
             expected = (frame['width'] * dpr, frame['height'] * dpr)
             if source.size != expected:
                 raise ValueError(f'Unexpected photograph dimensions: {photo}')
+            icc_profile = source.info.get('icc_profile', b'')
             background = np.asarray(source.convert('RGB'), dtype=np.float32) / 255
         composite = image_rgb(render_stars(background, data, frame))
         target = args.output / f'composite-{dpr}x.webp'
-        composite.save(target, 'WEBP', quality=args.quality, method=6)
+        composite.save(target, 'WEBP', quality=args.quality, method=6, icc_profile=icc_profile)
         files.append({'file': target.name, 'dimensions': list(composite.size), 'bytes': target.stat().st_size})
     credits = (photos / 'CREDITS.txt').read_text().rstrip()
     (args.output / 'CREDITS.txt').write_text(
-        credits + '\n\nAdditional adaptation: static photograph + BSC5 star composition, '
-        'CPU reproduction of the current shader at time zero; not a WebGL screenshot.\n'
+        credits + f'\n\nAdditional adaptation: static photograph + {len(data["catalog"])} BSC5 stars, '
+        f'CPU reproduction of the current shader at time zero; not a WebGL screenshot. '
+        f'Composite encoding: lossy WebP quality {args.quality}, method 6; photo ICC preserved.\n'
     )
     print(json.dumps({'output': str(args.output), 'stars': len(data['catalog']),
                       'profile': 'existing CPU shader reproduction, time zero, full artwork opacity',
