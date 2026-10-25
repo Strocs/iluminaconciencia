@@ -30,6 +30,7 @@ export function Header() {
             <Image
               className="size-12 object-contain lg:size-14"
               src={logo}
+              sizes="(min-width: 1024px) 56px, 48px"
               alt="Logo del proyecto Iluminaconciencia"
               loading="eager"
             />

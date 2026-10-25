@@ -13,6 +13,9 @@ const skyPlaneClasses = cn(
   '[@container(aspect-ratio<1)]:left-[clamp(calc(100cqw-177.7777777778cqh),calc(50cqw-var(--sky-reference-center-cqh)),0px)]'
 )
 
+// The artwork covers the full viewport height, including on portrait screens.
+const skyImageSizes = '(min-aspect-ratio: 16/9) 100vw, 177.78lvh'
+
 export function HeroSky() {
   return (
     <div
@@ -30,31 +33,29 @@ export function HeroSky() {
           className={cn(skyPlaneClasses, 'invisible in-data-[hero-sky-photo-error=true]:hidden')}
           data-hero-sky-photo-plane
         >
-          <source media="(min-resolution: 1.01dppx)" srcSet={nightSkyAssets.photo2x.src} />
           <Image
             data-hero-sky-photo
             className="absolute inset-0 block size-full max-w-none"
-            src={nightSkyAssets.photo1x}
+            src={nightSkyAssets.photo2x}
+            sizes={skyImageSizes}
+            alt=""
+            aria-hidden="true"
+            decoding="async"
+            loading="eager"
+            placeholder="blur"
+          />
+        </picture>
+        <picture>
+          <Image
+            data-hero-sky-fallback
+            src={nightSkyAssets.fallback2x}
+            sizes={skyImageSizes}
             alt=""
             aria-hidden="true"
             decoding="async"
             loading="eager"
             fetchPriority="high"
             placeholder="blur"
-            unoptimized
-          />
-        </picture>
-        <picture>
-          <source media="(min-resolution: 1.01dppx)" srcSet={nightSkyAssets.fallback2x.src} />
-          <Image
-            data-hero-sky-fallback
-            src={nightSkyAssets.fallback1x}
-            alt=""
-            aria-hidden="true"
-            decoding="async"
-            loading="eager"
-            placeholder="blur"
-            unoptimized
             className={cn(skyPlaneClasses, 'visible data-[hero-sky-fallback-visible=false]:invisible')}
           />
         </picture>

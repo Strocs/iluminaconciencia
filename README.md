@@ -82,9 +82,11 @@ Los mecanismos especiales del framework se eligen por el comportamiento que nece
 - El header usa `sticky` para comenzar debajo de la franja institucional desde el primer render, sin calcular un `top` en el cliente ni desplazar el hero. Al abrir el menú, el header conserva su posición `sticky` y la misma animación de expansión. La altura disponible se calcula desde su propio layout, sin medir elementos institucionales, y se limita al viewport y al borde inferior de ese layout. El panel y su fondo usan esa misma altura; la barra no se contrae si queda menos espacio que su altura habitual.
 - En la home permanece transparente y visible hasta que el marcador `data-header-solid-start` del mapa entra en el viewport. Desde ese punto es sólido y se oculta al bajar o reaparece al subir, con el umbral existente de 6 px. En rutas sin marcador es sólido cuando `scrollY > 0`; al inicio de la página o con el menú abierto permanece visible. La animación de ocultamiento sigue usando `translate`.
 
-## Carga del mapa
+## Carga del mapa y del cielo
 
 - El contenedor del mapa conserva su tamaño desde el render inicial. `DeferredMapCanvas` activa la descarga de MapLibre y su montaje cuando el mapa se aproxima a un viewport de distancia; después permanece montado. Si `IntersectionObserver` no está disponible, se carga directamente. Los filtros y el detalle conservan su estado en `MapExplorer`.
+- Las imágenes del cielo usan la optimización responsive de Next y un `sizes` que contempla el ancho real del plano 16:9 también en pantallas verticales. No se fuerza el archivo 2x por resolución de pantalla. El composite inicial/fallback tiene prioridad alta; los originales generados se conservan sin cambios.
+- Los logos del header y de la franja institucional declaran tamaños de descarga acordes a su presentación. Se mantienen las dimensiones y estilos existentes.
 
 La validación visual y los nuevos resultados de Lighthouse se realizan sobre el despliegue de producción; las comprobaciones de compilación no prueban una mejora de puntuación.
 

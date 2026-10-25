@@ -1,5 +1,5 @@
 /* eslint-disable tailwindcss/no-custom-classname */
-/* eslint-disable @next/next/no-img-element */
+import Image from 'next/image'
 import './styles/index.css'
 
 import accreditationLogo from './assets/cna-5.png'
@@ -12,18 +12,22 @@ export function NavUSerena() {
         <div className="nav-userena__row">
           <div className="nav-userena__column">
             <a href="https://www.userena.cl" target="_blank" rel="noopener noreferrer">
-              <img
+              <Image
                 className="nav-userena__image nav-userena__image--left"
-                src={universityLogo.src}
+                src={universityLogo}
+                sizes="130px"
+                loading="eager"
                 alt="Universidad de La Serena"
               />
             </a>
           </div>
           <div className="nav-userena__column">
             <a href="https://www.userena.cl" target="_blank" rel="noopener noreferrer">
-              <img
+              <Image
                 className="nav-userena__image nav-userena__image--right"
-                src={accreditationLogo.src}
+                src={accreditationLogo}
+                sizes="272px"
+                loading="eager"
                 alt="Universidad de La Serena, acreditada por cinco años por la Comisión Nacional de Acreditación de Chile"
               />
             </a>
