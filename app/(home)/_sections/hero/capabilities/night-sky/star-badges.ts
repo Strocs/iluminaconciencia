@@ -49,7 +49,7 @@ export function createStarBadgesCapability(root: HTMLElement): HeroCapability | 
   }
   const layout = (): void => {
     frame = 0
-    if (destroyed || root.hasAttribute('data-debug-night-sky-disabled')) return
+    if (destroyed) return
     if (!pointer) {
       hide()
       return
@@ -170,12 +170,7 @@ export function createStarBadgesCapability(root: HTMLElement): HeroCapability | 
     })
   }
   const schedule = (): void => {
-    if (
-      !destroyed &&
-      !root.hasAttribute('data-debug-night-sky-disabled') &&
-      (pointer || layer.style.opacity !== '0') &&
-      frame === 0
-    ) {
+    if (!destroyed && (pointer || layer.style.opacity !== '0') && frame === 0) {
       frame = requestAnimationFrame(layout)
     }
   }
