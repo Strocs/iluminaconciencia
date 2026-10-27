@@ -1,0 +1,15 @@
+Visualización estática derivada del cielo, no una fotografía. Sin logos de NASA.
+
+Crédito: NASA/Goddard Space Flight Center Scientific Visualization Studio
+Datos: Gaia DR2, ESA/Gaia/DPAC
+Visualización: Ernie Wright
+Fuente: https://svs.gsfc.nasa.gov/4851/
+Política de uso libre: https://svs.gsfc.nasa.gov/help/
+
+Orientación derivada: norte fijo; elevación de cámara 33.74367 grados; tiempo sidéreo local 8.240384376 horas; centro en Cáncer; Orión a la izquierda en desktop.
+Desktop: sky-desktop.webp, 1920 x 1080, reducido del PNG aceptado de 3840 x 2160 con Pillow Image.Resampling.LANCZOS.
+Mobile: sky-mobile.webp, 780 x 1688, sin redimensionar; recorte horizontal centrado aceptado, seguro respecto del horizonte; Orión fuera del recorte; sin franja negra inferior sólida.
+Codificación WebP lossless con Pillow: lossless=True, quality=100, method=6. Se preserva ICC si existe (los PNG de origen no contienen perfil ICC). Sin dithering, enfoque, tone mapping ni cambios de posición.
+Igualdad completa de píxeles tras decodificar: desktop respecto de la referencia Lanczos 1920 x 1080; mobile respecto del PNG aceptado. Lossless significa sin pérdida adicional del códec, no conservar el detalle 4K tras reducir desktop; los WebP no son copias byte a byte de los masters PNG.
+Entrega mediante URLs estáticas directas con picture/getImageProps y unoptimized: true por imagen de cielo, sin optimización de Next.js; las demás imágenes mantienen su optimización.
+Dimensiones, bytes, hashes SHA-256 de origen y de WebP separados y procedencia en source.json. Los PNG anteriores y sus metadatos se conservan fuera de public en bkp/hero/nasa-png-v1/.

@@ -1,0 +1,60 @@
+{
+  "description": "Visualización estática derivada del cielo, no una fotografía",
+  "credit": "NASA/Goddard Space Flight Center Scientific Visualization Studio",
+  "data": "Gaia DR2, ESA/Gaia/DPAC",
+  "visualization": "Ernie Wright",
+  "sourceUrl": "https://svs.gsfc.nasa.gov/4851/",
+  "usagePolicyUrl": "https://svs.gsfc.nasa.gov/help/",
+  "orientation": {
+    "north": "fixed",
+    "cameraElevationDegrees": 33.74367,
+    "localSiderealTimeHours": 8.240384376,
+    "center": "Cancer",
+    "desktopOrion": "left"
+  },
+  "mobileCrop": {
+    "description": "Recorte horizontal centrado aceptado, seguro respecto del horizonte; Orión fuera del recorte; sin franja negra inferior sólida"
+  },
+  "delivery": "URLs WebP estáticas directas mediante picture/getImageProps con unoptimized: true por imagen; sin redimensionado ni recodificación de Next.js; otras imágenes conservan su optimización",
+  "encoding": {
+    "library": "Pillow",
+    "format": "WebP",
+    "lossless": true,
+    "quality": 100,
+    "method": 6,
+    "icc": "Preservar si existe; los PNG de origen no contienen perfil ICC",
+    "otherProcessing": "Sin dithering, enfoque, tone mapping ni cambios de posición",
+    "verification": "Igualdad de todos los píxeles decodificados: desktop contra referencia Lanczos 1920×1080; mobile contra PNG de origen. Lossless evita pérdida adicional del códec, no conserva el detalle 4K tras reducir desktop."
+  },
+  "sourceArchive": "bkp/hero/nasa-png-v1/",
+  "images": [
+    {
+      "variant": "desktop",
+      "file": "sky-desktop.webp",
+      "master": "wide-north-later-clean.png",
+      "sourceFile": "sky-desktop.png",
+      "sourceWidth": 3840,
+      "sourceHeight": 2160,
+      "sourceSha256": "10695be87269f6174e3d1021e051f8ffe2ff3febc6aebbb8eb67cc64502cae6f",
+      "processing": "Reducción del PNG aceptado a 1920×1080 con Image.Resampling.LANCZOS; codificación WebP lossless",
+      "width": 1920,
+      "height": 1080,
+      "bytes": 1730282,
+      "sha256": "c867b2c8441c30ab2d0198ae9b7ad97ab017d4458e83befb49426c5c5b325c5f"
+    },
+    {
+      "variant": "mobile",
+      "file": "sky-mobile.webp",
+      "master": "wide-north-later-mobile.png",
+      "sourceFile": "sky-mobile.png",
+      "sourceWidth": 780,
+      "sourceHeight": 1688,
+      "sourceSha256": "e6e9e2a537070fb16340ce46b08531e387e0e1c188c01748c9d9f3cf9b431dd6",
+      "processing": "Codificación WebP lossless sin redimensionar ni cambiar el recorte aceptado",
+      "width": 780,
+      "height": 1688,
+      "bytes": 1499828,
+      "sha256": "a38be866a16c623893f1e692e06a5e55068f1cb7ec25c76a6b08fbb2f8e3b079"
+    }
+  ]
+}
