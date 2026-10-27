@@ -45,6 +45,10 @@ next-env.d.ts
 .codegraph/
 docs/
 output/
+
+# local tooling
+/tools/
+
 .pi/
 .atl/
 
