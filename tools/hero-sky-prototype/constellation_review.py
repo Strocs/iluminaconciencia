@@ -18,7 +18,7 @@ import probe  # Reuse immutable geometry, frame conversion and actual mapped CPU
 OUT = probe.BASE / 'sharpness-review'
 LANDMARKS = Path(__file__).with_name('landmarks.json')
 SOURCE = probe.BASE / 'source/eso0932a.jpg'
-SKY_MODULES = probe.ROOT / 'app/(home)/_sections/hero/capabilities/night-sky'
+SKY_MODULES = probe.ROOT / 'tools/hero-sky-prototype/legacy-sky'
 CREDIT = 'ESO/S. Brunier | CC BY 4.0'
 STATUS = 'CANDIDATE - awaiting user approval'
 LICENSE = 'https://creativecommons.org/licenses/by/4.0/'
@@ -36,7 +36,16 @@ def validate():
     """Read-only: hashes, geometry and named locator associations, no peak fitting."""
     data = probe.read_inputs()
     landmarks = json.loads(LANDMARKS.read_text())
-    hashes = {name: digest(SKY_MODULES / name) for name in data['hashes']}
+    # Frozen snapshots may name the retired renderer; never load app code or
+    # silently rewrite immutable provenance to match the extracted offline data.
+    source_paths = {
+        name: (probe.ROOT / 'docs/backups/hero/star-catalog.ts.bak'
+               if name == 'star-catalog.ts.bak' else SKY_MODULES / name)
+        for name in data['hashes']
+    }
+    if any(not path.is_file() for path in source_paths.values()):
+        raise ValueError('Stale exported source hashes; stop and ask parent to re-export')
+    hashes = {name: digest(path) for name, path in source_paths.items()}
     if hashes != data['hashes']:
         raise ValueError('Stale exported source hashes; stop and ask parent to re-export')
     if digest(SOURCE) != probe.SOURCE_HASH or landmarks['sourceSha256'] != probe.SOURCE_HASH:

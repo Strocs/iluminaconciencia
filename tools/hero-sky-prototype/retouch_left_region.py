@@ -80,9 +80,9 @@ def build_plan(indices=None):
 
 
 def current_geometry(data):
-    """Reuse the exporter's read-only loader, never its export/write entrypoint."""
+    """Reuse the historical pure loader, never its export/write entrypoint."""
     exporter = ROOT / 'tools/hero-sky-prototype/export-inputs.mjs'
-    prefix = exporter.read_text().split('const { starCatalog } =',1)[0]
+    prefix = exporter.read_text().split('// Historical snapshot export entrypoint.',1)[0]
     prefix = prefix.replace("path.resolve(import.meta.dirname, '../..')", 'process.cwd()')
     script = prefix + """
 const reference = load(path.join(sourceDir, 'sky-reference.ts'))

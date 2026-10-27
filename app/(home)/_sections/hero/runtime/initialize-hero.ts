@@ -6,11 +6,9 @@ import { createHeroMapTransitionCapability } from '../capabilities/hero-map-tran
 import { heroMapTransitionConfig } from '../capabilities/hero-map-transition/config'
 import { createLightPollutionCapability } from '../capabilities/light-pollution/light-pollution'
 import { lightPollutionConfig } from '../capabilities/light-pollution/config'
-import { createStarBadgesCapability } from '../capabilities/night-sky/star-badges'
 import { createScenesCapability } from '../capabilities/scenes/scenes'
 import { scenesConfig } from '../capabilities/scenes/config'
 import type { HeroCapability, HeroLifecycle } from '../core/contracts'
-import type { HeroSkyCapability } from '../capabilities/night-sky/contracts'
 import { createScrollTimeline } from '../core/scroll-timeline'
 
 const MOTION_QUERIES = {
@@ -18,14 +16,13 @@ const MOTION_QUERIES = {
   reduced: '(prefers-reduced-motion: reduce)'
 } as const
 
-function composeHero(root: HTMLElement, sky?: HeroSkyCapability | null): HeroLifecycle {
+function composeHero(root: HTMLElement, sky?: HeroCapability | null): HeroLifecycle {
   const sceneAttributes = Array.from(root.querySelectorAll<HTMLElement>('[data-hero-scene]'), (scene) => ({
     scene,
     ariaHidden: scene.getAttribute('aria-hidden'),
     inert: scene.hasAttribute('inert')
   }))
   const horizonTiming = lightPollutionConfig.horizon
-  const starBadges = createStarBadgesCapability(root)
   const capabilities: readonly HeroCapability[] = [
     createScenesCapability({ root, config: scenesConfig }),
     createLightPollutionCapability({
@@ -40,31 +37,13 @@ function composeHero(root: HTMLElement, sky?: HeroSkyCapability | null): HeroLif
     }),
     createBortleCapability({ root, classes: bortleClasses, config: bortleConfig }),
     ...(sky ? [sky] : []),
-    ...(starBadges ? [starBadges] : []),
     createHeroMapTransitionCapability({ root, config: heroMapTransitionConfig })
   ]
-  const startSky = (): void => {
-    sky?.start()
-  }
-  const stopSky = (): void => {
-    sky?.stop()
-  }
   const matchMedia = gsap.matchMedia(root)
 
   matchMedia.add(MOTION_QUERIES.normal, () => {
-    const scrollTimeline = createScrollTimeline({
-      root,
-      capabilities,
-      onEnter: startSky,
-      onEnterBack: startSky,
-      onLeave: stopSky,
-      onLeaveBack: stopSky
-    })
-    startSky()
-    return () => {
-      scrollTimeline.destroy()
-      stopSky()
-    }
+    const scrollTimeline = createScrollTimeline({ root, capabilities })
+    return () => scrollTimeline.destroy()
   })
   matchMedia.add(MOTION_QUERIES.reduced, () => {
     capabilities.forEach((capability) => capability.onProgress(0))
@@ -86,6 +65,6 @@ function composeHero(root: HTMLElement, sky?: HeroSkyCapability | null): HeroLif
   }
 }
 
-export function initializeHero(root: HTMLElement, sky?: HeroSkyCapability | null): HeroLifecycle {
+export function initializeHero(root: HTMLElement, sky?: HeroCapability | null): HeroLifecycle {
   return composeHero(root, sky)
 }

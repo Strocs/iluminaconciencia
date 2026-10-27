@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Execute the owned pure modules in memory; never emit JS into the application.
+// Execute historical pure offline modules in memory; never emit application JS.
 import fs from 'node:fs'
 import path from 'node:path'
 import vm from 'node:vm'
@@ -7,7 +7,7 @@ import { createHash } from 'node:crypto'
 import ts from 'typescript'
 
 const root = path.resolve(import.meta.dirname, '../..')
-const sourceDir = path.join(root, 'app/(home)/_sections/hero/capabilities/night-sky')
+const sourceDir = path.join(root, 'tools/hero-sky-prototype/legacy-sky')
 // Additive isolated export destination; no-argument behavior remains historical.
 const args = process.argv.slice(2)
 if (args.length && (args.length !== 2 || args[0] !== '--output')) {
@@ -39,6 +39,7 @@ function load(filename) {
   )
   return result.exports
 }
+// Historical snapshot export entrypoint.
 const { starCatalog, starCatalogOriginalIndices } = load(path.join(sourceDir, 'star-catalog.ts'))
 // Backups are archival data, not executable modules in the application's loader.
 const backupPath = path.join(root, 'docs/backups/hero/star-catalog.ts.bak')
@@ -82,13 +83,7 @@ const reference = load(path.join(sourceDir, 'sky-reference.ts'))
 const { computeSkyCrop } = load(path.join(sourceDir, 'sky-crop.ts'))
 const { mapStarCatalog } = load(path.join(sourceDir, 'star-mapper.ts'))
 const { nightSkyConfig } = load(path.join(sourceDir, 'config.ts'))
-const renderer = fs.readFileSync(path.join(sourceDir, 'webgl-star-renderer.ts'), 'utf8')
-hashes['webgl-star-renderer.ts'] = createHash('sha256').update(renderer).digest('hex')
-const shader = (name) => {
-  const match = renderer.match(new RegExp(`const ${name} = \x60([\\s\\S]*?)\x60`))
-  if (!match) throw new Error(`Missing ${name}`)
-  return match[1]
-}
+const { vertexShader, fragmentShader } = load(path.join(sourceDir, 'shader-profile.ts'))
 const mapped = Object.fromEntries(
   Object.entries(mapStarCatalog(starCatalog, starCatalogOriginalIndices)).map(([k, v]) => [k, Array.from(v)])
 )
@@ -128,7 +123,7 @@ const payload = {
   tangent: reference.PROJECTION_TANGENT,
   config: nightSkyConfig,
   candidateMasterWcs: evidence.candidateMasterWcs,
-  shaders: { vertex: shader('vertexShader'), fragment: shader('fragmentShader') }
+  shaders: { vertex: vertexShader, fragment: fragmentShader }
 }
 fs.mkdirSync(output, { recursive: true })
 fs.writeFileSync(path.join(output, 'current-sky.json'), `${JSON.stringify(payload)}\n`)

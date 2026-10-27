@@ -1,0 +1,11 @@
+Static derived sky visualization, not a photograph. No NASA logos included.
+
+Credit: NASA/Goddard Space Flight Center Scientific Visualization Studio
+Data: Gaia DR2, ESA/Gaia/DPAC
+Visualization: Ernie Wright
+Source: https://svs.gsfc.nasa.gov/4851/
+Free-use policy: https://svs.gsfc.nasa.gov/help/
+
+Derived orientation: north fixed; camera elevation 33.74367 degrees; local sidereal time 8.240384376 hours; centered on Cancer; Orion at left in desktop.
+Mobile: accepted horizon-safe, centered horizontal crop, 780 x 1688; Orion outside the crop; no solid black bottom band.
+Accepted masters copied byte-identically; Next.js optimizes delivery. Dimensions and SHA-256 hashes are recorded in source.json.

@@ -2,11 +2,11 @@ import { createHash } from 'node:crypto'
 import { readFile, writeFile } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
-import { projectStar, SKY_REFERENCE } from '../../app/(home)/_sections/hero/capabilities/night-sky/sky-reference.ts'
+import { projectStar, SKY_REFERENCE } from './legacy-sky/sky-reference.ts'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '../..')
 const backupPath = join(root, 'docs/backups/hero/star-catalog.ts.bak')
-const outputPath = join(root, 'app/(home)/_sections/hero/capabilities/night-sky/star-catalog.ts')
+const outputPath = join(root, 'tools/hero-sky-prototype/legacy-sky/star-catalog.ts')
 const expectedBackupSha256 = '047dc4db80b635aae871633276dde9ab077bd7daaaf078467627d0b24b8f93da'
 const expectedSourceRows = 5530
 const referenceWidthPx = 1920

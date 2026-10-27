@@ -3,13 +3,12 @@
 import { useRef, type ReactNode } from 'react'
 import { gsap } from 'gsap'
 import { useGSAP } from '@gsap/react'
-import { nightSkyConfig } from '../capabilities/night-sky/config'
-import { createNightSkyCapability } from '../capabilities/night-sky/night-sky'
+import { createSkyBackgroundCapability } from '../capabilities/sky-background/sky-background'
 import { initializeHero } from '../runtime/initialize-hero'
 
 gsap.registerPlugin(useGSAP)
 
-export function HeroRuntime({ children, overlay }: { children: ReactNode; overlay?: ReactNode }) {
+export function HeroRuntime({ children }: { children: ReactNode }) {
   const rootRef = useRef<HTMLElement>(null)
 
   useGSAP(
@@ -17,7 +16,7 @@ export function HeroRuntime({ children, overlay }: { children: ReactNode; overla
       const root = rootRef.current
       if (!root) return
 
-      const sky = createNightSkyCapability({ root, config: nightSkyConfig })
+      const sky = createSkyBackgroundCapability(root)
       try {
         const lifecycle = initializeHero(root, sky ?? undefined)
         return () => lifecycle.destroy()
@@ -37,7 +36,6 @@ export function HeroRuntime({ children, overlay }: { children: ReactNode; overla
       aria-labelledby="hero-title"
     >
       <div className="h-lvh motion-safe:sticky motion-safe:top-0">{children}</div>
-      {overlay}
     </section>
   )
 }
