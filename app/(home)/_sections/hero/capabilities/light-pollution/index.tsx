@@ -37,6 +37,17 @@ const backlightSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="${viewBoxWi
 </svg>`
 const backlightImage = `url("data:image/svg+xml,${encodeURIComponent(backlightSvg)}")`
 
+export function AtmosphereCanvas() {
+  return (
+    <canvas
+      data-hero-atmosphere
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 size-full"
+      style={{ visibility: 'hidden' }}
+    />
+  )
+}
+
 export function LightPollution() {
   return (
     <div

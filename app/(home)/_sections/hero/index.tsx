@@ -1,20 +1,27 @@
 import { HeroRuntime } from './components/HeroRuntime'
 import { BortleScale } from './capabilities/bortle-scale'
 import { HeroFrame } from './capabilities/framing'
-import { LightPollution, LightPollutionBacklight } from './capabilities/light-pollution'
+import { AtmosphereCanvas, LightPollution, LightPollutionBacklight } from './capabilities/light-pollution'
 import { SkyBackground } from './capabilities/sky-background'
 import { HeroNarrative } from './capabilities/scenes'
 
 export function Hero() {
   return (
     <HeroRuntime>
-      <HeroFrame overlay={<LightPollutionBacklight />}>
-        <div className="pointer-events-none absolute inset-0 z-0">
-          <SkyBackground />
-        </div>
-        <div className="pointer-events-none absolute inset-0 z-1">
-          <LightPollution />
-        </div>
+      <HeroFrame
+        background={
+          <>
+            <div className="pointer-events-none absolute inset-0 z-0">
+              <SkyBackground />
+            </div>
+            <div className="pointer-events-none absolute inset-0 z-1">
+              <LightPollution />
+            </div>
+          </>
+        }
+        overlay={<LightPollutionBacklight />}
+        atmosphere={<AtmosphereCanvas />}
+      >
         <div className="relative z-50 mx-auto flex size-full flex-col items-center justify-center gap-4 py-8 sm:gap-12 sm:py-16">
           <HeroNarrative />
           <BortleScale />

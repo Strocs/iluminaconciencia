@@ -6,6 +6,7 @@ import { createHeroMapTransitionCapability } from '../capabilities/hero-map-tran
 import { heroMapTransitionConfig } from '../capabilities/hero-map-transition/config'
 import { createLightPollutionCapability } from '../capabilities/light-pollution/light-pollution'
 import { lightPollutionConfig } from '../capabilities/light-pollution/config'
+import { createAtmosphereCapability } from '../capabilities/light-pollution/atmosphere-capability'
 import { createScenesCapability } from '../capabilities/scenes/scenes'
 import { scenesConfig } from '../capabilities/scenes/config'
 import type { HeroCapability, HeroLifecycle } from '../core/contracts'
@@ -39,14 +40,16 @@ function composeHero(root: HTMLElement, sky?: HeroCapability | null): HeroLifecy
     ...(sky ? [sky] : []),
     createHeroMapTransitionCapability({ root, config: heroMapTransitionConfig })
   ]
+  const atmosphere = createAtmosphereCapability(root)
+  const allCapabilities = atmosphere ? [...capabilities, atmosphere] : capabilities
   const matchMedia = gsap.matchMedia(root)
 
   matchMedia.add(MOTION_QUERIES.normal, () => {
-    const scrollTimeline = createScrollTimeline({ root, capabilities })
+    const scrollTimeline = createScrollTimeline({ root, capabilities: allCapabilities })
     return () => scrollTimeline.destroy()
   })
   matchMedia.add(MOTION_QUERIES.reduced, () => {
-    capabilities.forEach((capability) => capability.onProgress(0))
+    allCapabilities.forEach((capability) => capability.onProgress(0))
   })
 
   let destroyed = false
@@ -55,7 +58,7 @@ function composeHero(root: HTMLElement, sky?: HeroCapability | null): HeroLifecy
       if (destroyed) return
       destroyed = true
       matchMedia.revert()
-      capabilities.forEach((capability) => capability.destroy())
+      allCapabilities.forEach((capability) => capability.destroy())
       sceneAttributes.forEach(({ scene, ariaHidden, inert }) => {
         if (ariaHidden === null) scene.removeAttribute('aria-hidden')
         else scene.setAttribute('aria-hidden', ariaHidden)
