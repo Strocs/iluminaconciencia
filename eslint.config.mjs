@@ -20,6 +20,10 @@ const eslintConfig = defineConfig([
   },
   // Override default ignores of eslint-config-next.
   globalIgnores([
+    // Linked worktrees own their source and generated files.
+    '.worktrees/**',
+    // Local generated probes and evidence are not application source.
+    'output/**',
     // Default ignores of eslint-config-next:
     '.next/**',
     'out/**',
