@@ -10,6 +10,5 @@ export const navigationItems = [
   { label: 'Noticias', href: '/noticias' },
   { label: 'Artículos', href: '/articulos' },
   { label: 'Multimedia', href: '/multimedia' },
-  { label: 'Recursos', href: '/recursos' },
   { label: 'Contacto', href: '/', section: 'contacto' }
 ] satisfies readonly NavigationItem[]
