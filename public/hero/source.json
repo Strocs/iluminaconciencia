@@ -23,7 +23,7 @@
     "quality": 100,
     "method": 6,
     "icc": "Preservar si existe; los PNG de origen no contienen perfil ICC",
-    "otherProcessing": "Sin dithering, enfoque, tone mapping ni cambios de posición",
+    "otherProcessing": "Sin dithering, enfoque, tone mapping adicional durante la codificación ni cambios de posición",
     "verification": "Igualdad de todos los píxeles decodificados: desktop contra referencia Lanczos 1920×1080; mobile contra PNG de origen. Lossless evita pérdida adicional del códec, no conserva el detalle 4K tras reducir desktop."
   },
   "sourceArchive": "bkp/hero/nasa-png-v1/",
@@ -31,16 +31,16 @@
     {
       "variant": "desktop",
       "file": "sky-desktop.webp",
-      "master": "wide-north-later-clean.png",
-      "sourceFile": "sky-desktop.png",
+      "master": "sky-desktop.png",
+      "sourceFile": "output/hero-nasa-sky-evaluation/horizon-extension-v1/sky-desktop.png",
       "sourceWidth": 3840,
       "sourceHeight": 2160,
-      "sourceSha256": "10695be87269f6174e3d1021e051f8ffe2ff3febc6aebbb8eb67cc64502cae6f",
-      "processing": "Reducción del PNG aceptado a 1920×1080 con Image.Resampling.LANCZOS; codificación WebP lossless",
+      "sourceSha256": "f0a1bab4ce526bc01e053e6c9d1bf0cb02a83471df42807fbb089805bc5dd7d9",
+      "processing": "Reducción Lanczos a 1920×1080 del master 3840×2160 regenerado sin máscara negra del horizonte, conservando encuadre y tratamiento del render original; WebP lossless",
       "width": 1920,
       "height": 1080,
-      "bytes": 1730282,
-      "sha256": "c867b2c8441c30ab2d0198ae9b7ad97ab017d4458e83befb49426c5c5b325c5f"
+      "bytes": 2085846,
+      "sha256": "d197c63f19e7154a6f961fe4f5e16379fcf4f997d8855094a0dc345493b8f285"
     },
     {
       "variant": "mobile",
@@ -56,5 +56,28 @@
       "bytes": 1499828,
       "sha256": "a38be866a16c623893f1e692e06a5e55068f1cb7ec25c76a6b08fbb2f8e3b079"
     }
-  ]
+  ],
+  "backgroundExtension": {
+    "description": "Desktop regenerado desde el panorama NASA original sin máscara negra del horizonte geométrico; el terreno de la UI determina la oclusión",
+    "sourcePanoramaDimensions": [
+      16384,
+      8192
+    ],
+    "sourcePanoramaSha256": "19a1351f00c386a6e5eec4d67af96d5fc71edf6a1189941579b9498b52e7589a",
+    "method": "Misma proyección estereográfica, cámara, tiempo sidéreo, FOV 140 grados, exposición 4, cuatro muestras subpíxel de radiancia lineal HDR y tone mapping del render original; solo se omite poner a cero las muestras bajo el horizonte",
+    "recipe": "tools/hero-nasa-sky/extend_background.py",
+    "localEvidence": "output/hero-nasa-sky-evaluation/horizon-extension-v1/manifest.json",
+    "previousMasterSha256": "10695be87269f6174e3d1021e051f8ffe2ff3febc6aebbb8eb67cc64502cae6f",
+    "verification": {
+      "original_masked_render_pixel_exact": true,
+      "above_horizon_pixels_unchanged": 6850046,
+      "changed_pixels": 1273279,
+      "every_bottom_row_has_sky": true,
+      "approved_mobile_pixel_exact": true,
+      "mobile_asset_byte_unchanged": "a38be866a16c623893f1e692e06a5e55068f1cb7ec25c76a6b08fbb2f8e3b079",
+      "webp_pixel_exact": true,
+      "source_and_cache_unchanged": true
+    },
+    "limitation": "Fondo celeste visual extendido bajo el horizonte matemático; no es una simulación estricta de lo visible desde el observador. Sin zoom, clonado, inpainting ni estrellas añadidas"
+  }
 }

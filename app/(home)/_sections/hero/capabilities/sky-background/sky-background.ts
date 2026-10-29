@@ -6,7 +6,7 @@ export function createSkyBackgroundCapability(root: HTMLElement): HeroCapability
   if (!artwork) return null
 
   const fadeTimeline = gsap.timeline({ paused: true })
-  fadeTimeline.fromTo(artwork, { opacity: 0.05 }, { opacity: 1, duration: 0.8, ease: 'power2.in' }, 0)
+  fadeTimeline.fromTo(artwork, { opacity: 0.05 }, { opacity: 1, duration: 0.8, ease: 'none' }, 0)
   fadeTimeline.add(() => undefined, 1)
 
   let destroyed = false
