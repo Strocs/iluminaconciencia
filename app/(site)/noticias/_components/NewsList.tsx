@@ -28,6 +28,7 @@ export function NewsList({ news }: NewsListProps) {
               title={item.title}
               image={item.image}
               publishedAt={item.publishedAt}
+              publishedAtLabel={item.publishedAtLabel}
               href={`/noticias/${item.slug}`}
               linkLabel={`Leer ${item.title}`}
               description={item.description}

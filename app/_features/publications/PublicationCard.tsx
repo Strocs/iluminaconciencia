@@ -2,13 +2,13 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { BrandStarIcon } from '@/_components/BrandStarIcon'
 import { ArrowIcon } from '@/_components/icons/Arrow'
-import { formatPublishedAt } from '@/_utils/formatPublishedAt'
 
 interface PublicationCardProps {
   title: string
   href: string
   image: { url: string; alt: string | null } | null
   publishedAt: string
+  publishedAtLabel: string
   linkLabel: string
   external?: boolean
   headingAs?: 'h2' | 'h3'
@@ -36,7 +36,7 @@ export function PublicationCard({ headingAs: Heading = 'h3', ...props }: Publica
       <div className="flex min-w-0 flex-1 flex-col gap-2">
         <div className="flex flex-wrap items-center gap-2">
           <p className="text-xs text-primary uppercase">
-            <time dateTime={props.publishedAt}>{formatPublishedAt(props.publishedAt)}</time>
+            <time dateTime={props.publishedAt}>{props.publishedAtLabel}</time>
           </p>
           {props.category && (
             <>

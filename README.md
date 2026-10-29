@@ -118,10 +118,19 @@ La variable es exclusiva del servidor. El DAL consulta `noticias/?format=json` y
 - **Eventos:** el tag permite invalidación desde un contexto de servidor. El receptor del evento y su autenticación no están incluidos; al conectarlos, hay que elegir explícitamente la ventana de contenido desactualizado.
 - **Límites:** la revalidación necesita una lectura; no es un cron ni garantiza frescura semanal si la API falla. La caché en memoria puede perderse con reinicios o despliegues.
 - **Presentación:** se respeta `mostrar`, se ignora `mostrar_principal` y se ordena por fecha descendente. Home muestra las últimas 3 noticias y el sidebar las últimas 5.
-- **Identidad:** ID basado en el timestamp de publicación; URL con título normalizado sin timestamp. Las colisiones entre noticias visibles se resuelven en orden de respuesta con sufijos incrementales `-2`, `-3`, etc., saltando los slugs ya ocupados, sin solicitudes adicionales. Cambiar el título o el orden de entrada puede reasignar slugs existentes. Las URLs anteriores con timestamp no tienen redirección.
-- **Contenido y fechas:** el detalle procesa únicamente `cuerpo` con la sanitización existente. Los enlaces relativos usan el origen configurado de la API, sin inventar URLs de detalle. La fecha conserva el offset recibido y se formatea al consumirla, sin convertir de nuevo su hora chilena ni agregar un polyfill.
+- **Identidad:** ID de la base de datos recibido en `id` desde la API, validado como entero positivo obligatorio; URL con título normalizado sin timestamp. Las colisiones entre noticias visibles se resuelven en orden de respuesta con sufijos incrementales `-2`, `-3`, etc., saltando los slugs ya ocupados, sin solicitudes adicionales. Cambiar el título o el orden de entrada puede reasignar slugs existentes. Las URLs anteriores con timestamp no tienen redirección.
+- **Contenido y fechas:** el detalle procesa únicamente `cuerpo` con la sanitización existente. Los enlaces relativos usan el origen configurado de la API, sin inventar URLs de detalle. La fecha conserva el offset recibido; el DAL entrega también `publishedAtLabel` con el formato visible existente, sin convertir de nuevo su hora chilena ni agregar un polyfill.
 
 Los errores HTTP, timeouts y respuestas inválidas se propagan: no se sustituyen por una lista vacía ni por un snapshot.
+
+## Artículos: API y fechas
+
+El DAL consulta `articulos/?format=json` con la misma variable `API_BASE_URL` de noticias. El schema de Zod en `app/_dal/articles/schemas/` valida `id` como entero positivo, `titulo` no vacío, `fecha` como fecha ISO exacta (`YYYY-MM-DD`) y `archivo` como URL HTTP/HTTPS. Los tipos se derivan del schema; el snapshot anterior deja de ser una fuente de datos y no se usa como respaldo.
+
+- **Datos:** se conserva la ID de la base de datos y la fecha completa; `archivo` es el destino de la publicación. Como el endpoint no entrega imagen, `image` es `null`.
+- **Caché:** tag `articulos`, revalidación SWR a los 7 días, expiración a los 30 días y reutilización cliente durante 5 minutos. El timeout de consulta es de 10 segundos; los errores HTTP, de red y de validación se propagan.
+- **Presentación:** orden por fecha descendente; home muestra las últimas 3 publicaciones y el sidebar las últimas 5. El DAL entrega `publishedAtLabel` con solo mes y año, por ejemplo `junio del 2023`; las tarjetas reciben ese texto ya preparado y mantienen `2023-06-01` en el atributo `datetime`. No se altera el formato de noticias ni el del resumen del mapa.
+- **Meses:** el mapeo existente se comparte desde `app/_utils/months.ts`; `formatMonthYear()` lo reutiliza sin convertir zonas horarias. Ambos DAL entregan sus etiquetas listas para mostrar: las páginas y `PublicationCard` no eligen ni ejecutan formatos.
 
 ## Getting Started
 

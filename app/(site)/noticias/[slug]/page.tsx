@@ -5,7 +5,6 @@ import { DefaultSidebar } from '../../_features/sidebar'
 import { SectionHeading } from '@/_components/SectionHeading'
 import { getNews } from '@/_dal/news/getNews'
 import { createSlug } from '@/_utils/createSlug'
-import { formatPublishedAt } from '@/_utils/formatPublishedAt'
 import { NewsContent } from './_components/NewsContent'
 import { Separator } from '@/_components/Separator'
 
@@ -38,7 +37,7 @@ export default async function NewsDetailPage({ params }: PageProps<'/noticias/[s
       <div className="container mx-auto grid grid-cols-1 gap-10 2xl:grid-cols-[minmax(0,1fr)_17rem]">
         <article className="mx-auto w-full min-w-0">
           <p className="pb-4 text-start font-body text-sm text-text">
-            <time dateTime={news.publishedAt}>{formatPublishedAt(news.publishedAt)}</time>
+            <time dateTime={news.publishedAt}>{news.publishedAtLabel}</time>
           </p>
 
           <NewsContent news={news} />

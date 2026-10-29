@@ -32,12 +32,13 @@ export default function NoticiasPage() {
 
 async function RequestNewsList() {
   const news = await getNews()
-  const summaries = news.map(({ id, slug, title, description, publishedAt, image }) => ({
+  const summaries = news.map(({ id, slug, title, description, publishedAt, publishedAtLabel, image }) => ({
     id,
     slug,
     title,
     description,
     publishedAt,
+    publishedAtLabel,
     image
   }))
   return <NewsList news={summaries} />

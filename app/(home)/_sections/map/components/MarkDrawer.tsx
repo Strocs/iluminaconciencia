@@ -3,22 +3,8 @@
 import { useCallback, type RefObject } from 'react'
 import { Button } from '@/_components/Button'
 import { getBortleClass } from '@/_features/bortle/lookup'
+import { MONTHS } from '@/_utils/months'
 import type { MapMark } from '../types'
-
-const MONTHS: Record<string, string> = {
-  jan: 'enero',
-  feb: 'febrero',
-  mar: 'marzo',
-  apr: 'abril',
-  may: 'mayo',
-  jun: 'junio',
-  jul: 'julio',
-  aug: 'agosto',
-  sep: 'septiembre',
-  oct: 'octubre',
-  nov: 'noviembre',
-  dec: 'diciembre'
-}
 
 function formatSummaryPeriod(period: string) {
   const monthOnlyPeriod = period.trim().match(/^([a-z]{3,9})\s+(\d{4})$/i)

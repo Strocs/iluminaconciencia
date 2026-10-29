@@ -1,7 +1,9 @@
 import { z } from 'zod'
 import { createSlug } from '@/_utils/createSlug'
+import { formatPublishedAt } from '@/_utils/formatPublishedAt'
 
 const newsApiItemSchema = z.object({
+  id: z.int().positive(),
   titulo: z.string().refine((value) => value.trim().length > 0),
   resumen: z.string(),
   fecha: z
@@ -35,11 +37,12 @@ export const newsResponseSchema = z.array(newsApiItemSchema).transform((items, c
 
     return [
       {
-        id: Date.parse(item.fecha),
+        id: item.id,
         slug,
         title: item.titulo,
         description: item.resumen,
         publishedAt: item.fecha,
+        publishedAtLabel: formatPublishedAt(item.fecha),
         image: item.imagen ? { url: item.imagen, alt: item.titulo } : null,
         body: item.cuerpo
       }
