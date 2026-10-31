@@ -2,7 +2,7 @@
 
 La API propia del frontend vive en `app/api/`. Actualmente expone `POST /api/revalidate` para invalidar datos cacheados. No reemplaza los endpoints de noticias y artículos del backend: esos se consultan desde el DAL usando `API_BASE_URL`.
 
-[Volver al README](../../README.md)
+[Volver al README](../../README.md) · [Datos y caché](data-and-revalidation.md) · [Crear rutas](adding-routes.md)
 
 ## Dónde está implementada
 
@@ -101,4 +101,4 @@ Si la nueva necesidad no es invalidar datos por tag, no sobrecargues este contra
 4. Definí explícitamente sus respuestas, política de caché, límites, logs y protección de acceso según la operación. Que revalidación sea pública no es una regla para futuros endpoints.
 5. Actualizá esta guía con su URL, contrato y ejemplos. Comprobá tanto la petición válida como los rechazos y que estos no ejecuten efectos.
 
-No agregues `page.tsx` en el mismo segmento de URL que un `route.ts`.
+No agregues `page.tsx` en el mismo segmento de URL que un `route.ts`. Los detalles generales del enrutamiento están en la [guía de rutas](adding-routes.md).
