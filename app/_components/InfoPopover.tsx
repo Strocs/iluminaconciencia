@@ -1,17 +1,18 @@
 'use client'
 
-import { useCallback, useId, useRef, useState, type CSSProperties, type ReactNode } from 'react'
+import { useCallback, useId, useRef, useState, type ReactNode } from 'react'
+import { createPortal } from 'react-dom'
 import { cn } from '@/_utils/cn'
 
 type Size = 'sm' | 'md'
 type Placement = 'top-right' | 'bottom-right' | 'top-left' | 'bottom-left'
-type Side = 'above' | 'below'
 type Variant = 'default' | 'outline'
-type Alignment = 'left' | 'right'
 
 interface InfoPopoverProps {
   label: string
   children: ReactNode
+  /** Wrap plain text in the trigger; omit it for an independent help button. */
+  trigger?: string
   placement?: Placement
   openOnHover?: boolean
   size?: Size
@@ -19,143 +20,223 @@ interface InfoPopoverProps {
   className?: string
 }
 
-interface MeasuredPlacement {
-  side: Side
-  align: Alignment
-  panelWidth: number
-  panelHeight: number
-}
-
-const triggerSizeClasses: Record<Size, string> = { sm: 'size-5', md: 'size-8' }
-const iconSizeClasses: Record<Size, string> = { sm: 'size-4', md: 'size-6' }
-const variantClasses: Record<Variant, string> = { default: '', outline: 'border border-border' }
+const triggerSizeClasses: Record<Size, string> = { sm: 'size-5 text-sm', md: 'size-8 text-base' }
 
 export function InfoPopover({
   label,
   children,
-  placement = 'top-right',
+  trigger,
+  placement = 'bottom-right',
   openOnHover = true,
   size = 'md',
   variant = 'default',
   className
 }: InfoPopoverProps) {
   const panelId = useId()
-  const rootRef = useRef<HTMLDivElement | null>(null)
-  const [measured, setMeasured] = useState<MeasuredPlacement>({
-    side: 'below',
-    align: 'left',
-    panelWidth: 0,
-    panelHeight: 0
-  })
+  const titleId = useId()
+  const triggerRef = useRef<HTMLButtonElement | null>(null)
+  const panelRef = useRef<HTMLDivElement | null>(null)
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+  const [portalHost, setPortalHost] = useState<HTMLElement | null>(null)
+  const [open, setOpen] = useState(false)
+
+  const cancelClose = useCallback(() => clearTimeout(closeTimer.current), [])
+
+  const close = useCallback(() => {
+    cancelClose()
+    setOpen(false)
+  }, [cancelClose])
+
+  const show = () => {
+    cancelClose()
+    setOpen(true)
+  }
+
+  const scheduleClose = () => {
+    cancelClose()
+    closeTimer.current = setTimeout(() => {
+      const panel = panelRef.current
+      if (!panel?.matches(':hover') && !panel?.contains(document.activeElement)) setOpen(false)
+    }, 240)
+  }
 
   const measureAndPlace = useCallback(() => {
-    const root = rootRef.current
-    const trigger = root?.querySelector('button')
-    const panel = root?.querySelector<HTMLElement>('[data-panel]')
-    if (!trigger || !panel) return
+    const button = triggerRef.current
+    const panel = panelRef.current
+    const body = panel?.querySelector<HTMLElement>('[data-popover-body]')
+    const heading = panel?.querySelector<HTMLElement>('[data-popover-heading]')
+    if (!button || !panel || !body || !heading) return
 
-    const triggerRect = trigger.getBoundingClientRect()
+    const rect = button.getBoundingClientRect()
+    const margin = 16
+    const gap = 8
+    const above = Math.max(0, rect.top - margin - gap)
+    const below = Math.max(0, window.innerHeight - rect.bottom - margin - gap)
+    const desiredHeight = Math.min(288, heading.offsetHeight + body.scrollHeight + 2)
+    const preferAbove = placement.startsWith('top')
+    const preferred = preferAbove ? above : below
+    const opposite = preferAbove ? below : above
+    const useAbove = preferred >= desiredHeight || preferred >= opposite ? preferAbove : !preferAbove
+    panel.style.maxHeight = `${Math.min(288, useAbove ? above : below)}px`
+
     const panelRect = panel.getBoundingClientRect()
-    const preferredSide: Side = placement.startsWith('top') ? 'above' : 'below'
-    const aboveSpace = triggerRect.top
-    const belowSpace = window.innerHeight - triggerRect.bottom
-    const preferredSpace = preferredSide === 'above' ? aboveSpace : belowSpace
-    const oppositeSpace = preferredSide === 'above' ? belowSpace : aboveSpace
-    const side =
-      preferredSpace >= panelRect.height || preferredSpace >= oppositeSpace
-        ? preferredSide
-        : preferredSide === 'above'
-          ? 'below'
-          : 'above'
-
-    const fitsRight = triggerRect.right + 4 + panelRect.width <= window.innerWidth
-    const fitsLeft = triggerRect.left - 4 - panelRect.width >= 0
-    const extendRight = placement.endsWith('right') ? fitsRight || !fitsLeft : !fitsLeft && fitsRight
-    setMeasured({
-      side,
-      align: extendRight ? 'left' : 'right',
-      panelWidth: panelRect.width,
-      panelHeight: panelRect.height
-    })
+    const preferredLeft = placement.endsWith('right') ? rect.left : rect.right - panelRect.width
+    const left = Math.max(margin, Math.min(preferredLeft, window.innerWidth - panelRect.width - margin))
+    const top = useAbove ? rect.top - gap - panelRect.height : rect.bottom + gap
+    panel.style.left = `${left}px`
+    panel.style.top = `${Math.max(margin, Math.min(top, window.innerHeight - panelRect.height - margin))}px`
+    panel.dataset.side = useAbove ? 'above' : 'below'
+    panel.dataset.align = placement.endsWith('right') ? 'left' : 'right'
+    if (rect.bottom < 0 || rect.top > window.innerHeight || button.closest('[inert]')) setOpen(false)
   }, [placement])
 
-  const setRootRef = useCallback(
-    (node: HTMLDivElement | null) => {
+  const setTriggerRef = useCallback(
+    (node: HTMLButtonElement | null) => {
       if (!node) return
-      rootRef.current = node
-      const controller = new AbortController()
-      measureAndPlace()
-      window.addEventListener('resize', measureAndPlace, { signal: controller.signal })
-      window.addEventListener('scroll', measureAndPlace, { capture: true, signal: controller.signal })
+      triggerRef.current = node
+      setPortalHost(node.ownerDocument.body)
       return () => {
-        controller.abort()
-        if (rootRef.current === node) rootRef.current = null
+        cancelClose()
+        triggerRef.current = null
       }
     },
-    [measureAndPlace]
+    [cancelClose]
   )
 
-  const bridge = openOnHover ? 'data-[open-on-hover=true]:hover:before:visible' : ''
+  const setPanelRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      if (!node) return
+      panelRef.current = node
+      const controller = new AbortController()
+      const observer = new ResizeObserver(measureAndPlace)
+      observer.observe(node)
+      const body = node.querySelector<HTMLElement>('[data-popover-body]')
+      if (body) observer.observe(body)
+      measureAndPlace()
+      window.addEventListener('resize', measureAndPlace, { signal: controller.signal })
+      window.addEventListener('scroll', measureAndPlace, { capture: true, passive: true, signal: controller.signal })
+      document.addEventListener(
+        'pointerdown',
+        (event) => {
+          if (!node.contains(event.target as Node) && !triggerRef.current?.contains(event.target as Node)) close()
+        },
+        { signal: controller.signal }
+      )
+      document.addEventListener(
+        'keydown',
+        (event) => {
+          if (event.key !== 'Escape' || triggerRef.current?.getAttribute('aria-expanded') !== 'true') return
+          if (node.contains(document.activeElement)) triggerRef.current?.focus()
+          close()
+          event.preventDefault()
+        },
+        { signal: controller.signal }
+      )
+      return () => {
+        controller.abort()
+        observer.disconnect()
+        cancelClose()
+        panelRef.current = null
+      }
+    },
+    [cancelClose, close, measureAndPlace]
+  )
 
   return (
-    <div
-      ref={setRootRef}
-      className={cn(
-        "group/popover relative inline-flex font-body before:pointer-events-auto before:invisible before:absolute before:z-9 before:h-[calc(100%+0.25rem+var(--hover-card-height))] before:w-[calc(100%+0.25rem+var(--hover-card-width))] before:content-[\'\'] focus-within:before:visible",
-        bridge,
-        'data-[align=left]:before:left-0 data-[align=right]:before:right-0 data-[side=above]:before:bottom-0 data-[side=below]:before:top-0',
-        className
-      )}
-      style={
-        {
-          '--hover-card-width': `${measured.panelWidth}px`,
-          '--hover-card-height': `${measured.panelHeight}px`
-        } as CSSProperties
-      }
-      data-placement={placement}
-      data-side={measured.side}
-      data-align={measured.align}
-      data-open-on-hover={openOnHover}
-      onFocus={measureAndPlace}
-      onPointerEnter={measureAndPlace}
-    >
+    <>
       <button
+        ref={setTriggerRef}
         type="button"
-        aria-label={label}
+        aria-label={trigger ? undefined : label}
         aria-controls={panelId}
+        aria-haspopup="dialog"
+        aria-expanded={open}
         className={cn(
-          'relative z-20 inline-flex cursor-pointer items-center justify-center rounded-full text-primary outline-none group-hover/popover:bg-primary group-hover/popover:text-background focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background',
-          triggerSizeClasses[size],
-          variantClasses[variant]
+          'cursor-pointer font-[inherit] outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+          trigger
+            ? 'inline rounded-sm text-inherit hover:text-primary aria-expanded:text-primary'
+            : 'inline-flex shrink-0 items-center justify-center rounded-full text-primary hover:bg-primary hover:text-background aria-expanded:bg-primary aria-expanded:text-background',
+          !trigger && triggerSizeClasses[size],
+          !trigger && variant === 'outline' && 'border border-border',
+          className
         )}
+        onPointerEnter={(event) => {
+          if (openOnHover && event.pointerType === 'mouse') show()
+        }}
+        onPointerLeave={(event) => {
+          if (openOnHover && event.pointerType === 'mouse') scheduleClose()
+        }}
+        onFocus={(event) => {
+          if (event.currentTarget.matches(':focus-visible')) show()
+        }}
+        onBlur={scheduleClose}
+        onClick={() => {
+          cancelClose()
+          setOpen((current) => !current)
+        }}
+        onKeyDown={(event) => {
+          if (open && (event.key === 'ArrowDown' || (event.key === 'Tab' && !event.shiftKey))) {
+            event.preventDefault()
+            panelRef.current?.querySelector('button')?.focus()
+          }
+        }}
       >
-        <svg
-          className={iconSizeClasses[size]}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
+        {trigger}
+        <span
+          className={cn(trigger && 'ml-0.5 align-super text-xs leading-none font-semibold text-primary')}
           aria-hidden="true"
         >
-          <path d="M9.1 9a3 3 0 1 1 5.8 1c0 2-3 2-3 4" />
-          <path d="M12 18h.01" />
-        </svg>
+          ?
+        </span>
       </button>
-      <div
-        id={panelId}
-        className="pointer-events-none invisible absolute z-99 box-border w-max max-w-[min(24rem,calc(100vw-1.5rem))] rounded-lg border border-border bg-background p-4 text-sm/relaxed text-foreground shadow-lg [clip-path:inset(0_100%_100%_0)] [transition:clip-path_180ms_ease-out,visibility_0s_linear_180ms] data-[align=left]:left-full data-[align=left]:ml-1 data-[align=right]:right-full data-[align=right]:mr-1 data-[side=above]:bottom-full data-[side=above]:mb-1 data-[align=left]:data-[side=above]:[clip-path:inset(100%_100%_0_0)] data-[align=right]:data-[side=above]:[clip-path:inset(100%_0_0_100%)] data-[side=below]:top-full data-[side=below]:mt-1 data-[align=right]:data-[side=below]:[clip-path:inset(0_0_100%_100%)] motion-reduce:duration-[0.01ms!important] [:focus-within_>_&]:pointer-events-auto [:focus-within_>_&]:visible [:focus-within_>_&]:[clip-path:inset(0)] [:focus-within_>_&]:[transition:clip-path_180ms_ease-out,visibility_0s_linear_0s] [[data-open-on-hover=true]:hover_>_&]:pointer-events-auto [[data-open-on-hover=true]:hover_>_&]:visible [[data-open-on-hover=true]:hover_>_&]:[clip-path:inset(0)] [[data-open-on-hover=true]:hover_>_&]:[transition:clip-path_180ms_ease-out,visibility_0s_linear_0s]"
-        role="dialog"
-        aria-label={label}
-        data-panel
-        data-side={measured.side}
-        data-align={measured.align}
-      >
-        <div className="translate-y-1 wrap-break-word opacity-0 [transition:opacity_120ms_ease-out,transform_120ms_ease-out] motion-reduce:duration-[0.01ms!important] [:focus-within_>_*_>_&]:translate-y-0 [:focus-within_>_*_>_&]:opacity-100 [:focus-within_>_*_>_&]:[transition:opacity_120ms_ease-out_60ms,transform_120ms_ease-out_60ms] [[data-open-on-hover=true]:hover_>_*_>_&]:translate-y-0 [[data-open-on-hover=true]:hover_>_*_>_&]:opacity-100 [[data-open-on-hover=true]:hover_>_*_>_&]:[transition:opacity_120ms_ease-out_60ms,transform_120ms_ease-out_60ms]">
-          {children}
-        </div>
-      </div>
-    </div>
+      {portalHost &&
+        createPortal(
+          <div
+            ref={setPanelRef}
+            id={panelId}
+            role="dialog"
+            aria-modal="false"
+            aria-labelledby={titleId}
+            aria-hidden={!open}
+            inert={!open}
+            data-panel
+            data-open={open}
+            className="group/info pointer-events-none invisible fixed z-9999 flex max-h-72 w-76 max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-lg border border-border bg-background font-body text-sm/relaxed text-foreground shadow-lg [clip-path:inset(0_100%_100%_0)] [transition:clip-path_180ms_ease-out,visibility_0s_linear_180ms] data-[align=right]:[clip-path:inset(0_0_100%_100%)] data-[open=true]:pointer-events-auto data-[open=true]:visible data-[open=true]:[clip-path:inset(0)]! data-[open=true]:[transition:clip-path_180ms_ease-out,visibility_0s_linear_0s] data-[align=left]:data-[side=above]:[clip-path:inset(100%_100%_0_0)] data-[align=right]:data-[side=above]:[clip-path:inset(100%_0_0_100%)] motion-reduce:transition-none"
+            onPointerEnter={cancelClose}
+            onPointerLeave={(event) => {
+              if (openOnHover && event.pointerType === 'mouse') scheduleClose()
+            }}
+            onFocus={cancelClose}
+            onBlur={scheduleClose}
+          >
+            <div data-popover-heading className="flex shrink-0 items-start justify-between gap-3 px-4 pt-4 pb-3">
+              <h2 id={titleId} className="text-sm/normal font-semibold">
+                {label}
+              </h2>
+              <button
+                type="button"
+                aria-label="Cerrar explicación"
+                className="-mt-1 -mr-1 flex size-7 shrink-0 cursor-pointer items-center justify-center rounded-sm text-xl/none text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                onClick={() => {
+                  triggerRef.current?.focus()
+                  close()
+                }}
+              >
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            <div
+              data-popover-body
+              role="region"
+              aria-labelledby={titleId}
+              tabIndex={0}
+              className="min-h-0 translate-y-1 scrollbar-thin [scrollbar-color:var(--color-primary)_var(--color-background)] overflow-y-auto overscroll-contain px-4 pb-4 wrap-break-word text-text opacity-0 [transition:opacity_120ms_ease-out,transform_120ms_ease-out] group-data-[open=true]/info:translate-y-0 group-data-[open=true]/info:opacity-100 group-data-[open=true]/info:[transition:opacity_120ms_ease-out_60ms,transform_120ms_ease-out_60ms] focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent motion-reduce:transition-none [&_p+p]:mt-4"
+            >
+              {children}
+            </div>
+          </div>,
+          portalHost
+        )}
+    </>
   )
 }

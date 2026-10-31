@@ -90,7 +90,14 @@ export function ProjectContent({ teamEntry = false }: { teamEntry?: boolean }) {
               <div className="space-y-6">
                 <p>
                   IluminAconciencia es un proyecto de la Universidad de La Serena que combina el monitoreo del cielo
-                  nocturno con la divulgación sobre la contaminación lumínica en la Región de Coquimbo.
+                  nocturno con la divulgación sobre la{' '}
+                  <InfoPopover label="Qué es la contaminación lumínica" trigger="contaminación lumínica">
+                    <p>
+                      Es la alteración de la oscuridad natural por luz artificial innecesaria o mal dirigida. No depende
+                      únicamente de cuántas luces hay, sino también de su dirección, intensidad y horario de uso.
+                    </p>
+                  </InfoPopover>{' '}
+                  en la Región de Coquimbo.
                 </p>
                 <p>
                   Conectamos ciencia, tecnología y comunidad para que la información del cielo nocturno sea accesible y
@@ -115,18 +122,10 @@ export function ProjectContent({ teamEntry = false }: { teamEntry?: boolean }) {
           </ProjectSection>
           <ProjectSection name="importancia" title="Por qué importa la oscuridad">
             <div className="grid gap-8 md:grid-cols-2">
-              <div className="flex items-start gap-2">
-                <p>
-                  La luz artificial resulta útil cuando ilumina donde y cuando se necesita. Cuando se dispersa hacia el
-                  cielo o invade espacios que no requieren iluminación, modifica el entorno nocturno.
-                </p>
-                <InfoPopover label="Qué es la contaminación lumínica" size="sm">
-                  <p>
-                    Es la alteración de la oscuridad natural por luz artificial innecesaria o mal dirigida. No depende
-                    únicamente de cuántas luces hay, sino también de su dirección, intensidad y horario de uso.
-                  </p>
-                </InfoPopover>
-              </div>
+              <p>
+                La luz artificial resulta útil cuando ilumina donde y cuando se necesita. Cuando se dispersa hacia el
+                cielo o invade espacios que no requieren iluminación, modifica el entorno nocturno.
+              </p>
               <div className="contents">
                 <div>
                   <h3 className="font-heading text-xl text-foreground">Un cielo que podemos observar</h3>
@@ -158,19 +157,18 @@ export function ProjectContent({ teamEntry = false }: { teamEntry?: boolean }) {
             <div className="grid items-start gap-8 md:grid-cols-2">
               <div>
                 <h3 className="font-heading text-xl text-foreground">Monitoreamos el cielo</h3>
-                <div className="flex items-start gap-2">
-                  <p>
-                    La red reúne observaciones del brillo del cielo en distintos puntos. Estos registros permiten
-                    explorar cómo se comporta el entorno nocturno y consultar información de cada lugar.
-                  </p>
-                  <InfoPopover label="Qué mide un fotómetro" size="sm">
+                <p>
+                  La red reúne observaciones del brillo del cielo en distintos puntos mediante{' '}
+                  <InfoPopover label="Qué mide un fotómetro" trigger="fotómetros">
                     <p>
                       Un fotómetro es un instrumento que mide luz. Los utilizados para observar el brillo del cielo
                       registran una magnitud que debe interpretarse junto con las condiciones y características de la
                       medición. No miden directamente efectos sobre la salud o la biodiversidad.
                     </p>
                   </InfoPopover>
-                </div>
+                  . Estos registros permiten explorar cómo se comporta el entorno nocturno y consultar información de
+                  cada lugar.
+                </p>
               </div>
               <div>
                 <h3 className="font-heading text-xl text-foreground">Acercamos el conocimiento</h3>

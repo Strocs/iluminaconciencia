@@ -70,10 +70,9 @@ export function FilterPanel({
 
       <fieldset className="space-y-2 border-t border-border">
         <legend className="flex w-full items-center gap-2 text-sm leading-tight text-foreground">
-          <BrandStarIcon /> <span>Escala de Bortle</span>
-          <InfoPopover label="Información sobre la escala de Bortle" placement="bottom-right" size="sm">
+          <BrandStarIcon />
+          <InfoPopover label="Escala de Bortle" trigger="Escala de Bortle" placement="bottom-right">
             <p className="font-light">
-              <strong>Qué es la Escala de Bortle?</strong> <br />
               La Escala de Bortle es un sistema de medición que clasifica la oscuridad del cielo nocturno en una escala
               del 1 al 9, donde 1 representa cielos extremadamente oscuros y 9 indica cielos muy brillantes y
               contaminados por la luz artificial. Esta escala es utilizada por astrónomos y observadores del cielo para
@@ -104,8 +103,7 @@ export function FilterPanel({
       <fieldset className="space-y-2 border-t border-border">
         <legend className="flex w-full items-center gap-2 text-sm leading-tight text-foreground">
           <BrandStarIcon />
-          <span>Instrumentos</span>
-          <InfoPopover label="Información sobre los instrumentos" placement="bottom-right" size="sm">
+          <InfoPopover label="Instrumentos" trigger="Instrumentos" placement="bottom-right">
             <p className="font-light">
               <strong>SQC:</strong> Estación de observación terrestre que utiliza telescopios y otros instrumentos para
               medir la calidad del cielo nocturno y la contaminación lumínica en una ubicación específica. <br /> <br />
