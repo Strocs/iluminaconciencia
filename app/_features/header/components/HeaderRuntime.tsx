@@ -13,6 +13,33 @@ export function HeaderRuntime({ children }: Props) {
   return (
     <header
       ref={headerRef}
+      onClickCapture={(event) => {
+        if (
+          event.defaultPrevented ||
+          event.button !== 0 ||
+          event.metaKey ||
+          event.ctrlKey ||
+          event.shiftKey ||
+          event.altKey ||
+          !(event.target instanceof Element)
+        )
+          return
+
+        const link = event.target.closest<HTMLAnchorElement>('a[href]')
+        if (
+          !link ||
+          link.getAttribute('aria-disabled') === 'true' ||
+          link.hasAttribute('download') ||
+          (link.target && link.target !== '_self')
+        )
+          return
+
+        const menuToggle = event.currentTarget.querySelector<HTMLInputElement>('[data-menu-toggle]')
+        if (!menuToggle?.checked) return
+        // Unlock the page before either Next.js navigation or a same-page scroll runs.
+        menuToggle.checked = false
+        menuToggle.dispatchEvent(new Event('change', { bubbles: true }))
+      }}
       data-site-header
       data-appearance="transparent"
       data-hidden="false"

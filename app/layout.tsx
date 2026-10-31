@@ -27,8 +27,15 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
-    <html lang="es" className={cn('h-full antialiased', ubuntuSans.variable, baskervilleSerif.variable)}>
-      <body className="relative isolate flex min-h-dvh flex-col font-body">
+    <html
+      lang="es"
+      className={cn(
+        'h-full antialiased max-lg:has-[[data-menu-toggle]:checked]:overflow-hidden',
+        ubuntuSans.variable,
+        baskervilleSerif.variable
+      )}
+    >
+      <body className="relative isolate flex min-h-dvh flex-col font-body max-lg:has-[[data-menu-toggle]:checked]:overflow-hidden">
         <Background />
         <UserenaLayout>
           <HeaderLayout>
