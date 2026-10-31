@@ -43,7 +43,17 @@ next-env.d.ts
 
 .playwright-cli/
 .codegraph/
-docs/
+
+# Historical local documentation; preserve previously versioned backups.
+.docs-archive/**
+!.docs-archive/**/
+!.docs-archive/backups/hero/catalog-gt-2px-r1/catalog-stars.svg
+!.docs-archive/backups/hero/catalog-gt-2px-r1/manifest.json
+!.docs-archive/backups/hero/development-star-catalog-4666.ts.bak
+!.docs-archive/backups/hero/star-catalog.before-1_5px-filter.ts.bak
+!.docs-archive/backups/hero/star-catalog.before-labeled-60.ts.bak
+!.docs-archive/backups/hero/star-catalog.ts.bak
+
 output/
 
 # local tooling

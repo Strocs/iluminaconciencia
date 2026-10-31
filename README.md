@@ -1,168 +1,86 @@
-## Arquitectura
+# IluminAconciencia
 
-El proyecto sigue una **arquitectura basada en rutas y módulos funcionales, con colocation como criterio de organización**. No exige una cadena de abstracciones ni organizar todo en capas globales.
+Frontend del proyecto de monitoreo y divulgación de contaminación lumínica de la Región de Coquimbo. Usa Next.js App Router, React, TypeScript y Tailwind CSS. Consulta una API externa para noticias y artículos; el servidor de desarrollo de Next no inicia ese backend.
 
-### 1. Rutas: puntos de entrada
+## Levantar el proyecto
 
-`app/` contiene la aplicación.
+### Requisitos
 
-- **`page.tsx`** define y compone la vista de una URL.
-- **`layout.tsx`** mantiene una estructura compartida entre rutas.
-- **Los grupos `(group)`** organizan rutas y layouts sin agregar segmentos a la URL.
+- Node.js compatible con Next.js 16.3 y pnpm 12; se recomienda Node.js 24 LTS.
+- **pnpm 12.8.1**, la versión declarada en `package.json`. Si no lo tenés: `npm install --global pnpm@12.8.1`.
+- Acceso a la API desde la máquina donde ejecutás el servidor o el build.
 
-La página puede componer directamente sus componentes. No necesita un contenedor intermedio obligatorio.
+### Instalación y entorno
 
-### 2. Módulos: unidades de responsabilidad
+Desde la raíz del repositorio:
 
-Un módulo reúne lo necesario para una responsabilidad concreta: componentes, hooks, lógica, tipos y recursos.
-
-**Su ubicación depende de quién lo consume:**
-
-- Un único consumidor: junto a él.
-- Varias rutas: en su ancestro común más cercano.
-- Toda la aplicación: en el nivel raíz correspondiente.
-
-Usá carpetas privadas como `_components/`, `_hooks/` y `_dal/` para organizar implementaciones sin crear rutas.
-
-Compartir un módulo no significa desarmarlo y repartir sus archivos entre carpetas genéricas. Conservá su identidad funcional al moverlo a un scope compartido.
-
-### 3. UI genérica y módulos funcionales
-
-Son categorías diferentes:
-
-- **UI genérica:** presentación reutilizable, sin conocimiento del negocio ni consultas de datos.
-- **Módulo funcional:** implementa un comportamiento concreto y puede coordinar datos, estado y presentación.
-
-Ambos pueden compartirse, pero conservan responsabilidades distintas.
-
-### 4. Acceso a datos
-
-El DAL encapsula cómo se obtienen los datos y sus contratos.
-
-Los **Server Components consumidores** realizan las consultas cerca de donde presentan sus resultados. No se concentran consultas en un padre solamente para distribuirlas mediante props.
-
-Pasar props sigue siendo válido: lo que evitamos es intermediación innecesaria.
-
-### 5. Servidor y cliente
-
-- **Servidor:** acceso a datos y renderizado que no requiere interacción del navegador.
-- **Cliente:** estado interactivo, eventos y APIs del navegador.
-
-La frontera cliente se mantiene cerca de la interacción; no convierte automáticamente toda una vista en componente cliente.
-
-### 6. Dirección de dependencias
-
-```text
-Entradas de rutas
-       ↓
-Módulos locales o compartidos
-       ↓
-UI genérica · DAL · utilidades
+```bash
+pnpm install --frozen-lockfile
 ```
 
-Los módulos compartidos no dependen de páginas ni de sus implementaciones privadas. Las rutas pueden compartir módulos, pero no importar los detalles internos de otras rutas.
-
-Este esquema indica la dirección de las dependencias, no una cadena obligatoria de capas. Una página puede consumir directamente UI genérica o el DAL cuando le corresponda.
-
-### 7. Criterio de abstracción
-
-**Primero composición local; después extracción justificada.**
-
-Se extrae cuando existe reutilización real o una responsabilidad suficientemente clara para encapsular. No se introducen wrappers solamente para consultar datos o reenviar props.
-
-Los mecanismos especiales del framework se eligen por el comportamiento que necesitás, no para aparentar modularidad.
-
-**En síntesis:** ubicación por consumidores, límites por responsabilidad y abstracciones por necesidad comprobada.
-
-## Composición institucional y header
-
-- `UserenaLayout`, en `app/_features/userena/`, compone la franja institucional, el contenido recibido y el pie institucional sin agregar un contenedor DOM.
-- `HeaderLayout`, en `app/_features/header/`, incorpora el header y superpone el contenido recibido mediante una grilla. Su límite excluye la franja y el pie institucionales; el footer del proyecto sigue siendo contenido del layout raíz.
-- Ambos layouts son Server Components. `HeaderRuntime` mantiene la frontera cliente para la navegación y los estados visuales.
-- El header usa `sticky` para comenzar debajo de la franja institucional desde el primer render, sin calcular un `top` en el cliente ni desplazar el hero. Al abrir el menú, el header conserva su posición `sticky` y la misma animación de expansión. La altura disponible se calcula desde su propio layout, sin medir elementos institucionales, y se limita al viewport y al borde inferior de ese layout. El panel y su fondo usan esa misma altura; la barra no se contrae si queda menos espacio que su altura habitual.
-- En la home permanece transparente y visible hasta que el marcador `data-header-solid-start` del mapa entra en el viewport. Desde ese punto es sólido y se oculta al bajar o reaparece al subir, con el umbral existente de 6 px. En rutas sin marcador es sólido cuando `scrollY > 0`; al inicio de la página o con el menú abierto permanece visible. La animación de ocultamiento sigue usando `translate`.
-
-## Carga del mapa y del cielo
-
-- El contenedor del mapa conserva su tamaño desde el render inicial. `DeferredMapCanvas` activa la descarga de MapLibre y su montaje cuando el mapa se aproxima a un viewport de distancia; después permanece montado. Si `IntersectionObserver` no está disponible, se carga directamente. Los filtros y el detalle conservan su estado en `MapExplorer`.
-- El cielo estático del hero usa una visualización derivada de NASA/Goddard Space Flight Center Scientific Visualization Studio, con datos Gaia DR2 (ESA/Gaia/DPAC) y visualización de Ernie Wright; no es una fotografía. Fuente: [NASA SVS 4851](https://svs.gsfc.nasa.gov/4851/), con [política de uso](https://svs.gsfc.nasa.gov/help/). Se entrega `public/hero/sky-desktop.webp` (1920×1080), reducido con Pillow Lanczos de un master de 3840×2160 regenerado desde el mapa NASA original sin pintar de negro el horizonte geométrico. Se conservan encuadre, orientación, muestreo, exposición y tone mapping originales; los píxeles completamente por encima del horizonte son idénticos al master anterior. La extensión usa datos reales del mapa celeste, sin zoom, clonado ni contenido generado; es un fondo visual bajo el horizonte matemático, no una simulación estricta de visibilidad. La silueta de la UI determina la oclusión. `public/hero/sky-mobile.webp` (780×1688) permanece idéntico, sin redimensionar ni cambiar su recorte. Ambos se codifican con WebP lossless (`lossless=True`, `quality=100`, `method=6`), preservando ICC si existe, sin dithering, enfoque ni tone mapping adicional durante la codificación. Se verifica igualdad completa de píxeles decodificados contra la referencia Lanczos en desktop y el PNG aceptado en mobile: no hay pérdida adicional del códec, pero la reducción desktop no conserva el detalle 4K ni es una copia byte a byte del master. `CREDITS.txt` y `source.json` documentan atribución, orientación, recorte, parámetros, bytes y hashes separados de origen y WebP. Los PNG anteriores y sus metadatos se archivan en `bkp/hero/nasa-png-v1/`, fuera de `public`.
-- `sky-background` renderiza un único `<picture>` con un solo `<img>` decorativo y art direction mediante `getImageProps` de Next, sin JavaScript cliente adicional. Selecciona desktop solo con `(min-width: 1024px) and (orientation: landscape)`; teléfonos incluso en horizontal hasta 1023 px y cualquier viewport vertical usan mobile. Cada fuente declara sus dimensiones reales y se ajusta centrada con `object-cover`, sin deformación ni el antiguo plano fijo 16:9: el master móvil no contiene la franja negra inferior. Cada imagen de cielo usa `unoptimized: true`: se entregan URLs WebP estáticas directas, sin `/_next/image`, recodificación ni candidatos responsivos optimizados. El `<source>` desktop usa `desktop.src` como único candidato de `srcSet`; el `<img>` móvil no lleva `srcSet` ni `sizes`. La optimización de las demás imágenes y la configuración global de Next no cambian. La imagen seleccionada carga eager con prioridad alta, sin preload desktop incondicional ni placeholder blur.
-- La revelación mantiene opacidad 0.05→1 al llegar a progreso 0.8, ahora con una curva lineal (`ease: 'none'`) para evitar la aparición acelerada al final; con movimiento reducido permanece en el estado inicial. El módulo del cielo conserva su tween y sus parámetros propios: solo recibe el progreso del timeline compartido, sin leer ni derivar valores del módulo de pollution. El cielo sigue siendo estático: no hay estrellas proyectadas, titileo, partículas, etiquetas ni composite de respaldo en ejecución. La atmósfera tiene su propio canvas, independiente de la opacidad del cielo.
-- `light-pollution` incorpora únicamente atmósfera WebGL2: un triángulo y una tabla de alturas RG8 de 2048 muestras (4096 bytes), cargada una sola vez desde el contorno compartido. El shader analítico usa cobertura con derivadas (`fwidth`) y cierre explícito del tramo final empinado; no agrega blur GPU, partículas ni pases de lectura. Dibuja al cambiar progreso, tamaño o posición, con un solo frame pendiente y sin bucle RAF continuo; limita DPR a 2. No se afirma una mejora de FPS sin medición en dispositivos reales.
-- El canvas atmosférico queda sin máscara entre el fondo y el texto enmascarados para permitir el contraluz sobre la montaña. Una referencia de terreno sigue el encuadre y se mide respecto del canvas, incluso al fijar el viewport durante el scroll. Los controladores CSS radial/SVG conservan sus opacidades: solo se ocultan después de un dibujo GPU válido. Sin JavaScript, WebGL2 o con movimiento reducido, error de inicialización/dibujo o pérdida de contexto, siguen como respaldo; el fallo es terminal para ese montaje, sin reintentos automáticos. El desmontaje libera recursos, observador, listeners y frame pendiente.
-- Los logos del header y de la franja institucional declaran tamaños de descarga acordes a su presentación. Se mantienen las dimensiones y estilos existentes.
-- La narrativa, la escala Bortle, contaminación lumínica, contraluz, encuadre y transición al mapa mantienen el inicializador común del hero. Las herramientas históricas de catálogo y geometría se conservan solo localmente en `tools/hero-sky-prototype/legacy-sky/`; toda la carpeta `tools/` está excluida de Git y no es necesaria para ejecutar ni compilar el sitio. La integración NASA es estática y no incorpora el productor experimental ni nuevas funciones dinámicas.
-- El header descarta notificaciones de estilos que solo animan transformaciones u opacidad, pero conserva las de visibilidad de rutas y contenido insertado.
-
-La validación visual y los nuevos resultados de Lighthouse se realizan sobre el despliegue de producción; las comprobaciones de compilación no prueban una mejora de puntuación.
-
-## Proyecto y equipo
-
-- `/proyecto` presenta el propósito, las actividades, recomendaciones y el equipo de IluminAconciencia.
-- `/equipo` utiliza la misma composición y, al hidratarse, cambia la URL a `/proyecto` y desplaza el foco al equipo, sin fragmentos ni identificadores de sección. Al recargar `/proyecto`, comienza desde arriba.
-- Ambas rutas están agrupadas en `app/(site)/(proyecto)/`. El contenido se renderiza en servidor; solo la navegación local y los `InfoPopover` necesitan interactividad cliente.
-- El índice del sidebar desplaza y enfoca las secciones sin modificar la URL. Sin JavaScript, el contenido completo sigue disponible para lectura.
-- Las fuentes institucionales están enlazadas en la página. La nómina refleja la publicación institucional, no una confirmación independiente de cargos actuales. No se presentan metas históricas de nodos ni promesas de actualización como hechos actuales.
-
-## Noticias: API y caché
-
-Configurá `API_BASE_URL` en `.env.local` para desarrollo y en el entorno de build y ejecución del despliegue:
+Creá `.env.local` con la URL base de la API:
 
 ```dotenv
 API_BASE_URL=https://iluminaconciencia.userena.digital/api/v1/
 ```
 
-La variable es exclusiva del servidor. El DAL consulta `noticias/?format=json` y usa el schema de Zod en `app/_dal/news/schemas/` para validar y transformar la respuesta; los tipos se derivan del schema. No hay un mapper separado ni un snapshot de respaldo. La API debe estar disponible durante el build, que genera las rutas de detalle.
+`API_BASE_URL` es exclusiva del servidor: no lleva prefijo `NEXT_PUBLIC_` y no debe importarse desde componentes cliente. También debe estar disponible durante el build y la ejecución en producción. No subas `.env.local` al repositorio.
 
-- **Caché:** tag `noticias`, revalidación SWR a los 7 días y expiración a los 30 días totales; el router cliente puede reutilizar el resultado durante 5 minutos.
-- **Eventos:** `POST /api/revalidate` expira los datos del tag con `{ expire: 0 }`. Es público y no tiene autenticación en esta etapa. El contrato, los riesgos y la extensión de tags se describen en la [guía de la API](docs/guides/api.md).
-- **Límites:** la revalidación necesita una lectura; no es un cron ni garantiza frescura semanal si la API falla. La caché en memoria puede perderse con reinicios o despliegues.
-- **Presentación:** se respeta `mostrar`, se ignora `mostrar_principal` y se ordena por fecha descendente. Home muestra las últimas 3 noticias y el sidebar las últimas 5.
-- **Identidad:** ID de la base de datos recibido en `id` desde la API, validado como entero positivo obligatorio; URL con título normalizado sin timestamp. Las colisiones entre noticias visibles se resuelven en orden de respuesta con sufijos incrementales `-2`, `-3`, etc., saltando los slugs ya ocupados, sin solicitudes adicionales. Cambiar el título o el orden de entrada puede reasignar slugs existentes. Las URLs anteriores con timestamp no tienen redirección.
-- **Contenido y fechas:** el detalle procesa únicamente `cuerpo` con la sanitización existente. Los enlaces relativos usan el origen configurado de la API, sin inventar URLs de detalle. La fecha conserva el offset recibido; el DAL entrega también `publishedAtLabel` con el formato visible existente, sin convertir de nuevo su hora chilena ni agregar un polyfill.
-
-Los errores HTTP, timeouts y respuestas inválidas se propagan: no se sustituyen por una lista vacía ni por un snapshot.
-
-## Artículos: API y fechas
-
-El DAL consulta `articulos/?format=json` con la misma variable `API_BASE_URL` de noticias. El schema de Zod en `app/_dal/articles/schemas/` valida `id` como entero positivo, `titulo` no vacío, `fecha` como fecha ISO exacta (`YYYY-MM-DD`) y `archivo` como URL HTTP/HTTPS. Los tipos se derivan del schema; el snapshot anterior deja de ser una fuente de datos y no se usa como respaldo.
-
-- **Datos:** se conserva la ID de la base de datos y la fecha completa; `archivo` es el destino de la publicación. Como el endpoint no entrega imagen, `image` es `null`.
-- **Caché:** tag `articulos`, revalidación SWR a los 7 días, expiración a los 30 días y reutilización cliente durante 5 minutos. El timeout de consulta es de 10 segundos; los errores HTTP, de red y de validación se propagan.
-- **Presentación:** orden por fecha descendente; home muestra las últimas 3 publicaciones y el sidebar las últimas 5. El DAL entrega `publishedAtLabel` con solo mes y año, por ejemplo `junio del 2023`; las tarjetas reciben ese texto ya preparado y mantienen `2023-06-01` en el atributo `datetime`. No se altera el formato de noticias ni el del resumen del mapa.
-- **Meses:** el mapeo existente se comparte desde `app/_utils/months.ts`; `formatMonthYear()` lo reutiliza sin convertir zonas horarias. Ambos DAL entregan sus etiquetas listas para mostrar: las páginas y `PublicationCard` no eligen ni ejecutan formatos.
-
-## Getting Started
-
-First, run the development server:
+### Servidor de desarrollo
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abrí [http://localhost:3000](http://localhost:3000). Si el puerto está ocupado, usá la dirección que imprime la terminal, o elegí uno con `pnpm dev --port 3001`. Los cambios de código se recargan automáticamente; reiniciá el servidor si cambiás variables de entorno.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+La home está en `app/(home)/page.tsx`, no en `app/page.tsx`. Para detener el servidor, usá `Ctrl+C`.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Comandos habituales
 
-## Learn More
+| Comando                                                                      | Uso                                                                                                |
+| ---------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `pnpm dev`                                                                   | Desarrollo con recarga automática.                                                                 |
+| `pnpm build`                                                                 | Compilar y prerenderizar las páginas para producción; necesita acceso a la API.                    |
+| `pnpm start`                                                                 | Servir el resultado del último build; ejecutá `pnpm build` antes. No es el servidor de desarrollo. |
+| `pnpm lint`                                                                  | Revisar reglas de código.                                                                          |
+| `pnpm typecheck`                                                             | Comprobar tipos sin compilar la aplicación.                                                        |
+| `pnpm exec prettier --check README.md docs/architecture.md docs/guides/*.md` | Comprobar formato de la documentación de desarrollo.                                               |
+| `pnpm format`                                                                | Reformatear archivos del proyecto; modifica archivos, revisá el diff después.                      |
 
-To learn more about Next.js, take a look at the following resources:
+## Arquitectura en breve
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Todo el código de la aplicación vive en `app/`. Las rutas componen la pantalla; los módulos cercanos reúnen su presentación, lógica y acceso a datos. Los componentes se ejecutan en el servidor por defecto; solo las partes que necesitan interacción o APIs del navegador se marcan con `'use client'`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Ubicación          | Responsabilidad                                                       |
+| ------------------ | --------------------------------------------------------------------- |
+| `app/layout.tsx`   | Estructura global, fuentes, header y pies institucionales.            |
+| `app/(home)/`      | Portada y sus secciones.                                              |
+| `app/(site)/`      | Páginas interiores con estructura y espaciado comunes.                |
+| `app/_features/`   | Módulos funcionales compartidos, como navegación y footer.            |
+| `app/_components/` | Elementos de presentación reutilizables.                              |
+| `app/_dal/`        | Consultas y validación de datos compartidos.                          |
+| `app/api/`         | Endpoints HTTP propios de Next.js.                                    |
+| `public/`          | Archivos públicos servidos desde `/`, sin incluir `public` en la URL. |
 
-## Deploy on Vercel
+Los paréntesis agrupan rutas sin aparecer en la URL y el prefijo `_` identifica carpetas privadas de implementación. No hace falta crear una capa o un wrapper por cada página. Más detalles en [Arquitectura](docs/architecture.md).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Guías
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [Crear rutas y componer contenido con layouts y wrappers](docs/guides/adding-routes.md).
+- [Editar o agregar escenas del hero](docs/guides/extending-hero.md).
+- [Editar metadata global y de páginas internas](docs/guides/editing-metadata.md).
+- [Consultar datos, usar caché y revalidar por tags](docs/guides/data-and-revalidation.md).
+- [Usar y extender la API: contrato, tags, respuestas y diagnóstico](docs/guides/api.md).
+
+La documentación de mantenimiento vive en `docs/` y se versiona. El material histórico de análisis y diseño se conserva en `.docs-archive/`; sus archivos locales siguen ignorados, salvo las copias de respaldo que ya estaban versionadas.
+
+## Problemas frecuentes
+
+- **`API_BASE_URL is required`:** revisá `.env.local` y reiniciá el proceso. En producción configurá la variable tanto en build como en runtime.
+- **La API falla o el build no termina correctamente:** comprobá conectividad, URL base y respuesta del backend. Noticias y artículos validan las respuestas; un error no se reemplaza por datos ficticios.
+- **El contenido no cambia al editarlo en el backend:** puede estar cacheado. Consultá la guía de datos antes de reconstruir el sitio o borrar archivos locales.
+- **`pnpm start` no encuentra el build:** ejecutá `pnpm build` primero. Para programar, usá `pnpm dev`.
+- **Algo funciona en desarrollo pero no en producción:** comprobá también con build/start. El despliegue AWS agrega cachés e infraestructura que no se validan solo con el servidor local.
+
+Las guías describen el código actual. La instalación y configuración de Amplify self-managed no están implementadas en este repositorio; no se requiere una cuenta AWS para desarrollar localmente.
