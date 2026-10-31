@@ -1,5 +1,0 @@
-ESO/S. Brunier — eso0932a — CC BY 4.0
-https://www.hq.eso.org/public/images/eso0932a/
-https://creativecommons.org/licenses/by/4.0/
-Adaptations: projection/reprojection, canonical crop/resampling, selective inferred region reconstruction, WebP95 encoding. Catalog-star SVG is separately generated from the existing 4,666-row BSC5 catalog, mapper and reference geometry; it is not an ESO asset.
-Approved background: t13-texture-r1, region plan SHA-256 990e8b7ff4fc73e4f79d4870ebee0c62adc38a8280593332dfac952edbcc8ce5.
