@@ -1,0 +1,674 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>IluminAconciencia — Editorial superscript</title>
+    <style>
+      :root {
+        --bg: #0e0929;
+        --fg: #fcf8ff;
+        --primary: #f4bd63;
+        --text: rgb(252 248 255 / 80%);
+        --border: rgb(244 189 99 / 50%);
+        --accent: #ff5a3d;
+        --font-sans:
+          -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans',
+          'Helvetica Neue', sans-serif;
+        --font-serif: Georgia, Cambria, 'Times New Roman', Times, serif;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--fg);
+        font: 16px/1.65 var(--font-sans);
+      }
+      button {
+        font: inherit;
+      }
+      button {
+        cursor: pointer;
+      }
+      button:focus-visible,
+      [tabindex]:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 4px;
+      }
+      p {
+        color: var(--text);
+      }
+      h1,
+      h2,
+      h3 {
+        font-family: var(--font-serif);
+        font-weight: 400;
+        line-height: 1.25;
+        margin: 0;
+      }
+      h1 {
+        font-size: 48px;
+        max-width: 850px;
+      }
+      h2 {
+        font-size: 30px;
+      }
+      h3 {
+        font-size: 20px;
+      }
+      .eyebrow {
+        font-size: 12px;
+        line-height: 16px;
+        letter-spacing: 3px;
+        color: var(--primary);
+        text-transform: uppercase;
+      }
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        padding: 20px 40px;
+        border-bottom: 1px solid var(--border);
+      }
+      .brand {
+        font: 20px var(--font-serif);
+        color: var(--primary);
+      }
+      .topbar small {
+        color: var(--text);
+      }
+      main {
+        max-width: 1280px;
+        margin: auto;
+        padding: 48px 40px;
+      }
+      .intro {
+        max-width: 850px;
+      }
+      .intro > p:last-child {
+        max-width: 720px;
+      }
+      .workspace {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 304px;
+        gap: 48px;
+        margin-top: 40px;
+      }
+      .reading {
+        min-width: 0;
+        border-block: 1px solid var(--border);
+        padding: 32px 0 48px;
+      }
+      .reading > p {
+        max-width: 65ch;
+      }
+      .reading h2 {
+        margin-top: 16px;
+      }
+      .reading h3 {
+        margin-top: 32px;
+      }
+      .reading p {
+        margin: 16px 0 24px;
+      }
+      .section-label {
+        font-size: 12px;
+        color: var(--primary);
+        letter-spacing: 3px;
+      }
+      .divider {
+        height: 1px;
+        background: var(--border);
+        margin: 32px 0;
+      }
+      .term {
+        display: inline;
+        background: transparent;
+        border: 0;
+        border-radius: 4px;
+        padding: 0;
+        color: inherit;
+        line-height: inherit;
+        text-align: inherit;
+        font-weight: inherit;
+        box-decoration-break: clone;
+        -webkit-box-decoration-break: clone;
+      }
+      .term:hover,
+      .term[aria-expanded='true'] {
+        color: var(--primary);
+      }
+      .marker {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--primary);
+        margin-left: 3px;
+        vertical-align: super;
+        line-height: 0;
+      }
+      .badge .marker {
+        display: inline-flex;
+        width: 16px;
+        height: 16px;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--primary);
+        border-radius: 999px;
+        vertical-align: 2px;
+        line-height: 1;
+        font-size: 12px;
+        margin-left: 4px;
+      }
+      .badge .term:hover .marker,
+      .badge .term[aria-expanded='true'] .marker {
+        background: var(--primary);
+        color: var(--bg);
+      }
+      .glossary .term {
+        text-decoration: underline dotted var(--primary);
+        text-underline-offset: 5px;
+        text-decoration-thickness: 1px;
+      }
+      .glossary .term:hover {
+        text-decoration-style: solid;
+      }
+      .standalone {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--primary);
+        border-radius: 999px;
+        width: 32px;
+        height: 32px;
+        color: var(--primary);
+        background: transparent;
+        font-weight: 600;
+      }
+      .standalone:hover,
+      .standalone[aria-expanded='true'] {
+        background: var(--primary);
+        color: var(--bg);
+      }
+      .aside-card {
+        padding: 20px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        margin-bottom: 24px;
+      }
+      .aside-card h2 {
+        font-size: 20px;
+      }
+      .aside-card p {
+        font-size: 14px;
+      }
+      .filter-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 24px 0 12px;
+        color: var(--fg);
+        font-size: 14px;
+      }
+      .filter-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+      }
+      .level {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 32px;
+        border: 1px solid var(--primary);
+        border-radius: 4px;
+        color: var(--bg);
+        background: var(--primary);
+        font-size: 14px;
+      }
+      .help-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 20px;
+      }
+      .help-row span {
+        font-size: 14px;
+        color: var(--text);
+      }
+      .specs {
+        padding: 0;
+        list-style: none;
+        font-size: 14px;
+        color: var(--text);
+      }
+      .specs li {
+        padding: 12px 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .specs strong {
+        color: var(--fg);
+        display: block;
+        font-weight: 600;
+      }
+      .hint {
+        font-size: 12px;
+        color: var(--primary);
+      }
+      .bottom-note {
+        font-size: 14px;
+        max-width: 800px;
+        border-top: 1px solid var(--border);
+        margin-top: 32px;
+        padding-top: 24px;
+      }
+      .popover {
+        position: fixed;
+        z-index: 10;
+        display: flex;
+        flex-direction: column;
+        width: var(--panel-width);
+        max-width: calc(100vw - 32px);
+        max-height: min(var(--panel-height), calc(100dvh - 32px));
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: var(--bg);
+        color: var(--fg);
+        font: 14px/1.65 var(--font-sans);
+      }
+      .popover[hidden] {
+        display: none;
+      }
+      .popover-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 16px 16px 12px;
+        flex: none;
+      }
+      .popover h2 {
+        font: 600 14px/1.5 var(--font-sans);
+      }
+      .close {
+        background: transparent;
+        border: 0;
+        color: var(--primary);
+        width: 28px;
+        height: 28px;
+        flex: none;
+        line-height: 1;
+        font-size: 20px;
+        border-radius: 4px;
+        margin: -4px -4px -4px 0;
+      }
+      .popover-body {
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        min-height: 0;
+        padding: 0 16px 16px;
+        scrollbar-width: thin;
+        scrollbar-color: var(--primary) var(--bg);
+      }
+      .popover-body p {
+        margin: 0 0 16px;
+        color: var(--text);
+      }
+      .popover-body p:last-child {
+        margin: 0;
+      }
+      .badge .popover-head {
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 12px;
+      }
+      .glossary .popover-head {
+        padding-bottom: 8px;
+      }
+      .glossary .popover h2 {
+        font: 20px/1.25 var(--font-serif);
+      }
+      @media (max-width: 900px) {
+        .workspace {
+          grid-template-columns: 1fr;
+          gap: 32px;
+        }
+        .sidebar {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 24px;
+        }
+        .aside-card {
+          margin: 0;
+        }
+        main {
+          padding: 32px 24px;
+        }
+        .topbar {
+          padding: 16px 24px;
+        }
+      }
+      @media (max-width: 560px) {
+        h1 {
+          font-size: 30px;
+        }
+        .topbar {
+          padding: 16px;
+          align-items: flex-start;
+        }
+        .topbar small {
+          max-width: 140px;
+          text-align: right;
+          font-size: 12px;
+        }
+        main {
+          padding: 32px 16px;
+        }
+        .workspace {
+          margin-top: 24px;
+        }
+        .reading {
+          padding-top: 24px;
+        }
+        .sidebar {
+          display: block;
+        }
+        .aside-card {
+          margin-bottom: 24px;
+        }
+        .popover {
+          max-width: calc(100vw - 32px);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          scroll-behavior: auto !important;
+        }
+      }
+    </style>
+  </head>
+  <body class="editorial" style="--panel-width: 304px; --panel-height: 288px">
+    <header class="topbar">
+      <span class="brand">✦ IluminAconciencia</span
+      ><small>Exploración de diseño<br />Ayuda contextual · 01 / Editorial</small>
+    </header>
+    <main>
+      <header class="intro">
+        <p class="eyebrow">01 / Editorial</p>
+        <h1>La explicación, al ritmo de la lectura.</h1>
+        <p>
+          La palabra conserva el color del párrafo. Un ? dorado en superíndice anuncia la ayuda sin simular un enlace.
+        </p>
+      </header>
+      <div class="workspace">
+        <article class="reading" aria-label="Ejemplo en texto largo">
+          <div class="section-label">PROYECTO / LECTURA CON AYUDA CONTEXTUAL</div>
+          <h2>Por qué importa la oscuridad</h2>
+          <p>
+            IluminAconciencia combina el monitoreo del cielo nocturno con la divulgación sobre la
+            <button
+              type="button"
+              class="term"
+              data-info="pollution"
+              aria-expanded="false"
+              aria-haspopup="dialog"
+              aria-controls="info-panel"
+            >
+              contaminación lumínica<span class="marker" aria-hidden="true">?</span>
+            </button>
+            en la Región de Coquimbo.
+          </p>
+          <p>
+            La luz artificial resulta útil cuando ilumina donde y cuando se necesita. Cuando se dispersa hacia el cielo
+            o invade espacios que no requieren iluminación, modifica el entorno nocturno.
+          </p>
+          <p>
+            Conectamos ciencia, tecnología y comunidad para que la información del cielo nocturno sea accesible y ayude
+            a comprender por qué la oscuridad natural también merece cuidado.
+          </p>
+          <div class="divider"></div>
+          <h3>Monitoreamos el cielo</h3>
+          <p>
+            La red utiliza
+            <button
+              type="button"
+              class="term"
+              data-info="photometer"
+              aria-expanded="false"
+              aria-haspopup="dialog"
+              aria-controls="info-panel"
+            >
+              fotómetros<span class="marker" aria-hidden="true">?</span>
+            </button>
+            para reunir observaciones del brillo del cielo en distintos puntos. Estos registros permiten explorar cómo
+            se comporta el entorno nocturno y consultar información de cada lugar.
+          </p>
+          <h3>Luz con un propósito</h3>
+          <p>
+            No se trata de dejar de iluminar, sino de iluminar mejor. Revisar dirección, intensidad y horarios permite
+            aprovechar mejor la iluminación.
+          </p>
+          <p class="hint">
+            Prototipo interactivo. La primera definición aparece abierta para comparar. Prueba hover, clic, Tab, Escape
+            y el scroll dentro del panel.
+          </p>
+        </article>
+        <aside class="sidebar" aria-label="Otros usos y comportamiento">
+          <section class="aside-card">
+            <h2>También en los filtros</h2>
+            <p>Misma interacción, sin agregar otro control a la palabra.</p>
+            <div class="filter-label">
+              ✦
+              <button
+                type="button"
+                class="term"
+                data-info="bortle"
+                aria-expanded="false"
+                aria-haspopup="dialog"
+                aria-controls="info-panel"
+              >
+                Escala de Bortle<span class="marker" aria-hidden="true">?</span>
+              </button>
+            </div>
+            <div class="filter-grid" aria-label="Vista ilustrativa de los niveles">
+              <span class="level">1</span><span class="level">2</span><span class="level">3</span
+              ><span class="level">4</span><span class="level">5</span><span class="level">6</span
+              ><span class="level">7</span><span class="level">8</span><span class="level">9</span>
+            </div>
+            <div class="help-row">
+              <button
+                type="button"
+                class="standalone"
+                data-info="help"
+                aria-label="Ayuda sobre las definiciones"
+                aria-controls="info-panel"
+                aria-expanded="false"
+                aria-haspopup="dialog"
+              >
+                ?</button
+              ><span>Botón independiente<br />sin término asociado</span>
+            </div>
+          </section>
+          <section class="aside-card">
+            <h2>Reglas de esta variante</h2>
+            <ul class="specs">
+              <li><strong>Hover en toda la expresión</strong>La marca no es un segundo botón.</li>
+              <li>
+                <strong>Panel de hasta 304 × 288 px</strong>La altura incluye el título y se reduce al espacio
+                disponible.
+              </li>
+              <li>
+                <strong>Scroll sólo en el contenido</strong>Título y cierre permanecen visibles, sin indicadores
+                adicionales.
+              </li>
+              <li>
+                <strong>Cerca y dentro de pantalla</strong>Arriba o abajo del término; margen lateral mínimo de 16 px.
+              </li>
+              <li>
+                <strong>Mouse, tacto y teclado</strong>Hover automático; toque abre o cierra; Escape y clic afuera
+                cierran.
+              </li>
+            </ul>
+          </section>
+        </aside>
+      </div>
+      <p class="bottom-note">
+        Recomendada para /proyecto: marca discreta, palabra completa interactiva y panel compacto. Los colores son los
+        del sitio; las fuentes de esta maqueta son fallbacks locales. El texto ampliado permite observar el desborde, no
+        propone cambios editoriales para producción.
+      </p>
+    </main>
+    <section class="popover" id="info-panel" role="dialog" aria-modal="false" aria-labelledby="info-title" hidden>
+      <header class="popover-head">
+        <h2 id="info-title"></h2>
+        <button type="button" class="close" aria-label="Cerrar explicación">×</button>
+      </header>
+      <div class="popover-body" tabindex="0" role="region" aria-labelledby="info-title"></div>
+    </section>
+    <script>
+      const entries = {
+        pollution: {
+          title: 'Contaminación lumínica',
+          paragraphs: [
+            'Es la alteración de la oscuridad natural por luz artificial innecesaria o mal dirigida. No depende únicamente de cuántas luces hay, sino también de su dirección, intensidad y horario de uso.',
+            'Cuando la iluminación se dispersa hacia el cielo o invade espacios que no requieren luz, modifica el entorno nocturno. El resplandor artificial dificulta distinguir las estrellas y observar objetos tenues.',
+            'Para iluminar mejor, conviene revisar qué superficie necesita luz, en qué momento y con qué intensidad. Orientar las luminarias, ajustar su potencia y programar los horarios permite aprovechar mejor la iluminación.',
+            'La alternancia entre luz y oscuridad forma parte del ambiente de los seres vivos. Cuidar la noche implica considerar la biodiversidad, los espacios de descanso y la observación del cielo.'
+          ]
+        },
+        photometer: {
+          title: 'Fotómetro',
+          paragraphs: [
+            'Un fotómetro es un instrumento que mide luz. Los utilizados para observar el brillo del cielo registran una magnitud que debe interpretarse junto con las condiciones y características de la medición.',
+            'No miden directamente efectos sobre la salud o la biodiversidad. Los registros permiten explorar cómo se comporta el entorno nocturno y consultar información de cada lugar.'
+          ]
+        },
+        bortle: {
+          title: 'Escala de Bortle',
+          paragraphs: [
+            'La Escala de Bortle clasifica la oscuridad del cielo nocturno del 1 al 9. El nivel 1 corresponde a cielos extremadamente oscuros y el 9 a cielos muy brillantes, afectados por la luz artificial.',
+            'Astrónomos y observadores utilizan esta escala para describir las condiciones de observación. Ayuda a comunicar cuánto detalle se puede distinguir en el cielo nocturno.',
+            'En el mapa puedes filtrar los puntos por nivel y combinar esa selección con el tipo de instrumento. La escala describe el cielo; no es una medida directa de efectos sobre la salud o la biodiversidad.',
+            'Para comprender un registro conviene consultar las condiciones de observación y las características de la medición. Un número aislado no reemplaza ese contexto.'
+          ]
+        },
+        help: {
+          title: 'Cómo consultar una definición',
+          paragraphs: [
+            'Pasa el mouse sobre la palabra completa o sobre el signo de interrogación. Puedes mover el puntero hacia el panel y desplazarte por su contenido sin que se cierre.',
+            'En una pantalla táctil, toca para abrir y vuelve a tocar para cerrar. También puedes cerrar con el botón × o tocando afuera.',
+            'Con teclado, enfoca el término para abrirlo. Tab permite llegar al panel y a su contenido desplazable; Escape lo cierra sin perder el punto de lectura.'
+          ]
+        }
+      }
+      const panel = document.querySelector('.popover'),
+        body = panel.querySelector('.popover-body'),
+        title = panel.querySelector('h2')
+      const triggers = [...document.querySelectorAll('[data-info]')]
+      let active = null,
+        timer
+      function cancelClose() {
+        clearTimeout(timer)
+      }
+      function closePanel() {
+        cancelClose()
+        if (active) active.setAttribute('aria-expanded', 'false')
+        panel.hidden = true
+        active = null
+      }
+      function positionPanel() {
+        if (!active || panel.hidden) return
+        const r = active.getBoundingClientRect(),
+          margin = 16,
+          gap = 8
+        if (r.bottom < 0 || r.top > innerHeight) {
+          closePanel()
+          return
+        }
+        const below = innerHeight - r.bottom - margin - gap,
+          above = r.top - margin - gap
+        const nominal = parseFloat(getComputedStyle(document.body).getPropertyValue('--panel-height'))
+        const useBelow = below >= Math.min(nominal, 220) || below >= above
+        const available = Math.max(0, useBelow ? below : above)
+        panel.style.maxHeight = Math.min(nominal, available) + 'px'
+        const width = panel.getBoundingClientRect().width
+        const left = Math.min(Math.max(margin, r.left), Math.max(margin, innerWidth - width - margin))
+        panel.style.left = left + 'px'
+        const height = panel.getBoundingClientRect().height
+        panel.style.top = (useBelow ? r.bottom + gap : r.top - gap - height) + 'px'
+      }
+      function show(trigger) {
+        cancelClose()
+        if (active !== trigger) {
+          closePanel()
+          active = trigger
+          const entry = entries[trigger.dataset.info]
+          title.textContent = entry.title
+          body.replaceChildren(
+            ...entry.paragraphs.map((text) => {
+              const p = document.createElement('p')
+              p.textContent = text
+              return p
+            })
+          )
+          body.scrollTop = 0
+        }
+        panel.hidden = false
+        trigger.setAttribute('aria-expanded', 'true')
+        positionPanel()
+      }
+      function scheduleClose() {
+        cancelClose()
+        timer = setTimeout(() => {
+          if (!panel.matches(':hover') && !panel.contains(document.activeElement)) closePanel()
+        }, 240)
+      }
+      triggers.forEach((trigger) => {
+        trigger.addEventListener('pointerenter', (event) => {
+          if (event.pointerType === 'mouse') show(trigger)
+        })
+        trigger.addEventListener('pointerleave', scheduleClose)
+        trigger.addEventListener('focus', () => {
+          if (trigger.matches(':focus-visible')) show(trigger)
+        })
+        trigger.addEventListener('blur', scheduleClose)
+        trigger.addEventListener('click', () => {
+          if (active === trigger && !panel.hidden) closePanel()
+          else show(trigger)
+        })
+      })
+      panel.addEventListener('pointerenter', cancelClose)
+      panel.addEventListener('pointerleave', scheduleClose)
+      panel.addEventListener('focusin', cancelClose)
+      panel.addEventListener('focusout', scheduleClose)
+      panel.querySelector('.close').addEventListener('click', () => {
+        const trigger = active
+        trigger?.focus()
+        closePanel()
+      })
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && !panel.hidden) {
+          const trigger = active
+          if (panel.contains(document.activeElement)) trigger?.focus()
+          closePanel()
+          event.preventDefault()
+        }
+      })
+      document.addEventListener('pointerdown', (event) => {
+        if (!panel.hidden && !panel.contains(event.target) && !active?.contains(event.target)) closePanel()
+      })
+      window.addEventListener('resize', positionPanel)
+      window.addEventListener(
+        'scroll',
+        (event) => {
+          if (!panel.contains(event.target)) positionPanel()
+        },
+        true
+      )
+      show(triggers[0])
+    </script>
+  </body>
+</html>

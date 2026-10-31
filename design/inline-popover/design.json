@@ -1,0 +1,27 @@
+{
+  "title": "Inline information popovers",
+  "brief": "Palabra completa como trigger con apertura automática al hover; ? pequeño pero visible al final. Conservar botón independiente. Panel contextual menos invasivo, altura máxima, scroll al desbordar y ajuste a pantallas estrechas. Diseño únicamente; sin implementación en app/.",
+  "artboards": [
+    {
+      "file": "01-editorial.html",
+      "title": "Editorial superscript",
+      "tradeoff": "Quietest in long text; the superscript needs deliberate contrast to remain discoverable.",
+      "width": 1440,
+      "height": 1100
+    },
+    {
+      "file": "02-visible-marker.html",
+      "title": "Visible question badge",
+      "tradeoff": "Easiest to discover and consistent with map help; repeated circles add more visual noise.",
+      "width": 1440,
+      "height": 1100
+    },
+    {
+      "file": "03-glossary.html",
+      "title": "Glossary underline",
+      "tradeoff": "Clearly marks the full interactive phrase; dotted underlines make dense passages busier.",
+      "width": 1440,
+      "height": 1100
+    }
+  ]
+}

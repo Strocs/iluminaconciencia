@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="es">
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>
+    IluminAconciencia — sistema visual
+  </title>
+  <style>
+    :root {
+      --bg: #0e0929;
+      --fg: #fcf8ff;
+      --primary: #f4bd63;
+      --text: rgb(252 248 255 / 80%);
+      --border: rgb(244 189 99 / 50%);
+      --accent: #ff5a3d;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+      font:
+        16px/1.65 -apple-system,
+        BlinkMacSystemFont,
+        'Segoe UI',
+        Roboto,
+        Oxygen,
+        Ubuntu,
+        Cantarell,
+        'Open Sans',
+        'Helvetica Neue',
+        sans-serif;
+    }
+    main {
+      max-width: 1200px;
+      margin: auto;
+      padding: 48px 32px;
+    }
+    h1,
+    h2 {
+      font-family: Georgia, Cambria, 'Times New Roman', Times, serif;
+      font-weight: 400;
+    }
+    h1 {
+      font-size: 48px;
+    }
+    h2 {
+      font-size: 30px;
+    }
+    p {
+      color: var(--text);
+    }
+    .eyebrow {
+      color: var(--primary);
+      font-size: 12px;
+      letter-spacing: 3px;
+    }
+    .swatches,
+    .samples {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .swatch {
+      width: 160px;
+    }
+    .paint {
+      height: 64px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+    .sample {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      max-width: 360px;
+    }
+    .line {
+      background: var(--primary);
+      height: 8px;
+      margin-block: 12px;
+    }
+    button {
+      background: transparent;
+      color: var(--primary);
+      border: 1px solid var(--primary);
+      border-radius: 4px;
+      padding: 8px 20px;
+      font: inherit;
+    }
+    button:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 4px;
+    }
+    .help {
+      border-radius: 999px;
+      padding: 0;
+      width: 32px;
+      height: 32px;
+    }
+    section {
+      border-top: 1px solid var(--border);
+      margin-top: 32px;
+      padding-top: 16px;
+    }
+  </style>
+  <main>
+    <p class="eyebrow">ILUMINACONCIENCIA / SISTEMA EXISTENTE</p>
+    <h1>Oscuridad, ciencia y claridad.</h1>
+    <p>
+      Registro de los tokens del sitio. Fuentes de sistema para esta lámina; producción utiliza Baskervville y Ubuntu
+      Sans.
+    </p>
+    <section>
+      <h2>Color</h2>
+      <div class="swatches">
+        <div class="swatch">
+          <div class="paint" style="background: #0e0929"></div>
+          <p>Fondo<br /><small>#0e0929</small></p>
+        </div>
+        <div class="swatch">
+          <div class="paint" style="background: #fcf8ff"></div>
+          <p>Primer plano<br /><small>#fcf8ff</small></p>
+        </div>
+        <div class="swatch">
+          <div class="paint" style="background: #f4bd63"></div>
+          <p>Primario<br /><small>#f4bd63</small></p>
+        </div>
+        <div class="swatch">
+          <div class="paint" style="background: rgb(252 248 255 / 80%)"></div>
+          <p>Texto<br /><small>rgb(252 248 255 / 80%)</small></p>
+        </div>
+        <div class="swatch">
+          <div class="paint" style="background: rgb(244 189 99 / 50%)"></div>
+          <p>Borde<br /><small>rgb(244 189 99 / 50%)</small></p>
+        </div>
+        <div class="swatch">
+          <div class="paint" style="background: #ff5a3d"></div>
+          <p>Acento<br /><small>#ff5a3d</small></p>
+        </div>
+        <div class="swatch">
+          <div class="paint" style="background: #ff745c"></div>
+          <p>Acento hover<br /><small>#ff745c</small></p>
+        </div>
+        <div class="swatch">
+          <div class="paint" style="background: #17112f"></div>
+          <p>Bortle 1<br /><small>#17112f</small></p>
+        </div>
+        <div class="swatch">
+          <div class="paint" style="background: #66677d"></div>
+          <p>Bortle 2<br /><small>#66677d</small></p>
+        </div>
+        <div class="swatch">
+          <div class="paint" style="background: #4a6abc"></div>
+          <p>Bortle 3<br /><small>#4a6abc</small></p>
+        </div>
+        <div class="swatch">
+          <div class="paint" style="background: #55ad83"></div>
+          <p>Bortle 4<br /><small>#55ad83</small></p>
+        </div>
+        <div class="swatch">
+          <div class="paint" style="background: #dfc85c"></div>
+          <p>Bortle 5<br /><small>#dfc85c</small></p>
+        </div>
+        <div class="swatch">
+          <div class="paint" style="background: #e99a4f"></div>
+          <p>Bortle 6<br /><small>#e99a4f</small></p>
+        </div>
+        <div class="swatch">
+          <div class="paint" style="background: #d95c62"></div>
+          <p>Bortle 7<br /><small>#d95c62</small></p>
+        </div>
+        <div class="swatch">
+          <div class="paint" style="background: #f2edf5"></div>
+          <p>Bortle 8<br /><small>#f2edf5</small></p>
+        </div>
+        <div class="swatch">
+          <div class="paint" style="background: #f2edf5"></div>
+          <p>Bortle 9<br /><small>#f2edf5</small></p>
+        </div>
+      </div>
+    </section>
+    <section>
+      <h2>Tipografía y componentes</h2>
+      <div class="samples">
+        <div class="sample">
+          <h2>Por qué importa la oscuridad</h2>
+          <p>La luz artificial resulta útil cuando ilumina donde y cuando se necesita.</p>
+          <button type="button">Cómo medimos</button>
+        </div>
+        <div class="sample">
+          <button class="help" type="button" aria-label="Ejemplo visual de ayuda">?</button>
+          <p>Panel informativo · texto de 14 px, borde dorado, fondo oscuro y radio de 8 px.</p>
+        </div>
+      </div>
+    </section>
+    <section>
+      <h2>Espaciado</h2>
+      <div>
+        4 px
+        <div class="line" style="width: 4px"></div>
+      </div>
+      <div>
+        8 px
+        <div class="line" style="width: 8px"></div>
+      </div>
+      <div>
+        12 px
+        <div class="line" style="width: 12px"></div>
+      </div>
+      <div>
+        16 px
+        <div class="line" style="width: 16px"></div>
+      </div>
+      <div>
+        20 px
+        <div class="line" style="width: 20px"></div>
+      </div>
+      <div>
+        24 px
+        <div class="line" style="width: 24px"></div>
+      </div>
+      <div>
+        32 px
+        <div class="line" style="width: 32px"></div>
+      </div>
+    </section>
+  </main>
+</html>

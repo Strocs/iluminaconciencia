@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "chosen": "01-editorial.html",
+  "handoffs": {
+    "01-editorial.html": {
+      "status": "implemented",
+      "queued": false,
+      "sentAt": "2026-10-31T00:32:08.640Z",
+      "startedAt": "2026-10-31T00:44:46.240Z",
+      "implementedAt": "2026-10-31T00:46:40.796Z",
+      "note": "Implementation accepted by the user and authorized for commit. Inline editorial trigger, animated bounded scrolling card, no pinning or overflow indicator; page layouts unchanged. Typecheck and focused ESLint passed. Project desktop/mobile and keyboard verified; automated mobile-map check timed out and was not repeated. Acceptance does not claim that pending check passed.",
+      "previewUrl": "http://127.0.0.1:3000/proyecto"
+    }
+  }
+}
