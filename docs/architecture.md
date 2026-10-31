@@ -1,6 +1,6 @@
 # Arquitectura
 
-El proyecto organiza el código por rutas y responsabilidades concretas. Empezá por la página que querés modificar y seguí sus imports: no existe una cadena obligatoria de capas.
+El proyecto organiza el código por rutas y responsabilidades concretas. El punto de entrada es la página correspondiente y sus imports, sin una cadena obligatoria de capas.
 
 [Volver al README](../README.md)
 
@@ -32,33 +32,35 @@ Una carpeta privada no es una barrera de seguridad: organiza código fuera del e
 
 - **Una ruta lo usa:** junto a esa ruta.
 - **Varias rutas lo usan:** en su ancestro común más cercano.
-- **Pertenece a una funcionalidad:** conservá el módulo y su responsabilidad; no lo repartas entre carpetas genéricas.
+- **Pertenece a una funcionalidad:** mantener el módulo y su responsabilidad, sin repartirlo entre carpetas genéricas.
 
 Por ejemplo, noticias tiene componentes en `app/(site)/noticias/_components/`, mientras `getNews()` vive en `app/_dal/news/` porque lo consumen portada, páginas interiores y módulos compartidos.
 
-Los módulos compartidos no importan implementaciones privadas de una ruta. Usá exports e imports nombrados para código propio; los exports default de páginas y layouts son la excepción del framework.
+Los módulos compartidos no importan implementaciones privadas de una ruta. El código propio utiliza exports e imports nombrados; los exports default de páginas y layouts son la excepción del framework.
 
 ## Servidor y navegador
 
 - Los componentes son **de servidor por defecto**. Pueden llamar al DAL sin enviar esa implementación al navegador.
-- `'use client'` abre una frontera para interacción, eventos y APIs como `window`. No lo agregues a una página entera para resolver una interacción pequeña.
+- [`'use client'`](https://nextjs.org/docs/app/api-reference/directives/use-client) delimita los componentes con interacción, eventos y APIs como `window`; conviene mantener esa frontera cerca de la interacción.
 - Que un componente cliente reciba contenido servidor mediante `children` no convierte ese contenido automáticamente en código cliente.
 - Las consultas se realizan desde el componente servidor consumidor, no desde un wrapper creado solo para reenviar resultados.
 
-Pasar props está bien. Lo que evitamos es elevar consultas a páginas o layouts sin una responsabilidad real que lo justifique.
+El paso de props es válido; elevar consultas a páginas o layouts requiere una responsabilidad concreta que lo justifique.
 
 ## Layouts y wrappers actuales
 
 `app/layout.tsx` configura el documento global y compone `UserenaLayout`, `HeaderLayout` y el footer del proyecto. Esos dos componentes son wrappers ordinarios: reciben `children` y se aplican porque el layout raíz los importa.
 
-`app/(site)/layout.tsx` agrega el `<main>`, espaciado y el adaptador de parámetros de URL para las páginas interiores. La home usa su propio `<main>` en `app/(home)/page.tsx` y no hereda el layout de `(site)`.
+`app/(site)/layout.tsx` define el `<main>`, sus márgenes internos y el adaptador de parámetros de URL para las páginas interiores. La home usa su propio `<main>` en `app/(home)/page.tsx` y no hereda el layout de `(site)`.
 
-**No vuelvas a envolver cada página con el header y el pie, ni agregues otro `<main>` dentro del existente.** Un layout nuevo debe aportar una estructura compartida concreta; un wrapper es opcional y solo se extrae cuando hay una responsabilidad o reutilización real.
+El header, el pie y el `<main>` ya forman parte de los layouts existentes, sin necesidad de repetirlos en cada página. Un layout nuevo debe aportar una estructura compartida concreta; un wrapper es opcional y solo se extrae cuando hay una responsabilidad o reutilización real.
 
-Para ejemplos de creación y uso, seguí la [guía de rutas](guides/adding-routes.md).
+Los ejemplos de creación y uso están en la [guía de rutas](guides/adding-routes.md).
 
 ## Estilos y datos
 
-Usá Tailwind para componentes propios y `cn()` para clases condicionales. Reservá CSS Modules para sobrescribir estilos de paquetes externos. No agregues abstracciones globales para un único consumidor.
+[Tailwind CSS](https://tailwindcss.com/docs/styling-with-utility-classes) define estilos mediante clases de utilidad en el marcado: `p-4` aplica padding y `md:flex` activa flex desde el breakpoint `md`. Los componentes propios utilizan estas utilidades; CSS Modules queda reservado para sobrescribir estilos de paquetes externos.
+
+La función [`cn()`](../app/_utils/cn.ts) combina clases condicionales con `clsx` y resuelve conflictos entre utilidades de Tailwind con `tailwind-merge`, dando prioridad a la última clase incompatible. Por ejemplo, `cn('px-4', { 'px-6': true })` devuelve `'px-6'`. Las utilidades de un único consumidor permanecen junto a él.
 
 Las consultas y los tiempos de caché se describen en [Datos y revalidación](guides/data-and-revalidation.md). El webhook y la extensión de endpoints tienen su propia [guía de la API](guides/api.md). Los archivos públicos del cielo conservan su atribución en `public/hero/CREDITS.txt` y `public/hero/source.json`.

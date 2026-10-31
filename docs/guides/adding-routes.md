@@ -1,46 +1,82 @@
 # Crear una ruta y componer su contenido
 
-Elegí primero qué estructura debe heredar la página. Para una página interior normal, usá `app/(site)/`: ya incluye el header y los pies globales, además del `<main>` y espaciado de las páginas interiores.
+El ejemplo utiliza `/recursos`, una página para publicar materiales descargables del proyecto. La ruta y los datos mostrados son ilustrativos; no representan una funcionalidad implementada.
+
+Las páginas interiores pertenecen a `app/(site)/`, que aporta el contenedor principal y sus márgenes internos, además de heredar el header y los pies globales.
 
 [Volver al README](../../README.md) · [Arquitectura](../architecture.md)
 
 ## 1. Crear la página
 
-Para publicar `/observatorio`, creá `app/(site)/observatorio/page.tsx`:
+La página de `/recursos` corresponde a `app/(site)/recursos/page.tsx`:
 
 ```tsx
 import { SectionHeading } from '@/_components/SectionHeading'
+import { getResources } from './_dal/getResources'
 
-export default function ObservatoryPage() {
+export default async function ResourcesPage() {
+  const resources = await getResources()
+
   return (
     <div className="space-y-6">
-      <SectionHeading as="h1" eyebrow="OBSERVATORIO" title="Observatorio" />
-      <p>Información del observatorio y sus actividades.</p>
+      <SectionHeading as="h1" eyebrow="RECURSOS" title="Materiales descargables" />
+      <p>Guías y documentos del proyecto disponibles para descarga.</p>
+      <ul className="space-y-4">
+        {resources.map((resource) => (
+          <li key={resource.id}>
+            <a href={resource.href} download>
+              {resource.title}
+            </a>
+          </li>
+        ))}
+      </ul>
     </div>
   )
 }
 ```
 
-No hace falta registrar la URL en otro archivo ni crear un layout nuevo. Next aplica, en orden, `app/layout.tsx`, `app/(site)/layout.tsx` y la página. `(site)` no aparece en la URL.
+Next aplica, en orden, [`app/layout.tsx`](../../app/layout.tsx), [`app/(site)/layout.tsx`](../../app/%28site%29/layout.tsx) y la página, sin un registro adicional de la URL.
 
-Para separar una presentación extensa, creá componentes con exports nombrados en `observatorio/_components/` e importalos desde la página. No hace falta extraer un componente que solo reenvía props.
+Una presentación extensa puede separarse en componentes con exports nombrados dentro de `recursos/_components/`. La consulta permanece en el componente servidor que consume los datos.
 
-## 2. Usar layouts
+## 2. Datos y publicación de descargables
 
-Un `layout.tsx` se aplica automáticamente a todas las páginas bajo su carpeta. Crealo solo si hay estructura que deba compartirse, por ejemplo entre `/observatorio` y `/observatorio/visitas`.
+Para un catálogo local, los archivos pueden ubicarse en `public/recursos/` y sus datos en `app/(site)/recursos/_dal/getResources.ts`:
 
-Ejemplo opcional en `app/(site)/observatorio/layout.tsx`:
+```ts
+export async function getResources() {
+  return [
+    {
+      id: 'lighting-guide',
+      title: 'Guía de iluminación responsable',
+      href: '/recursos/guia-iluminacion.pdf'
+    }
+  ]
+}
+```
+
+En este ejemplo, publicar otro descargable consiste en incorporar el archivo y su entrada al catálogo. El PDF indicado también es ilustrativo y tendría que existir para que el enlace funcione.
+
+Si los archivos se suben desde un administrador del backend, el DAL consulta su API y valida los datos antes de devolverlos a la página, siguiendo la [guía de datos y revalidación](data-and-revalidation.md). La carga de archivos y su almacenamiento pertenecen a ese flujo de administración, no al listado público. La ubicación del DAL puede pasar al ancestro común más cercano si otras rutas también consumen el catálogo.
+
+Para una ficha individual, `recursos/[slug]/page.tsx` representa una URL variable. `params` es una promesa y se lee con `const { slug } = await params` en un componente servidor asíncrono. El detalle de noticias ofrece una [referencia real](../../app/%28site%29/noticias/%5Bslug%5D/page.tsx).
+
+## 3. Usar layouts
+
+Un `layout.tsx` permite compartir estructura entre rutas, por ejemplo `/recursos` y `/recursos/guias`. Un layout local solo resulta necesario si ambas páginas comparten una composición adicional.
+
+Ejemplo en `app/(site)/recursos/layout.tsx`:
 
 ```tsx
 import type { ReactNode } from 'react'
 import Link from 'next/link'
 
-export default function ObservatoryLayout({ children }: { children: ReactNode }) {
+export default function ResourcesLayout({ children }: { children: ReactNode }) {
   return (
     <div className="space-y-8">
-      <nav aria-label="Observatorio">
-        <Link href="/observatorio">Información</Link>
-        <Link href="/observatorio/visitas">Visitas</Link>
+      <nav aria-label="Recursos">
+        <Link href="/recursos">Todos los recursos</Link>
+        <Link href="/recursos/guias">Guías</Link>
       </nav>
       {children}
     </div>
@@ -48,13 +84,13 @@ export default function ObservatoryLayout({ children }: { children: ReactNode })
 }
 ```
 
-El enlace de visitas requiere crear también `observatorio/visitas/page.tsx`. No importes este layout manualmente en las páginas: Next ya las envuelve con él. Los layouts antecesores siguen aplicándose; este no reemplaza el global ni el de `(site)`.
+La segunda ruta requiere su propio `recursos/guias/page.tsx`. Next aplica el layout automáticamente y conserva los layouts antecesores.
 
-## 3. Usar wrappers de contenido
+## 4. Usar wrappers de contenido
 
-Un wrapper es un componente que recibe `children` para aportar una responsabilidad de presentación o composición. No tiene comportamiento especial por su nombre: se importa y usa explícitamente.
+Un wrapper recibe `children` y aporta una responsabilidad de presentación o composición. A diferencia de `layout.tsx`, se importa explícitamente donde se utiliza.
 
-Los wrappers institucionales `UserenaLayout` y `HeaderLayout` ya se usan en el layout raíz. No los repitas dentro de la nueva página. Para un wrapper local reutilizado, por ejemplo un panel con espaciado común, podés crear `observatorio/_components/ContentPanel.tsx`:
+`UserenaLayout` y `HeaderLayout` ya forman parte del layout raíz. Para un panel reutilizado dentro de recursos, una opción sería `recursos/_components/ContentPanel.tsx`:
 
 ```tsx
 import type { ReactNode } from 'react'
@@ -64,21 +100,18 @@ export function ContentPanel({ children }: { children: ReactNode }) {
 }
 ```
 
-Luego importá `ContentPanel` desde `./_components/ContentPanel` en la página y colocá dentro el contenido: `<ContentPanel>…</ContentPanel>`. Si solo necesitás un `<div>` una vez, escribilo directamente: no es obligatorio crear un wrapper.
+Su uso en la página sería `<ContentPanel>…</ContentPanel>`, con un import desde `./_components/ContentPanel`. Para una única composición sencilla, el marcado puede permanecer en la página. El `<main>` ya está definido en el layout de `(site)`.
 
-Conservá un solo `<main>` y un título principal claro. Para compartir un wrapper entre rutas, movelo al ancestro común más cercano, no a una carpeta global por anticipado.
+## 5. Navegación y metadata
 
-## 4. Datos, parámetros y navegación
+La entrada `{ label: 'Recursos', href: '/recursos' }` en [`navigationItems`](../../app/_features/navigation/navigation.ts) incorpora la página al header y al footer del proyecto. La creación de la ruta y su inclusión en el menú son pasos independientes.
 
-- Si la página necesita datos, dejá que su componente servidor consumidor llame al DAL. Mantené los módulos de un único consumidor junto a la ruta.
-- Para una URL variable, creá una carpeta como `observatorio/[slug]/page.tsx`. En Next actual, `params` es una promesa: se lee con `const { slug } = await params` en un componente servidor asíncrono. Revisá `app/(site)/noticias/[slug]/page.tsx` como ejemplo real y la [guía de datos](data-and-revalidation.md) para prerenderizado y caché.
-- Si debe aparecer en el menú principal, agregá su entrada a `navigationItems` en `app/_features/navigation/navigation.ts`. Crear la ruta no agrega el enlace automáticamente.
-- Para enlazar páginas, usá `Link` de `next/link` o componentes existentes como `Button` con `href`. Un endpoint HTTP se crea con `route.ts` y exports por método; no coloques `page.tsx` y `route.ts` en el mismo segmento de URL.
+Los enlaces internos utilizan `Link` de `next/link` o componentes existentes como `Button` con `href`. Los enlaces de descarga apuntan al archivo correspondiente.
 
-## Metadata de la ruta
+El export `metadata` de la página define su título y descripción; los valores compartidos por rutas hijas pueden residir en su layout común. La [guía de metadata](editing-metadata.md) utiliza el mismo ejemplo de recursos.
 
-Definí título y descripción en el export `metadata` de la página; si varias rutas hijas comparten valores, podés definirlos en su layout común. Seguí la [guía de metadata](editing-metadata.md) para ejemplos, herencia y URLs canonical.
+Los endpoints HTTP corresponden a `route.ts`, con exports por método y sin un `page.tsx` en el mismo segmento de URL.
 
 ## Comprobación
 
-Abrí `/observatorio` con `pnpm dev`. Revisá que aparezcan una sola vez el header, los pies y el contenido; verificá enlaces, título y espaciado. Si agregaste rutas hijas, comprobá que hereden el layout previsto. Ejecutá `pnpm lint`, `pnpm typecheck` y `pnpm build` antes de dar el cambio por terminado.
+La revisión de `/recursos` incluye la descarga de los archivos publicados, los enlaces del menú, el título y la composición con los layouts heredados. En caso de rutas hijas, también su estructura compartida. Los scripts `lint`, `typecheck` y `build` cubren análisis estático, tipos y compilación.

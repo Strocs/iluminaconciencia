@@ -6,27 +6,27 @@ Los componentes de servidor consultan el DAL; este valida y prepara la respuesta
 
 ## Agregar una consulta
 
-1. Ubicá el DAL junto a su consumidor; si varias rutas lo comparten, usá su ancestro común más cercano. Noticias y artículos usan `app/_dal/` porque también los consumen la portada y los sidebars.
-2. Obtené la URL base mediante `getApiBaseUrl()` de `app/_dal/api.ts`; no dupliques hosts ni expongas variables de servidor al navegador.
-3. Validá la respuesta con un schema de Zod y derivá sus tipos. Prepará allí los datos y formatos que consume la presentación.
-4. Llamá la función desde el componente servidor que muestra esos datos. No agregues un wrapper dedicado solo a consultar y reenviar props.
-5. Si el contenido es cacheable, definí su tiempo de vida y tag de forma explícita. Para invalidarlo mediante el webhook, agregá también el tag al registro permitido de la [API de revalidación](api.md).
+1. Ubicar el DAL junto a su consumidor; si varias rutas lo comparten, en su ancestro común más cercano. Noticias y artículos usan `app/_dal/` porque también los consumen la portada y los sidebars.
+2. Obtener la URL base mediante [`getApiBaseUrl()`](../../app/_dal/api.ts), sin duplicar hosts.
+3. Validar la respuesta con un schema de Zod, derivar sus tipos y preparar los datos y formatos que consume la presentación.
+4. Consultar desde el componente servidor que muestra esos datos, sin un wrapper dedicado únicamente a reenviar props.
+5. Si el contenido es cacheable, definir su tiempo de vida y tag de forma explícita. La invalidación mediante el webhook requiere añadir también el tag al registro permitido de la [API de revalidación](api.md).
 
 ## Prerenderizado y contenido nuevo
 
 `generateStaticParams()` indica qué URLs conocidas se preparan durante el build. No se vuelve a ejecutar al invalidar un tag y no impide por sí solo resolver URLs nuevas en runtime. Noticias obtiene su lista desde `getNews()`; después de publicar contenido, esa lista debe actualizarse para encontrar el nuevo slug.
 
-El proyecto usa Cache Components. Si se declara `generateStaticParams()`, la versión actual requiere al menos un parámetro durante el build: una lista vacía necesita tratamiento específico. No agregues opciones de caché copiadas de otras versiones sin consultar la documentación instalada de Next.
+El proyecto usa Cache Components. Si se declara `generateStaticParams()`, la versión actual requiere al menos un parámetro durante el build: una lista vacía necesita tratamiento específico. Las opciones de caché dependen de la versión instalada de Next.
 
 ## Noticias: API y caché
 
-Configurá `API_BASE_URL` en `.env.local` para desarrollo y en el entorno de build y ejecución del despliegue:
+Configuración de `API_BASE_URL` en `.env.local` para desarrollo y en el entorno de build y ejecución del despliegue:
 
 ```dotenv
 API_BASE_URL=https://iluminaconciencia.userena.digital/api/v1/
 ```
 
-La variable es exclusiva del servidor. El DAL consulta `noticias/?format=json` y usa el schema de Zod en `app/_dal/news/schemas/` para validar y transformar la respuesta; los tipos se derivan del schema. No hay un mapper separado ni un snapshot de respaldo. La API debe estar disponible durante el build, que genera las rutas de detalle.
+El DAL consulta `noticias/?format=json` y usa el schema de Zod en `app/_dal/news/schemas/` para validar y transformar la respuesta; los tipos se derivan del schema. No hay un mapper separado ni un snapshot de respaldo. La API debe estar disponible durante el build, que genera las rutas de detalle.
 
 - **Caché:** tag `noticias`, revalidación SWR a los 7 días y expiración a los 30 días totales; el router cliente puede reutilizar el resultado durante 5 minutos.
 - **Eventos:** `POST /api/revalidate` permite expirar los datos del tag `noticias` sin servir el valor anterior en la siguiente lectura. El endpoint es público y no tiene autenticación por decisión de esta etapa; ver el contrato y sus límites en la [guía de la API](api.md).
@@ -44,7 +44,7 @@ El DAL consulta `articulos/?format=json` con la misma variable `API_BASE_URL` de
 - **Datos:** se conserva la ID de la base de datos y la fecha completa; `archivo` es el destino de la publicación. Como el endpoint no entrega imagen, `image` es `null`.
 - **Caché:** tag `articulos`, revalidación SWR a los 7 días, expiración a los 30 días y reutilización cliente durante 5 minutos. El timeout de consulta es de 10 segundos; los errores HTTP, de red y de validación se propagan.
 - **Presentación:** orden por fecha descendente; home muestra las últimas 3 publicaciones y el sidebar las últimas 5. El DAL entrega `publishedAtLabel` con solo mes y año, por ejemplo `junio del 2023`; las tarjetas reciben ese texto ya preparado y mantienen `2023-06-01` en el atributo `datetime`. No se altera el formato de noticias ni el del resumen del mapa.
-- **Meses:** el mapeo existente se comparte desde `app/_utils/months.ts`; `formatMonthYear()` lo reutiliza sin convertir zonas horarias. Ambos DAL entregan sus etiquetas listas para mostrar: las páginas y `PublicationCard` no eligen ni ejecutan formatos.
+- **Meses:** el mapeo existente se comparte desde `app/_utils/months.ts`; [`formatMonthYear()`](../../app/_utils/months.ts) lo reutiliza sin convertir zonas horarias. Ambos DAL entregan sus etiquetas listas para mostrar: las páginas y `PublicationCard` no eligen ni ejecutan formatos.
 
 ## API de revalidación por tags
 

@@ -41,7 +41,7 @@ const footerLogos = [
     label: 'Contactos de la Universidad de La Serena'
   },
   {
-    href: 'https://iluminaconciencia.userena.digital/static/docs/ULS-INST-00053-05-RESD-3.pdf',
+    href: '/docs/acreditacion-uls.pdf',
     image: accreditationLogo,
     label: 'Acreditación institucional de la Universidad de La Serena por cinco años'
   }

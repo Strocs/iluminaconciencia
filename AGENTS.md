@@ -12,6 +12,10 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 Use named exports and named imports for owned application code. Keep external package APIs unchanged; framework-required default exports (such as Next.js pages/layouts and configs) and default imports for assets are exempt.
 
+## Documentation language
+
+Escribe la documentación del proyecto en español neutro, sin voseo ni regionalismos. Usa formas como «usa», «puedes» y «tienes» en lugar de «usá», «podés» y «tenés». Conserva los términos técnicos, identificadores, comandos, citas textuales, licencias y bloques generados automáticamente en su forma original. La documentación se dirige a desarrolladores senior: preferir redacción descriptiva o impersonal e infinitivos frente a órdenes directas al lector; evitar explicaciones elementales y advertencias obvias.
+
 ## Genneral Rules
 
 DONT write tests.
@@ -19,6 +23,7 @@ DONT create branches for new features, just commit to main.
 DONT do visual verification with playwright unless user tells you to do so.
 
 ## Styles
+
 For conditional classes use cn() utility function. DONT use template strings.
 ONLY use css modules to override styles from a external package, for inner components prefer tailwind
 
