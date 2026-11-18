@@ -47,18 +47,6 @@ export default async function PuntoPage({ params }: PageProps<'/medicion/[punto-
               </dd>
             </div>
           </dl>
-          {point.detailUrl && (
-            <p className="mt-8 text-center">
-              <a
-                className="text-primary underline underline-offset-4"
-                href={point.detailUrl}
-                target="_blank"
-                rel="noreferrer"
-              >
-                Abrir información detallada del punto
-              </a>
-            </p>
-          )}
         </div>
         <DefaultSidebar />
       </div>
