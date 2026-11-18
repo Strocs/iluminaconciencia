@@ -46,6 +46,17 @@ El DAL consulta `articulos/?format=json` con la misma variable `API_BASE_URL` de
 - **Presentación:** orden por fecha descendente; home muestra las últimas 3 publicaciones y el sidebar las últimas 5. El DAL entrega `publishedAtLabel` con solo mes y año, por ejemplo `junio del 2023`; las tarjetas reciben ese texto ya preparado y mantienen `2023-06-01` en el atributo `datetime`. No se altera el formato de noticias ni el del resumen del mapa.
 - **Meses:** el mapeo existente se comparte desde `app/_utils/months.ts`; [`formatMonthYear()`](../../app/_utils/months.ts) lo reutiliza sin convertir zonas horarias. Ambos DAL entregan sus etiquetas listas para mostrar: las páginas y `PublicationCard` no eligen ni ejecutan formatos.
 
+## Mapa: agrupaciones procesadas en servidor
+
+El DAL local [`getMapData()`](<../../app/(home)/_sections/map/_dal/getMapData.ts>) obtiene los puntos compartidos y añade el fixture SQC solo al mapa. La tabla y los detalles conservan el contrato `Point[]` de `getPoints()` sin cámaras de demostración.
+
+- **Resultado cacheado:** instrumentos completos y grupos geográficos preparados con `use cache`; `cacheLife({ stale: 300, revalidate: 604800, expire: 2592000 })`. La fuente completa y la tolerancia son argumentos de la función cacheada: un snapshot distinto o una tolerancia distinta no reutilizan una agrupación incompatible. Next incluye también la identidad del build.
+- **Agrupación:** tolerancia inclusiva de 5 metros entre todos los integrantes, orden por ID y asignación al primer grupo compatible. No se unen cadenas transitivas cuyo diámetro exceda 5 metros ni se modifican las coordenadas originales. Una coincidencia de cuatro integrantes compatibles produce un error explícito con sus IDs; no se trunca la fuente ni se inventa una presentación para más de tres.
+- **Cliente:** filtra integrantes de grupos ya preparados, sin calcular distancias ni reagrupar. Dos o tres visibles conservan composición; uno recupera el marcador individual; cero eliminan el marcador y cierran su panel. El contador cuenta instrumentos, no grupos; SQC no participa del filtro Bortle.
+- **Vigencia:** sin nuevo tag público ni cambios al webhook. El snapshot y el fixture se actualizan mediante despliegue; los tiempos de caché no convierten esos archivos locales en una fuente en vivo.
+
+La composición, selección y accesibilidad del panel se describen en el [módulo del mapa](<../../app/(home)/_sections/map/README.md>). Lint, typecheck y build no sustituyen la revisión visual ni de interacción, que corresponde al usuario.
+
 ## API de revalidación por tags
 
 El backend puede avisar cambios enviando `POST /api/revalidate` con un tag permitido. Next expira los datos asociados; la siguiente lectura obtiene una respuesta fresca del backend. No hace falta reconstruir el sitio por cada cambio.
