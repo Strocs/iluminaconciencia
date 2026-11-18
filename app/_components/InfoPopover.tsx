@@ -36,23 +36,28 @@ export function InfoPopover({
   const titleId = useId()
   const triggerRef = useRef<HTMLButtonElement | null>(null)
   const panelRef = useRef<HTMLDivElement | null>(null)
+  const openTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
   const closeTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
   const [portalHost, setPortalHost] = useState<HTMLElement | null>(null)
   const [open, setOpen] = useState(false)
 
+  const cancelOpen = useCallback(() => clearTimeout(openTimer.current), [])
   const cancelClose = useCallback(() => clearTimeout(closeTimer.current), [])
 
   const close = useCallback(() => {
+    cancelOpen()
     cancelClose()
     setOpen(false)
-  }, [cancelClose])
+  }, [cancelOpen, cancelClose])
 
   const show = () => {
+    cancelOpen()
     cancelClose()
     setOpen(true)
   }
 
   const scheduleClose = () => {
+    cancelOpen()
     cancelClose()
     closeTimer.current = setTimeout(() => {
       const panel = panelRef.current
@@ -96,11 +101,12 @@ export function InfoPopover({
       triggerRef.current = node
       setPortalHost(node.ownerDocument.body)
       return () => {
+        cancelOpen()
         cancelClose()
         triggerRef.current = null
       }
     },
-    [cancelClose]
+    [cancelOpen, cancelClose]
   )
 
   const setPanelRef = useCallback(
@@ -161,7 +167,11 @@ export function InfoPopover({
           className
         )}
         onPointerEnter={(event) => {
-          if (openOnHover && event.pointerType === 'mouse') show()
+          if (openOnHover && event.pointerType === 'mouse') {
+            cancelClose()
+            cancelOpen()
+            openTimer.current = setTimeout(show, 200)
+          }
         }}
         onPointerLeave={(event) => {
           if (openOnHover && event.pointerType === 'mouse') scheduleClose()
@@ -171,6 +181,7 @@ export function InfoPopover({
         }}
         onBlur={scheduleClose}
         onClick={() => {
+          cancelOpen()
           cancelClose()
           setOpen((current) => !current)
         }}
