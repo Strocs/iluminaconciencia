@@ -10,30 +10,37 @@
   box-shadow: none;
 }
 
-.map :global(.maplibregl-ctrl-top-left:has(.maplibregl-ctrl-zoom-in)) {
-  top: calc(var(--spacing) * 3) !important;
-  right: calc(var(--spacing) * 3) !important;
-  left: auto !important;
+.map :global(.maplibregl-ctrl-bottom-right:has(.maplibregl-ctrl-zoom-in)) {
+  position: absolute;
+  top: auto;
+  right: calc(var(--spacing) * 3);
+  bottom: calc(var(--spacing) * 3);
+  left: auto;
 }
 
 .map :global(.maplibregl-ctrl-group:has(> .maplibregl-ctrl-zoom-in)) button {
   width: calc(var(--spacing) * 11);
   height: calc(var(--spacing) * 11);
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--color-primary);
   border-radius: var(--radius-md);
   background-color: var(--color-background);
+  box-shadow:
+    0 0 0 2px #0a0718,
+    0 2px 6px #0009;
 }
 
 .map :global(.maplibregl-ctrl-group:has(> .maplibregl-ctrl-zoom-in)) button:focus-visible {
   outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
 }
 
-.map :global(.maplibregl-ctrl-group:has(> .maplibregl-ctrl-zoom-in)) button:hover {
-  border-color: var(--color-primary);
+.map :global(.maplibregl-ctrl-group:has(> .maplibregl-ctrl-zoom-in)) button:not(:disabled):hover {
+  border-color: var(--color-foreground);
+  background-color: var(--color-background);
 }
 
-.map :global(.maplibregl-ctrl-zoom-in .maplibregl-ctrl-icon),
-.map :global(.maplibregl-ctrl-zoom-out .maplibregl-ctrl-icon) {
+.map :global(.maplibregl-ctrl button.maplibregl-ctrl-zoom-in .maplibregl-ctrl-icon),
+.map :global(.maplibregl-ctrl button.maplibregl-ctrl-zoom-out .maplibregl-ctrl-icon) {
   background-color: var(--color-primary);
   background-image: none;
   mask-position: center;
@@ -54,11 +61,6 @@
 }
 
 @media (width >= 48rem) {
-  .map :global(.maplibregl-ctrl-top-left:has(.maplibregl-ctrl-zoom-in)) {
-    right: auto !important;
-    left: calc(var(--spacing) * 3) !important;
-  }
-
   .controlsHidden :global(.maplibregl-ctrl) {
     display: block !important;
   }
