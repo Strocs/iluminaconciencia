@@ -1,11 +1,12 @@
 'use client'
 
-import type { CSSProperties } from 'react'
+import { Fragment, useRef, useState } from 'react'
 import { AttributionControl, Map, Marker, NavigationControl } from 'react-map-gl/maplibre'
-import { setWorkerUrl } from 'maplibre-gl'
+import { setWorkerUrl, type Map as MapLibreMap } from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
-import { getBortleClass } from '@/_features/bortle/lookup'
-import type { MapMark } from '../types'
+import type { MapGroup } from '../types'
+import { GroupFigure } from './GroupFigure'
+import { MapMarkButton } from './MapMarkButton'
 import { useMapFilters } from '../hooks/useMapFilters'
 import { cn } from '@/_utils/cn'
 import styles from './MapCanvas.module.css'
@@ -14,16 +15,22 @@ setWorkerUrl(new URL('maplibre-gl/dist/maplibre-gl-worker.mjs', import.meta.url)
 
 interface MapCanvasProps {
   selectedId: string | null
+  selectedGroupId: string | null
   panelOpen: boolean
-  onSelect: (mark: MapMark, trigger: HTMLElement) => void
+  onSelect: (group: MapGroup, trigger: HTMLElement, memberId?: string) => void
+  onClose: () => void
 }
 
 const MAP_STYLE_URL = '/maps/openfreemap-dark.json'
 const DEFAULT_CENTER = { latitude: -30.02, longitude: -71.27 }
 const DEFAULT_ZOOM = 9
+const NAVIGATION_POSITION = 'bottom-right'
 
-export function MapCanvas({ selectedId, panelOpen, onSelect }: MapCanvasProps) {
-  const marks = useMapFilters((state) => state.filteredMarks)
+export function MapCanvas({ selectedId, selectedGroupId, panelOpen, onSelect, onClose }: MapCanvasProps) {
+  const groups = useMapFilters((state) => state.filteredGroups)
+  const loadedMap = useRef<MapLibreMap | null>(null)
+  const [mapGeneration, setMapGeneration] = useState(0)
+
   return (
     <div
       role="region"
@@ -32,6 +39,13 @@ export function MapCanvas({ selectedId, panelOpen, onSelect }: MapCanvasProps) {
     >
       <Map
         mapStyle={MAP_STYLE_URL}
+        onClick={onClose}
+        onLoad={({ target }) => {
+          if (loadedMap.current === target) return
+          // Activity preserves children while react-map-gl replaces its map instance.
+          if (loadedMap.current !== null) setMapGeneration((generation) => generation + 1)
+          loadedMap.current = target
+        }}
         initialViewState={{ ...DEFAULT_CENTER, zoom: DEFAULT_ZOOM }}
         cooperativeGestures
         locale={{
@@ -42,37 +56,36 @@ export function MapCanvas({ selectedId, panelOpen, onSelect }: MapCanvasProps) {
         attributionControl={false}
         style={{ width: '100%', height: '100%' }}
       >
-        <AttributionControl compact position="bottom-left" />
-        <NavigationControl showCompass={false} position="top-left" />
-        {marks.map((mark) => {
-          const bortle = getBortleClass(mark.bortleLevel)
-          const label = bortle?.label ?? '–'
-          const color = bortle?.color ?? 'var(--color-primary)'
-          const textColor = bortle?.textTone === 'dark' ? '#111114' : 'var(--color-foreground)'
-          const selected = mark.id === selectedId
-          return (
-            <Marker key={mark.id} latitude={mark.position.lat} longitude={mark.position.lng} anchor="center">
-              <button
-                type="button"
-                aria-label={`Ver detalle de ${mark.name}`}
-                aria-pressed={selected}
-                className={cn(
-                  'flex size-8 cursor-pointer items-center justify-center rounded-full border border-dashed border-(--mark-color) font-bold transition-all hover:bg-(--mark-color) hover:text-(--mark-text) focus-visible:bg-(--mark-color) focus-visible:text-(--mark-text) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary motion-reduce:transition-none',
-                  selected ? 'bg-(--mark-color) text-(--mark-text)' : 'bg-[#111114] text-foreground'
-                )}
-                style={
-                  {
-                    '--mark-color': color,
-                    '--mark-text': textColor
-                  } as CSSProperties
-                }
-                onClick={(event) => onSelect(mark, event.currentTarget)}
-              >
-                {label}
-              </button>
-            </Marker>
-          )
-        })}
+        <Fragment key={mapGeneration}>
+          <AttributionControl compact position="bottom-left" />
+          <NavigationControl key={NAVIGATION_POSITION} showCompass={false} position={NAVIGATION_POSITION} />
+          {groups.map((group) => {
+            if (group.members.length > 1)
+              return (
+                <Marker key={group.id} latitude={group.position.lat} longitude={group.position.lng} anchor="center">
+                  <GroupFigure
+                    group={group}
+                    expanded={selectedGroupId === group.id}
+                    selectedId={selectedId}
+                    onSelect={onSelect}
+                  />
+                </Marker>
+              )
+            const mark = group.members[0]
+            return (
+              <Marker key={group.id} latitude={mark.position.lat} longitude={mark.position.lng} anchor="center">
+                <div className="flex size-8 items-center justify-center">
+                  <MapMarkButton
+                    mark={mark}
+                    selected={mark.id === selectedId}
+                    groupId={group.id}
+                    onSelect={(trigger) => onSelect(group, trigger, mark.id)}
+                  />
+                </div>
+              </Marker>
+            )
+          })}
+        </Fragment>
       </Map>
     </div>
   )

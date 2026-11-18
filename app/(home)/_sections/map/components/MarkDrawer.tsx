@@ -1,9 +1,10 @@
 'use client'
 
-import { useCallback, type RefObject } from 'react'
+import type { RefObject } from 'react'
 import { Button } from '@/_components/Button'
 import { getBortleClass } from '@/_features/bortle/lookup'
 import { MONTHS } from '@/_utils/months'
+import { cn } from '@/_utils/cn'
 import type { MapMark } from '../types'
 
 function formatSummaryPeriod(period: string) {
@@ -18,7 +19,8 @@ function formatSummaryPeriod(period: string) {
 }
 
 interface MapMarkDrawerProps {
-  mark: MapMark | null
+  marks: MapMark[]
+  selectedId: string | null
   open: boolean
   mobile: boolean
   inert: boolean
@@ -26,35 +28,115 @@ interface MapMarkDrawerProps {
   onClose: () => void
 }
 
-export function MapMarkDrawer({ mark, open, mobile, inert, closeButtonRef, onClose }: MapMarkDrawerProps) {
-  const closeButtonContainerRef = useCallback(
-    (node: HTMLElement | null) => {
-      closeButtonRef.current = node?.querySelector<HTMLButtonElement>('[data-drawer-close]') ?? null
-    },
-    [closeButtonRef]
-  )
-  const bortle = getBortleClass(mark?.bortleLevel)
-  const equipment = mark
-    ? [
-        mark.instrumentType,
-        mark.dataCount == null ? undefined : `${mark.dataCount.toLocaleString('es-CL')} mediciones`,
-        mark.mag == null ? undefined : `${mark.mag.toLocaleString('es-CL', { minimumFractionDigits: 2 })} mag/arcsec²`
-      ]
-        .filter(Boolean)
-        .join(' · ')
-    : ''
-  const summary = mark
-    ? [
-        mark.summaryPeriod ? formatSummaryPeriod(mark.summaryPeriod) : undefined,
-        mark.dataPercent == null
-          ? undefined
-          : `${mark.dataPercent.toLocaleString('es-CL', { maximumFractionDigits: 2 })}% de datos`
-      ]
-        .filter(Boolean)
-        .join(' · ')
-    : ''
-  const weather = mark?.weather?.trim() ?? ''
+function MemberArticle({ mark, selected }: { mark: MapMark; selected: boolean }) {
+  const isCamera = mark.instrumentType === 'SQC'
+  const bortle = isCamera ? undefined : getBortleClass(mark.bortleLevel)
+  const equipment = [
+    mark.instrumentType,
+    mark.dataCount == null ? undefined : `${mark.dataCount.toLocaleString('es-CL')} mediciones`,
+    mark.mag == null ? undefined : `${mark.mag.toLocaleString('es-CL', { minimumFractionDigits: 2 })} mag/arcsec²`
+  ]
+    .filter(Boolean)
+    .join(' · ')
+  const summary = [
+    mark.summaryPeriod ? formatSummaryPeriod(mark.summaryPeriod) : undefined,
+    mark.dataPercent == null
+      ? undefined
+      : `${mark.dataPercent.toLocaleString('es-CL', { maximumFractionDigits: 2 })}% de datos`
+  ]
+    .filter(Boolean)
+    .join(' · ')
+  const weather = mark.weather?.trim() ?? ''
 
+  return (
+    <article
+      tabIndex={-1}
+      data-map-member={mark.id}
+      aria-label={mark.name}
+      className={cn(
+        'scroll-my-2 rounded-lg border border-transparent p-2 text-sm/relaxed focus-visible:outline-2 focus-visible:outline-primary',
+        selected && 'border-primary bg-primary/5'
+      )}
+    >
+      <h4 className="border-b border-border pb-3 font-body text-base leading-tight font-bold text-primary">
+        {mark.name}
+      </h4>
+      {isCamera ? (
+        <div className="grid gap-3 border-b border-border py-4 text-sm/relaxed">
+          <p className="font-semibold text-foreground">SQC · Lorem ipsum</p>
+          <dl className="grid gap-3">
+            <div>
+              <dt className="font-semibold text-foreground">Categoría</dt>
+              <dd>Cámara de cielo completo · SQC</dd>
+            </div>
+            <div>
+              <dt className="font-semibold text-foreground">Ubicación aproximada</dt>
+              <dd>Lorem ipsum dolor sit amet.</dd>
+            </div>
+          </dl>
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et
+            dolore magna aliqua.
+          </p>
+        </div>
+      ) : (
+        <dl className="grid gap-3 border-b border-border py-4 text-sm/relaxed">
+          {weather && (
+            <div>
+              <dt className="font-semibold text-foreground">Clima</dt>
+              <dd>{weather}</dd>
+            </div>
+          )}
+          <div>
+            <dt className="font-semibold text-foreground">Equipo y mediciones</dt>
+            <dd>{equipment}</dd>
+          </div>
+          {summary && (
+            <div>
+              <dt className="font-semibold text-foreground">Resumen</dt>
+              <dd>{summary}</dd>
+            </div>
+          )}
+        </dl>
+      )}
+      {bortle && (
+        <div className="min-h-28 border-b border-border py-3 text-sm/relaxed">
+          <div className="flex items-center gap-3">
+            <span className="rotate-180 text-xs font-semibold text-foreground [writing-mode:vertical-rl]">
+              Nivel de Bortle
+            </span>
+            <div className="flex flex-col items-center justify-center gap-1">
+              <span className="font-body text-6xl leading-none font-bold text-foreground">{bortle.label}</span>
+              <span
+                aria-hidden="true"
+                className="size-3 shrink-0 rounded-full"
+                style={{ backgroundColor: bortle.color }}
+              />
+            </div>
+            <div className="min-w-0">
+              <p className="font-semibold text-foreground">{bortle.name}</p>
+              <p className="mt-1 text-xs leading-relaxed text-text">
+                SQM <span>{bortle.sqmRange}</span> mag/arcsec²
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+      {!isCamera && mark.detailHref !== null && (
+        <Button
+          href={mark.detailHref ?? `/medicion/${encodeURIComponent(mark.id)}`}
+          variant="important"
+          size="sm"
+          className="mt-3 w-full"
+        >
+          Más información<span className="sr-only"> de {mark.name}</span>
+        </Button>
+      )}
+    </article>
+  )
+}
+
+export function MapMarkDrawer({ marks, selectedId, open, mobile, inert, closeButtonRef, onClose }: MapMarkDrawerProps) {
   return (
     <div
       aria-hidden={!open}
@@ -63,66 +145,31 @@ export function MapMarkDrawer({ mark, open, mobile, inert, closeButtonRef, onClo
     >
       <aside
         id="mark-drawer"
-        ref={closeButtonContainerRef}
-        aria-label={mark?.name ?? 'Detalle del punto de medición'}
+        aria-label={marks.length === 1 ? marks[0].name : 'Detalles de los instrumentos agrupados'}
         role={mobile && open ? 'dialog' : undefined}
         aria-modal={mobile && open ? true : undefined}
         inert={inert}
         data-open={open ? '' : undefined}
         className="pointer-events-none absolute inset-y-0 right-0 left-auto flex min-h-0 w-full max-w-3/4 shrink-0 translate-x-full flex-col self-stretch overflow-hidden rounded-lg border border-border bg-background p-4 transition-[translate] duration-200 ease-in-out data-open:pointer-events-auto data-open:translate-x-0 motion-reduce:transition-none motion-reduce:duration-0 md:static md:w-(--drawer-width) md:max-w-none md:translate-x-0 md:rounded-none md:border-0 md:bg-transparent md:px-0 md:transition-none"
       >
-        <div className="border-b border-border pb-4">
-          <h3 className="font-body text-base leading-tight font-bold text-primary">{mark?.name}</h3>
+        <h3 className="shrink-0 border-b border-border pb-3 font-body text-base font-bold text-primary">
+          {marks.length > 1 ? `${marks.length} instrumentos en este punto` : 'Detalle del instrumento'}
+        </h3>
+        <div className="min-h-0 flex-1 space-y-4 overflow-y-auto overscroll-contain py-3">
+          {marks.map((mark) => (
+            <MemberArticle key={mark.id} mark={mark} selected={selectedId === mark.id} />
+          ))}
         </div>
-        <dl className="grid gap-3 border-b border-border py-4 text-sm/relaxed">
-          {weather && (
-            <div>
-              <dt className="text-sm/relaxed font-semibold text-foreground">Clima</dt>
-              <dd>{weather}</dd>
-            </div>
-          )}
-          <div>
-            <dt className="text-sm/relaxed font-semibold text-foreground">Equipo y mediciones</dt>
-            <dd>{equipment}</dd>
-          </div>
-          {summary && (
-            <div>
-              <dt className="text-sm/relaxed font-semibold text-foreground">Resumen</dt>
-              <dd>{summary}</dd>
-            </div>
-          )}
-        </dl>
-        {bortle && (
-          <div className="min-h-28 border-b border-border py-3 text-sm/relaxed">
-            <div className="flex items-center gap-3">
-              <span className="rotate-180 text-xs font-semibold text-foreground [writing-mode:vertical-rl]">
-                Nivel de Bortle
-              </span>
-              <div className="flex flex-col items-center justify-center gap-1">
-                <span className="font-body text-6xl leading-none font-bold text-foreground">{bortle.label}</span>
-                <span
-                  aria-hidden="true"
-                  className="size-3 shrink-0 rounded-full"
-                  style={{ backgroundColor: bortle.color }}
-                />
-              </div>
-              <div className="min-w-0">
-                <p className="font-semibold text-foreground">{bortle.name}</p>
-                <p className="mt-1 text-xs leading-relaxed text-text">
-                  SQM <span>{bortle.sqmRange}</span> mag/arcsec²
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
-        <div className="mt-auto space-y-2">
-          <Button href={mark ? `/medicion/${encodeURIComponent(mark.id)}` : '/medicion'} variant="important" size="sm" className="w-full">
-            Más información
-          </Button>
-          <Button as="btn" size="sm" onClick={onClose} data-drawer-close className="w-full">
-            Cerrar
-          </Button>
-        </div>
+        <Button
+          as="btn"
+          ref={closeButtonRef}
+          size="sm"
+          onClick={onClose}
+          data-drawer-close
+          className="mt-2 w-full shrink-0"
+        >
+          Cerrar
+        </Button>
       </aside>
     </div>
   )

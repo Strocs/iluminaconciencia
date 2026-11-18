@@ -1,13 +1,17 @@
 'use client'
 
-import { useCallback, useId, useRef, useState } from 'react'
-import type { MapMark } from '../types'
+import { useCallback, useId, useRef, useState, type KeyboardEvent } from 'react'
+import type { MapGroup, MapMark } from '../types'
 import { useMapMobile } from './useMapMobile'
+import { useMapFilters } from './useMapFilters'
 
 export function useMapOverlays() {
   const [selectedId, setSelectedId] = useState<string | null>(null)
-  const [drawerMark, setDrawerMark] = useState<MapMark | null>(null)
+  const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null)
   const [filtersOpen, setFiltersOpen] = useState(false)
+  const groups = useMapFilters((state) => state.filteredGroups)
+  const drawerGroup = groups.find(({ id }) => id === selectedGroupId) ?? null
+  const explorerRef = useRef<HTMLDivElement>(null)
   const panelRef = useRef<HTMLElement>(null)
   const drawerCloseRef = useRef<HTMLButtonElement>(null)
   const filterOpenRef = useRef<HTMLButtonElement>(null)
@@ -16,43 +20,69 @@ export function useMapOverlays() {
   const filterPanelId = useId()
   const closeFiltersForDesktop = useCallback(() => {
     setFiltersOpen(false)
-    returnFocusRef.current = null
   }, [])
   const mobile = useMapMobile(closeFiltersForDesktop)
+  const drawerOpen = drawerGroup !== null
 
-  const drawerOpen = selectedId !== null
-  const mobileOverlayOpen = mobile && (filtersOpen || drawerOpen)
+  const closeDrawer = useCallback(
+    (restoreFocus = true) => {
+      setSelectedGroupId(null)
+      setSelectedId(null)
+      const focusTarget = returnFocusRef.current
+      const groupId = selectedGroupId
+      if (restoreFocus)
+        requestAnimationFrame(() => {
+          // Filtering may replace a composite with a single button or remove it altogether.
+          const replacement = Array.from(
+            explorerRef.current?.querySelectorAll<HTMLElement>('[data-map-group]') ?? []
+          ).find((node) => node.dataset.mapGroup === groupId)
+          const target =
+            focusTarget?.isConnected && !focusTarget.closest('[inert]') && focusTarget.getClientRects().length
+              ? focusTarget
+              : replacement?.getClientRects().length
+                ? replacement
+                : explorerRef.current
+          target?.focus({ preventScroll: true })
+        })
+      returnFocusRef.current = null
+    },
+    [selectedGroupId]
+  )
 
   const onFiltersChanged = useCallback(
     (nextMarks: MapMark[]) => {
-      if (selectedId && !nextMarks.some(({ id }) => id === selectedId)) {
-        setSelectedId(null)
-        returnFocusRef.current = null
-      }
+      if (!drawerGroup) return
+      const visibleIds = new Set(nextMarks.map(({ id }) => id))
+      const remaining = drawerGroup.members.filter(({ id }) => visibleIds.has(id))
+      if (!remaining.length) {
+        const focusInsideDrawer = Boolean(
+          explorerRef.current?.querySelector('#mark-drawer')?.contains(document.activeElement)
+        )
+        closeDrawer(focusInsideDrawer)
+      } else if (selectedId && !visibleIds.has(selectedId)) setSelectedId(null)
     },
-    [selectedId]
+    [drawerGroup, selectedId, closeDrawer]
   )
 
-  const closeDrawer = useCallback((restoreFocus = true) => {
-    setSelectedId(null)
-    const focusTarget = returnFocusRef.current
-    if (restoreFocus && focusTarget?.isConnected) {
-      requestAnimationFrame(() => {
-        if (focusTarget.isConnected) focusTarget.focus()
-      })
-    }
-    returnFocusRef.current = null
-  }, [])
-
   const openDrawer = useCallback(
-    (mark: MapMark, trigger: HTMLElement) => {
+    (group: MapGroup, trigger: HTMLElement, memberId?: string) => {
       if (filtersOpen) return
-      returnFocusRef.current = trigger
-      setSelectedId(mark.id)
-      setDrawerMark(mark)
-      requestAnimationFrame(() => drawerCloseRef.current?.focus({ preventScroll: true }))
+      if (selectedGroupId !== group.id) returnFocusRef.current = trigger
+      setSelectedGroupId(group.id)
+      setSelectedId(memberId ?? null)
+      requestAnimationFrame(() => {
+        if (!memberId) {
+          drawerCloseRef.current?.focus({ preventScroll: true })
+          return
+        }
+        const article = Array.from(explorerRef.current?.querySelectorAll<HTMLElement>('[data-map-member]') ?? []).find(
+          (node) => node.dataset.mapMember === memberId
+        )
+        article?.focus({ preventScroll: true })
+        article?.scrollIntoView({ block: 'nearest', behavior: 'instant' })
+      })
     },
-    [filtersOpen]
+    [filtersOpen, selectedGroupId]
   )
 
   const openFilters = useCallback(() => {
@@ -65,21 +95,52 @@ export function useMapOverlays() {
   const closeFilters = useCallback((restoreFocus = true) => {
     setFiltersOpen(false)
     const focusTarget = returnFocusRef.current
-    if (restoreFocus && focusTarget?.isConnected) {
+    if (restoreFocus)
       requestAnimationFrame(() => {
-        if (focusTarget.isConnected) focusTarget.focus()
+        if (focusTarget?.isConnected) focusTarget.focus()
+        else explorerRef.current?.focus()
       })
-    }
     returnFocusRef.current = null
   }, [])
 
+  function onKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    if (event.key === 'Escape') {
+      if (filtersOpen) closeFilters()
+      else if (drawerOpen) closeDrawer()
+      else return
+      event.preventDefault()
+      event.stopPropagation()
+    }
+    if (event.key !== 'Tab' || !mobile || (!filtersOpen && !drawerOpen)) return
+    const overlay = filtersOpen ? panelRef.current : explorerRef.current?.querySelector('#mark-drawer')
+    const targets = Array.from(
+      overlay?.querySelectorAll<HTMLElement>('button:not(:disabled), a[href], [tabindex="0"]') ?? []
+    ).filter((node) => !node.closest('[inert]') && node.getClientRects().length)
+    const first = targets[0]
+    const last = targets.at(-1)
+    if (
+      event.shiftKey &&
+      (document.activeElement === first || !targets.includes(document.activeElement as HTMLElement))
+    ) {
+      event.preventDefault()
+      last?.focus()
+    } else if (
+      !event.shiftKey &&
+      (document.activeElement === last || !targets.includes(document.activeElement as HTMLElement))
+    ) {
+      event.preventDefault()
+      first?.focus()
+    }
+  }
+
   return {
     selectedId,
-    drawerMark,
+    selectedGroupId,
+    drawerGroup,
     drawerOpen,
     filtersOpen,
     mobile,
-    mobileOverlayOpen,
+    explorerRef,
     panelRef,
     drawerCloseRef,
     filterOpenRef,
@@ -89,6 +150,7 @@ export function useMapOverlays() {
     openDrawer,
     openFilters,
     closeDrawer,
-    closeFilters
+    closeFilters,
+    onKeyDown
   }
 }

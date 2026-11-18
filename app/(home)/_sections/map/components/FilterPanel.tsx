@@ -64,7 +64,7 @@ export function FilterPanel({
           </Button>
         </div>
         <p className="text-sm leading-snug font-light text-text">
-          Acota las mediciones visibles filtrando por escala e instrumento
+          Filtra los fotómetros por escala de Bortle y tipo. Las cámaras SQC se seleccionan por separado.
         </p>
       </div>
 
@@ -97,35 +97,66 @@ export function FilterPanel({
           1: cielo excelente (más oscuro)
           <br />
           9: cielo muy afectado (más brillante)
+          <br />
+          No se aplica a las cámaras SQC.
         </p>
       </fieldset>
 
-      <fieldset className="space-y-2 border-t border-border">
-        <legend className="flex w-full items-center gap-2 text-sm leading-tight text-foreground">
-          <BrandStarIcon />
-          <InfoPopover label="Instrumentos" trigger="Instrumentos" placement="bottom-right">
-            <p className="font-light">
-              <strong>SQC:</strong> Estación de observación terrestre que utiliza telescopios y otros instrumentos para
-              medir la calidad del cielo nocturno y la contaminación lumínica en una ubicación específica. <br /> <br />
-              <strong>TESS-4C:</strong> Instrumento <br /> <br />
-              <strong>TESS-W:</strong> Instrumento
-            </p>
-          </InfoPopover>
-        </legend>
-        <div className="flex flex-col gap-2">
-          {instrumentTypes.map((instrumentType) => (
-            <button
-              key={instrumentType}
-              type="button"
-              className="h-8 w-full min-w-0 rounded border border-primary bg-primary px-2 py-0 text-sm leading-none font-semibold text-background transition-colors outline-none hover:bg-accent hover:text-foreground focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95 aria-[pressed=false]:border-border aria-[pressed=false]:bg-background aria-[pressed=false]:text-text aria-[pressed=false]:hover:border-primary aria-[pressed=false]:hover:text-primary motion-reduce:transition-none motion-reduce:active:scale-100"
-              aria-pressed={selectedInstrumentTypes.has(instrumentType)}
-              onClick={() => onFiltersChanged(toggleInstrumentType(instrumentType))}
-            >
-              {instrumentType}
-            </button>
-          ))}
-        </div>
-      </fieldset>
+      {[
+        {
+          label: 'Fotómetros',
+          description:
+            'Los fotómetros son instrumentos que miden la luz. TESS-W mide el brillo del cielo nocturno en una banda amplia (pancromática). TESS-4C utiliza cuatro canales físicos con distintas respuestas espectrales, lo que aporta información adicional sobre el color del cielo.',
+          types: instrumentTypes.filter((type) => type !== 'SQC')
+        },
+        {
+          label: 'Cámaras de cielo completo',
+          description:
+            'SQC (Sky Quality Camera) es un sistema que combina una cámara DSLR, una lente de ojo de pez y software de análisis para obtener una vista amplia del cielo. Permite analizar su brillo y color y, cuando la fuente de datos lo ofrece, estimar la cobertura de nubes.',
+          types: instrumentTypes.filter((type) => type === 'SQC')
+        }
+      ].map(({ label, description, types }) => (
+        <fieldset key={label} className="space-y-2 border-t border-border">
+          <legend className="flex w-full items-center gap-2 text-sm leading-tight text-foreground">
+            <BrandStarIcon />
+            <InfoPopover label={label} trigger={label} placement="bottom-right">
+              <p className="font-light">{description}</p>
+            </InfoPopover>
+          </legend>
+          <div className="flex flex-col gap-2">
+            {types.map((instrumentType) => (
+              <button
+                key={instrumentType}
+                type="button"
+                className="flex h-8 w-full min-w-0 items-center justify-center gap-2 rounded border border-primary bg-primary px-2 py-0 text-sm leading-none font-semibold text-background transition-colors outline-none hover:bg-accent hover:text-foreground focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95 aria-[pressed=false]:border-border aria-[pressed=false]:bg-background aria-[pressed=false]:text-text aria-[pressed=false]:hover:border-primary aria-[pressed=false]:hover:text-primary motion-reduce:transition-none motion-reduce:active:scale-100"
+                aria-pressed={selectedInstrumentTypes.has(instrumentType)}
+                onClick={() => onFiltersChanged(toggleInstrumentType(instrumentType))}
+              >
+                {instrumentType}
+                <svg
+                  aria-hidden="true"
+                  viewBox="0 0 16 16"
+                  className="size-3.5 shrink-0"
+                  fill="currentColor"
+                >
+                  {instrumentType === 'SQC' ? (
+                    <circle cx="8" cy="8" r="5" />
+                  ) : (
+                    <rect
+                      x="3"
+                      y="3"
+                      width="10"
+                      height="10"
+                      rx="1"
+                      transform={instrumentType === 'TESS-W' ? 'rotate(45 8 8)' : undefined}
+                    />
+                  )}
+                </svg>
+              </button>
+            ))}
+          </div>
+        </fieldset>
+      ))}
       <div className="mt-auto space-y-2">
         <p className="mx-auto w-fit text-sm leading-none font-light text-text">
           <MapFilteredCount />

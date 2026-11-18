@@ -1,6 +1,6 @@
 import { createStore } from 'zustand/vanilla'
 import { bortleClasses } from '@/_features/bortle/bortle-classes'
-import { MapMark } from '../types'
+import type { MapGroup, MapMark } from '../types'
 
 const ALL_BORTLE_LEVELS = bortleClasses.map(({ level }) => level)
 
@@ -8,6 +8,7 @@ type FilterResult = {
   selectedInstrumentTypes: Set<string>
   selectedLevels: Set<number>
   filteredMarks: MapMark[]
+  filteredGroups: MapGroup[]
 }
 
 export interface MapFilterState extends FilterResult {
@@ -23,19 +24,32 @@ export interface MapFilterState extends FilterResult {
 function filterMarks(marks: MapMark[], instrumentTypes: Set<string>, levels: Set<number>) {
   return marks.filter(
     ({ instrumentType, bortleLevel }) =>
-      instrumentTypes.has(instrumentType) && bortleLevel !== null && levels.has(bortleLevel)
+      instrumentTypes.has(instrumentType) &&
+      (instrumentType === 'SQC' || (bortleLevel !== null && levels.has(bortleLevel)))
   )
 }
 
-export function createMapFilterStore(marks: MapMark[]) {
-  const instrumentTypes = [...new Set(['SQC', ...marks.map(({ instrumentType }) => instrumentType)])].sort()
+export function createMapFilterStore(marks: MapMark[], groups: MapGroup[]) {
+  function visibleGroups(filteredMarks: MapMark[]) {
+    const visibleIds = new Set(filteredMarks.map(({ id }) => id))
+    return groups.flatMap((group) => {
+      const members = group.members.filter(({ id }) => visibleIds.has(id))
+      return members.length ? [{ ...group, members }] : []
+    })
+  }
+  const instrumentTypes = [...new Set(marks.map(({ instrumentType }) => instrumentType))].sort()
   const selectedInstrumentTypes = new Set(instrumentTypes)
   const selectedLevels = new Set(ALL_BORTLE_LEVELS)
 
   return createStore<MapFilterState>()((set, get) => {
     function updateFilters(nextInstrumentTypes: Set<string>, nextLevels: Set<number>) {
       const filteredMarks = filterMarks(marks, nextInstrumentTypes, nextLevels)
-      set({ selectedInstrumentTypes: nextInstrumentTypes, selectedLevels: nextLevels, filteredMarks })
+      set({
+        selectedInstrumentTypes: nextInstrumentTypes,
+        selectedLevels: nextLevels,
+        filteredMarks,
+        filteredGroups: visibleGroups(filteredMarks)
+      })
       return filteredMarks
     }
 
@@ -45,6 +59,7 @@ export function createMapFilterStore(marks: MapMark[]) {
       selectedInstrumentTypes,
       selectedLevels,
       filteredMarks: filterMarks(marks, selectedInstrumentTypes, selectedLevels),
+      filteredGroups: visibleGroups(filterMarks(marks, selectedInstrumentTypes, selectedLevels)),
       toggleInstrumentType: (instrumentType) => {
         const nextInstrumentTypes = new Set(get().selectedInstrumentTypes)
         if (nextInstrumentTypes.has(instrumentType)) nextInstrumentTypes.delete(instrumentType)

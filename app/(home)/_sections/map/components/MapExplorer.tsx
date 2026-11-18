@@ -10,7 +10,10 @@ import { Button } from '@/_components/Button'
 export function MapExplorer() {
   const {
     selectedId,
-    drawerMark,
+    selectedGroupId,
+    drawerGroup,
+    explorerRef,
+    onKeyDown,
     drawerOpen,
     filtersOpen,
     mobile,
@@ -30,6 +33,10 @@ export function MapExplorer() {
 
   return (
     <div
+      ref={explorerRef}
+      tabIndex={-1}
+      onKeyDown={onKeyDown}
+      aria-label="Explorador de instrumentos"
       className="group relative mx-auto flex size-full min-h-0 max-w-360 flex-1 gap-4 overflow-x-clip"
       data-panel-open={filtersOpen || drawerOpen ? '' : undefined}
       data-drawer-open={drawerOpen ? '' : undefined}
@@ -51,7 +58,15 @@ export function MapExplorer() {
           aria-hidden={mobileOverlayOpen}
         >
           <div className="absolute inset-y-0 left-0 w-full md:w-[100cqw]">
-            <DeferredMapCanvas selectedId={selectedId} onSelect={openDrawer} panelOpen={mobileOverlayOpen} />
+            <DeferredMapCanvas
+              selectedId={selectedId}
+              selectedGroupId={selectedGroupId}
+              onSelect={openDrawer}
+              onClose={() => {
+                if (drawerOpen) closeDrawer()
+              }}
+              panelOpen={mobileOverlayOpen}
+            />
           </div>
           <Button
             as="btn"
@@ -66,7 +81,8 @@ export function MapExplorer() {
           </Button>
         </div>
         <MapMarkDrawer
-          mark={drawerMark}
+          marks={drawerGroup?.members ?? []}
+          selectedId={selectedId}
           open={drawerOpen}
           mobile={mobile}
           inert={filtersOpen || !drawerOpen}

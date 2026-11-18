@@ -1,10 +1,10 @@
 import { MapFilterProvider } from './context/MapFilterContext'
 import { MapExplorer } from './components/MapExplorer'
-import { getPoints } from '@/_dal/points/getPoints'
+import { getMapData } from './_dal/getMapData'
 import { SectionHeading } from '@/_components/SectionHeading'
 
 export async function MapSection() {
-  const marks = await getPoints()
+  const { marks, groups } = await getMapData()
 
   return (
     <section
@@ -16,9 +16,9 @@ export async function MapSection() {
       <SectionHeading
         eyebrow="02 / EXPLORAR"
         title="Puntos de Medición"
-        subtitle={`${marks.length} ${marks.length === 1 ? 'punto disponible' : 'puntos disponibles'}`}
+        subtitle={`${marks.length} puntos de medición`}
       />
-      <MapFilterProvider marks={marks}>
+      <MapFilterProvider marks={marks} groups={groups}>
         <MapExplorer />
       </MapFilterProvider>
     </section>
