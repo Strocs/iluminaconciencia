@@ -27,18 +27,21 @@ const team = [
 
 export function ProjectTeam() {
   return (
-    <ul className="grid grid-cols-2 gap-x-5 gap-y-8 sm:grid-cols-3">
+    <ul className="grid grid-cols-1 gap-x-5 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
       {team.map(({ name, role, photo }) => (
-        <li key={name} className="space-y-3">
+        <li key={name} className="flex min-w-0 flex-col">
           <Image
             src={photo}
-            alt={name}
-            sizes="(max-width: 640px) 45vw, (max-width: 1536px) 30vw, 400px"
-            className="aspect-square w-full rounded-sm object-cover"
+            alt=""
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1536px) 25vw, 240px"
+            className="aspect-square w-full rounded-sm border border-border object-cover"
           />
-          <div>
+          <div className="flex flex-1 flex-col gap-2 pt-2">
             <h3 className="font-heading text-xl leading-tight text-foreground">{name}</h3>
-            <p className="mt-2 text-sm leading-relaxed font-extralight">{role}</p>
+            <div className="space-y-1 text-sm leading-snug">
+              <p className="text-primary">{role.split(' · ')[0]}</p>
+              <p className="text-text">{role.split(' · ')[1]}</p>
+            </div>
           </div>
         </li>
       ))}

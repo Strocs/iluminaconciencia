@@ -1,17 +1,15 @@
-import type { ReactNode } from 'react'
 import Link from 'next/link'
+import { PageIndex } from '../../_features/sidebar/_components/PageIndex'
+import type { ReactNode } from 'react'
 import Image from 'next/image'
-import { BrandStarIcon } from '@/_components/BrandStarIcon'
 import { LatestNews } from '../../_features/sidebar/_components/LatestNews'
 import { LatestArticles } from '../../_features/sidebar/_components/LatestArticles'
 import { ProjectTeam } from './ProjectTeam'
-import { LightingComparison } from './LightingComparison'
 import teamPhoto from '../_assets/equipo.jpg'
-import tessW from '../_assets/tessw.png'
-import tess4C from '../_assets/tess4c.png'
+import tessW from '../../_assets/instruments/tessw.png'
+import tess4C from '../../_assets/instruments/tess4c.png'
 import { SectionHeading } from '@/_components/SectionHeading'
 import { Separator } from '@/_components/Separator'
-import { InfoPopover } from '@/_components/InfoPopover'
 import { Button } from '@/_components/Button'
 import { Breadcrumbs } from '../../_components/Breadcrumbs'
 import { SiteSidebar } from '../../_features/sidebar/_components/SiteSidebar'
@@ -54,31 +52,13 @@ export function ProjectContent({ teamEntry = false }: { teamEntry?: boolean }) {
         />
       </div>
       <ProjectNavigation teamEntry={teamEntry}>
-        <div className="order-first 2xl:order-last 2xl:[&>aside]:max-h-[calc(100dvh-7rem)] 2xl:[&>aside]:overflow-y-auto 2xl:[&>aside]:overscroll-contain 2xl:[&>aside]:pr-3">
+        <div className="contents 2xl:order-last 2xl:block 2xl:[&>aside]:max-h-[calc(100dvh-7rem)] 2xl:[&>aside]:overflow-y-auto 2xl:[&>aside]:overscroll-contain 2xl:[&>aside]:pr-3">
           <SiteSidebar>
-            <nav aria-label="En esta página" className="space-y-4">
-              <h2 className="font-heading text-xl">En esta página</h2>
-              <ol className="space-y-1 font-body text-sm">
-                {sections.map(([name, label]) => (
-                  <li key={name}>
-                    <button
-                      type="button"
-                      data-project-target={name}
-                      className="flex min-w-0 cursor-pointer items-center gap-2 rounded-sm py-1 text-left text-sm text-text transition-colors hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent motion-reduce:transition-none"
-                    >
-                      <BrandStarIcon className="shrink-0 text-primary" />
-                      <span>{label}</span>
-                    </button>
-                  </li>
-                ))}
-              </ol>
-              <p className="font-body text-sm leading-relaxed text-text">
-                ¿Quieres profundizar en los instrumentos y los datos?{' '}
-                <Link href="/medicion" className="text-primary underline underline-offset-4">
-                  Conoce cómo medimos.
-                </Link>
-              </p>
-            </nav>
+            <PageIndex
+              items={sections.map(([id, label]) => ({ id, label, attributes: { 'data-project-target': id } }))}
+            >
+              ¿Quieres profundizar en los instrumentos y los datos? <Link href="/medicion">Conoce cómo medimos.</Link>
+            </PageIndex>
             <Separator />
             <LatestNews />
             <LatestArticles />
@@ -89,23 +69,18 @@ export function ProjectContent({ teamEntry = false }: { teamEntry?: boolean }) {
             <div className="grid items-start gap-8 md:grid-cols-2">
               <div className="space-y-6">
                 <p>
-                  IluminAconciencia es un proyecto de la Universidad de La Serena que combina el monitoreo del cielo
-                  nocturno con la divulgación sobre la{' '}
-                  <InfoPopover label="Qué es la contaminación lumínica" trigger="contaminación lumínica">
-                    <p>
-                      Es la alteración de la oscuridad natural por luz artificial innecesaria o mal dirigida. No depende
-                      únicamente de cuántas luces hay, sino también de su dirección, intensidad y horario de uso.
-                    </p>
-                  </InfoPopover>{' '}
-                  en la Región de Coquimbo.
+                  Ilumina a Conciencia es un proyecto financiado por el Gobierno Regional que busca generar un impacto
+                  positivo en la toma de conciencia frente a la problemática de la contaminación lumínica y cómo
+                  cuidamos nuestro cielo y nuestra salud.
                 </p>
                 <p>
-                  Conectamos ciencia, tecnología y comunidad para que la información del cielo nocturno sea accesible y
-                  ayude a comprender por qué la oscuridad natural también merece cuidado.
+                  El proyecto contempla la implementación de una red de monitoreo de la contaminación lumínica de una
+                  serie de nodos de medición que serán instalados en distintos puntos de la Región de Coquimbo.
                 </p>
-                <blockquote className="border-l-2 border-primary pl-5 text-base font-extralight text-foreground italic">
-                  No se trata de dejar de iluminar, sino de iluminar mejor.
-                </blockquote>
+                <p>
+                  La ejecución del proyecto está a cargo de un equipo multidisciplinario formado por científicos,
+                  ingenieros informáticos, periodistas, diseñadores y comunicadores.
+                </p>
               </div>
               <figure className="space-y-3">
                 <Image
@@ -115,7 +90,7 @@ export function ProjectContent({ teamEntry = false }: { teamEntry?: boolean }) {
                   className="h-auto w-full rounded-sm"
                 />
                 <figcaption className="text-base font-extralight italic">
-                  Ciencia, comunicación y tecnología al servicio de un mismo territorio.
+                  Equipo multidisciplinario de IluminAconciencia.
                 </figcaption>
               </figure>
             </div>
@@ -123,31 +98,32 @@ export function ProjectContent({ teamEntry = false }: { teamEntry?: boolean }) {
           <ProjectSection name="importancia" title="Por qué importa la oscuridad">
             <div className="grid gap-8 md:grid-cols-2">
               <p>
-                La luz artificial resulta útil cuando ilumina donde y cuando se necesita. Cuando se dispersa hacia el
-                cielo o invade espacios que no requieren iluminación, modifica el entorno nocturno.
+                La contaminación lumínica es un fenómeno provocado por el exceso de iluminación artificial en el entorno
+                nocturno, que tiene consecuencias negativas tanto para los seres humanos como para el medio ambiente. Se
+                produce cuando la luz artificial se dispersa, se refleja y se emite innecesariamente hacia el cielo y
+                los espacios exteriores, en lugar de iluminar únicamente los lugares necesarios.
               </p>
               <div className="contents">
                 <div>
                   <h3 className="font-heading text-xl text-foreground">Un cielo que podemos observar</h3>
                   <p>
-                    El resplandor artificial dificulta distinguir las estrellas y observar objetos tenues. Cuidar el
-                    cielo nocturno protege una oportunidad de observación, aprendizaje y encuentro con nuestro
-                    territorio.
+                    La contaminación lumínica tiene efectos perjudiciales en la observación astronómica, al dificultar
+                    la visibilidad de las estrellas y otros cuerpos celestes.
                   </p>
                 </div>
                 <div>
                   <h3 className="font-heading text-xl text-foreground">Un entorno con ciclos naturales</h3>
                   <p>
-                    La alternancia entre luz y oscuridad forma parte del ambiente de los seres vivos. La contaminación
-                    lumínica invita a considerar cómo nuestras decisiones de iluminación se relacionan con la
-                    biodiversidad y los espacios de descanso.
+                    La contaminación lumínica afecta directamente a los ecosistemas y la fauna, perturbando los ciclos
+                    naturales de sueño y reproducción de los animales, así como la migración de aves y la supervivencia
+                    de insectos polinizadores.
                   </p>
                 </div>
                 <div>
                   <h3 className="font-heading text-xl text-foreground">Luz con un propósito</h3>
                   <p>
-                    Iluminar superficies que no lo necesitan utiliza energía sin aportar a la tarea prevista. Revisar
-                    dirección, intensidad y horarios permite aprovechar mejor la iluminación.
+                    La contaminación lumínica representa un desperdicio energético significativo, ya que se consume
+                    electricidad innecesaria para iluminar áreas donde no se requiere.
                   </p>
                 </div>
               </div>
@@ -158,16 +134,14 @@ export function ProjectContent({ teamEntry = false }: { teamEntry?: boolean }) {
               <div>
                 <h3 className="font-heading text-xl text-foreground">Monitoreamos el cielo</h3>
                 <p>
-                  La red reúne observaciones del brillo del cielo en distintos puntos mediante{' '}
-                  <InfoPopover label="Qué mide un fotómetro" trigger="fotómetros">
-                    <p>
-                      Un fotómetro es un instrumento que mide luz. Los utilizados para observar el brillo del cielo
-                      registran una magnitud que debe interpretarse junto con las condiciones y características de la
-                      medición. No miden directamente efectos sobre la salud o la biodiversidad.
-                    </p>
-                  </InfoPopover>
-                  . Estos registros permiten explorar cómo se comporta el entorno nocturno y consultar información de
-                  cada lugar.
+                  El proyecto IluminAConCiencia tiene contemplada la instalación de más de 20 nodos de medición de la
+                  contaminación lumínica en distintos establecimientos educacionales y observatorios turísticos de la
+                  Región de Coquimbo.
+                </p>
+                <p className="mt-4">
+                  Estos nodos están conformados por un fotómetro diseñado para la medición del brillo del cielo,
+                  sensores para el monitoreo de las condiciones meteorológicas y otros dispositivos que permiten el
+                  almacenamiento y transmisión de los datos recopilados en tiempo real.
                 </p>
               </div>
               <div>
@@ -210,29 +184,33 @@ export function ProjectContent({ teamEntry = false }: { teamEntry?: boolean }) {
               </div>
             </div>
           </ProjectSection>
-          <ProjectSection name="contribuir" title="Pequeñas decisiones, una iluminación más responsable">
-            <div className="grid items-start gap-8 md:grid-cols-2">
-              <div className="space-y-6">
-                <p>
-                  Antes de añadir más luz, conviene preguntarse qué necesita iluminarse, en qué momento y con qué
-                  intensidad.
-                </p>
-                <ul className="list-disc space-y-3 pl-5">
-                  <li>
-                    <strong className="text-foreground">Dirige:</strong> orienta la luz hacia la superficie que
-                    necesitas iluminar.
-                  </li>
-                  <li>
-                    <strong className="text-foreground">Ajusta:</strong> utiliza la intensidad necesaria para la
-                    actividad, evitando excesos.
-                  </li>
-                  <li>
-                    <strong className="text-foreground">Programa:</strong> apaga las luces cuando no sean necesarias y
-                    considera temporizadores o sensores cuando corresponda.
-                  </li>
-                </ul>
-              </div>
-              <LightingComparison />
+          <ProjectSection name="contribuir" title="Cómo contribuir a mitigar la contaminación lumínica">
+            <div className="space-y-6">
+              <p>
+                Existen diversas acciones que podemos tomar a nivel individual y colectivo para contribuir a la
+                mitigación de la contaminación lumínica y promover una iluminación más responsable.
+              </p>
+              <ul className="list-disc space-y-3 pl-5">
+                <li>
+                  <strong className="text-foreground">Uso eficiente de la iluminación:</strong> apagar las luces cuando
+                  no se estén ocupando, y utilizar sensores de movimiento o temporizadores para activarlas solo cuando
+                  sea requerido.
+                </li>
+                <li>
+                  <strong className="text-foreground">Uso de iluminación direccionada:</strong> dirigir la luz hacia
+                  donde se necesita y evitar la dispersión innecesaria. Utilizar iluminación focalizada y apuntar las
+                  luces hacia abajo para evitar el deslumbramiento y la emisión de luz hacia el cielo.
+                </li>
+                <li>
+                  <strong className="text-foreground">Regulación de la intensidad luminosa:</strong> utilizar
+                  reguladores de intensidad o atenuadores para ajustar el brillo de las luces según las necesidades
+                  específicas de cada situación.
+                </li>
+                <li>
+                  <strong className="text-foreground">Concientización y educación:</strong> informarse y difundir el
+                  tema de la contaminación lumínica para generar conciencia en la comunidad.
+                </li>
+              </ul>
             </div>
           </ProjectSection>
           <ProjectSection name="equipo" title="Las personas detrás del proyecto">
@@ -258,30 +236,6 @@ export function ProjectContent({ teamEntry = false }: { teamEntry?: boolean }) {
                 Explorar el mapa
               </Button>
             </div>
-            <p className="text-base italic">
-              Fuentes del proyecto:{' '}
-              <a
-                className="text-primary underline underline-offset-4"
-                href="https://iluminaconciencia.userena.digital/"
-              >
-                presentación y recomendaciones
-              </a>
-              ,{' '}
-              <a
-                className="text-primary underline underline-offset-4"
-                href="https://iluminaconciencia.userena.digital/news_item/20/"
-              >
-                actividades de divulgación
-              </a>{' '}
-              y{' '}
-              <a
-                className="text-primary underline underline-offset-4"
-                href="https://iluminaconciencia.userena.digital/news_item/33/"
-              >
-                antecedentes institucionales
-              </a>
-              .
-            </p>
           </ProjectSection>
         </article>
       </ProjectNavigation>
