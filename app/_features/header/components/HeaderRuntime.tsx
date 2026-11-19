@@ -13,6 +13,7 @@ export function HeaderRuntime({ children }: Props) {
   return (
     <header
       ref={headerRef}
+      style={{ viewTransitionName: 'site-header' }}
       onClickCapture={(event) => {
         if (
           event.defaultPrevented ||

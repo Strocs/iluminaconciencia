@@ -90,7 +90,7 @@ La segunda ruta requiere su propio `recursos/guias/page.tsx`. Next aplica el lay
 
 Un wrapper recibe `children` y aporta una responsabilidad de presentación o composición. A diferencia de `layout.tsx`, se importa explícitamente donde se utiliza.
 
-`UserenaLayout` y `HeaderLayout` ya forman parte del layout raíz. Para un panel reutilizado dentro de recursos, una opción sería `recursos/_components/ContentPanel.tsx`:
+`StandardLayout` compone `UserenaLayout`, `HeaderLayout` y el pie del proyecto en los layouts de `(home)` y `(site)`; no forma parte del layout raíz. Para un panel reutilizado dentro de recursos, una opción sería `recursos/_components/ContentPanel.tsx`:
 
 ```tsx
 import type { ReactNode } from 'react'

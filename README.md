@@ -53,10 +53,11 @@ Todo el código de la aplicación vive en `app/`. Las rutas componen la pantalla
 
 | Ubicación          | Responsabilidad                                                                                         |
 | ------------------ | ------------------------------------------------------------------------------------------------------- |
-| `app/layout.tsx`   | Estructura global, fuentes, header y pies institucionales.                                              |
-| `app/(home)/`      | Portada y sus secciones.                                                                                |
+| `app/layout.tsx`   | Documento global, fuentes y fondo compartido.                                              |
+| `app/(home)/`      | Portada y sus secciones, con composición institucional.                                                                                |
 | `app/(site)/`      | Páginas interiores con un layout compartido que define el contenedor principal y sus márgenes internos. |
-| `app/_features/`   | Módulos funcionales compartidos, como navegación y footer.                                              |
+| `app/explorar/`    | Mapa ampliado con navbar, sin barra institucional ni pies.                                             |
+| `app/_features/`   | Módulos funcionales compartidos, como mapa, navegación y composición institucional.                                              |
 | `app/_components/` | Elementos de presentación reutilizables.                                                                |
 | `app/_dal/`        | Consultas y validación de datos compartidos.                                                            |
 | `app/api/`         | Endpoints HTTP propios de Next.js.                                                                      |

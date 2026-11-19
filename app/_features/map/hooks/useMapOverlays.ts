@@ -14,6 +14,7 @@ export function useMapOverlays() {
   const explorerRef = useRef<HTMLDivElement>(null)
   const panelRef = useRef<HTMLElement>(null)
   const drawerCloseRef = useRef<HTMLButtonElement>(null)
+  const drawerListRef = useRef<HTMLDivElement>(null)
   const filterOpenRef = useRef<HTMLButtonElement>(null)
   const returnFocusRef = useRef<HTMLElement | null>(null)
   const filterTitleId = useId()
@@ -75,11 +76,22 @@ export function useMapOverlays() {
           drawerCloseRef.current?.focus({ preventScroll: true })
           return
         }
-        const article = Array.from(explorerRef.current?.querySelectorAll<HTMLElement>('[data-map-member]') ?? []).find(
+        const list = drawerListRef.current
+        const article = Array.from(list?.querySelectorAll<HTMLElement>('[data-map-member]') ?? []).find(
           (node) => node.dataset.mapMember === memberId
         )
-        article?.focus({ preventScroll: true })
-        article?.scrollIntoView({ block: 'nearest', behavior: 'instant' })
+        if (!list || !article) return
+        article.focus({ preventScroll: true })
+
+        // Only the list scrolls; ancestor scrolling can shift the map during the slide-in.
+        const listRect = list.getBoundingClientRect()
+        const articleRect = article.getBoundingClientRect()
+        const top = articleRect.top - (listRect.top + list.clientTop)
+        const bottom = articleRect.bottom - (listRect.top + list.clientTop + list.clientHeight)
+        // An article spanning the entire viewport is already as visible as possible.
+        if (top < 0 && bottom > 0) return
+        if (top < 0) list.scrollTop += Math.max(top, bottom)
+        else if (bottom > 0) list.scrollTop += Math.min(top, bottom)
       })
     },
     [filtersOpen, selectedGroupId]
@@ -143,6 +155,7 @@ export function useMapOverlays() {
     explorerRef,
     panelRef,
     drawerCloseRef,
+    drawerListRef,
     filterOpenRef,
     filterTitleId,
     filterPanelId,

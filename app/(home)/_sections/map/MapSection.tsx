@@ -1,6 +1,6 @@
-import { MapFilterProvider } from './context/MapFilterContext'
-import { MapExplorer } from './components/MapExplorer'
-import { getMapData } from './_dal/getMapData'
+import { MapFilterProvider } from '@/_features/map/context/MapFilterContext'
+import { MapExplorer } from '@/_features/map/components/MapExplorer'
+import { getMapData } from '@/_features/map/_dal/getMapData'
 import { SectionHeading } from '@/_components/SectionHeading'
 
 export async function MapSection() {

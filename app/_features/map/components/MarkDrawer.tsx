@@ -19,12 +19,14 @@ function formatSummaryPeriod(period: string) {
 }
 
 interface MapMarkDrawerProps {
+  floating?: boolean
   marks: MapMark[]
   selectedId: string | null
   open: boolean
   mobile: boolean
   inert: boolean
   closeButtonRef: RefObject<HTMLButtonElement | null>
+  listRef: RefObject<HTMLDivElement | null>
   onClose: () => void
 }
 
@@ -136,12 +138,26 @@ function MemberArticle({ mark, selected }: { mark: MapMark; selected: boolean })
   )
 }
 
-export function MapMarkDrawer({ marks, selectedId, open, mobile, inert, closeButtonRef, onClose }: MapMarkDrawerProps) {
+export function MapMarkDrawer({
+  floating = false,
+  marks,
+  selectedId,
+  open,
+  mobile,
+  inert,
+  closeButtonRef,
+  listRef,
+  onClose
+}: MapMarkDrawerProps) {
   return (
     <div
       aria-hidden={!open}
       data-open={open ? '' : undefined}
-      className="pointer-events-none absolute inset-y-0 right-0 left-auto z-20 w-full md:static md:inset-auto md:z-auto md:flex md:w-0 md:flex-none md:justify-end md:overflow-hidden md:transition-[width] md:duration-200 md:ease-in-out md:data-open:w-[calc(var(--drawer-width)+var(--drawer-gap))] md:motion-reduce:transition-none md:motion-reduce:duration-0"
+      className={cn(
+        'pointer-events-none absolute inset-y-0 right-0 left-auto z-20 w-full md:static md:inset-auto md:z-auto md:flex md:w-0 md:flex-none md:justify-end md:overflow-hidden md:transition-[width] md:duration-200 md:ease-in-out md:data-open:w-[calc(var(--drawer-width)+var(--drawer-gap))] md:motion-reduce:transition-none md:motion-reduce:duration-0',
+        floating &&
+          'md:absolute md:inset-y-3 md:right-3 md:left-auto md:z-20 md:w-(--drawer-width) md:overflow-clip md:transition-none md:data-open:w-(--drawer-width)'
+      )}
     >
       <aside
         id="mark-drawer"
@@ -150,12 +166,16 @@ export function MapMarkDrawer({ marks, selectedId, open, mobile, inert, closeBut
         aria-modal={mobile && open ? true : undefined}
         inert={inert}
         data-open={open ? '' : undefined}
-        className="pointer-events-none absolute inset-y-0 right-0 left-auto flex min-h-0 w-full max-w-3/4 shrink-0 translate-x-full flex-col self-stretch overflow-hidden rounded-lg border border-border bg-background p-4 transition-[translate] duration-200 ease-in-out data-open:pointer-events-auto data-open:translate-x-0 motion-reduce:transition-none motion-reduce:duration-0 md:static md:w-(--drawer-width) md:max-w-none md:translate-x-0 md:rounded-none md:border-0 md:bg-transparent md:px-0 md:transition-none"
+        className={cn(
+          'pointer-events-none absolute inset-y-0 right-0 left-auto flex min-h-0 w-full max-w-3/4 shrink-0 translate-x-full flex-col self-stretch overflow-hidden rounded-lg border border-border bg-background p-4 transition-[translate] duration-200 ease-in-out data-open:pointer-events-auto data-open:translate-x-0 motion-reduce:transition-none motion-reduce:duration-0 md:static md:w-(--drawer-width) md:max-w-none md:translate-x-0 md:rounded-none md:border-0 md:bg-transparent md:px-0 md:transition-none',
+          floating &&
+            'md:absolute md:inset-0 md:w-full md:translate-x-full md:rounded-lg md:border md:bg-background md:px-4 md:transition-[translate] md:duration-200 md:data-open:translate-x-0'
+        )}
       >
         <h3 className="shrink-0 border-b border-border pb-3 font-body text-base font-bold text-primary">
           {marks.length > 1 ? `${marks.length} instrumentos en este punto` : 'Detalle del instrumento'}
         </h3>
-        <div className="min-h-0 flex-1 space-y-4 overflow-y-auto overscroll-contain py-3">
+        <div ref={listRef} className="min-h-0 flex-1 space-y-4 overflow-y-auto overscroll-contain py-3">
           {marks.map((mark) => (
             <MemberArticle key={mark.id} mark={mark} selected={selectedId === mark.id} />
           ))}

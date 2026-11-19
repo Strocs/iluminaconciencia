@@ -2,6 +2,10 @@
   text-align: center;
 }
 
+.map :global(.maplibregl-ctrl-bottom-left .maplibregl-ctrl-attrib) {
+  margin-left: var(--map-attribution-left, 10px);
+}
+
 .map :global(.maplibregl-ctrl-group:has(> .maplibregl-ctrl-zoom-in)) {
   display: grid;
   gap: calc(var(--spacing) * 1.5);
@@ -13,20 +17,18 @@
 .map :global(.maplibregl-ctrl-bottom-right:has(.maplibregl-ctrl-zoom-in)) {
   position: absolute;
   top: auto;
-  right: calc(var(--spacing) * 3);
+  right: var(--map-controls-right, calc(var(--spacing) * 3));
   bottom: calc(var(--spacing) * 3);
   left: auto;
 }
 
 .map :global(.maplibregl-ctrl-group:has(> .maplibregl-ctrl-zoom-in)) button {
-  width: calc(var(--spacing) * 11);
-  height: calc(var(--spacing) * 11);
-  border: 1px solid var(--color-primary);
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   background-color: var(--color-background);
-  box-shadow:
-    0 0 0 2px #0a0718,
-    0 2px 6px #0009;
+  box-shadow: none;
 }
 
 .map :global(.maplibregl-ctrl-group:has(> .maplibregl-ctrl-zoom-in)) button:focus-visible {
@@ -35,7 +37,7 @@
 }
 
 .map :global(.maplibregl-ctrl-group:has(> .maplibregl-ctrl-zoom-in)) button:not(:disabled):hover {
-  border-color: var(--color-foreground);
+  border-color: var(--color-primary);
   background-color: var(--color-background);
 }
 
@@ -45,7 +47,7 @@
   background-image: none;
   mask-position: center;
   mask-repeat: no-repeat;
-  mask-size: 29px 29px;
+  mask-size: 16px 16px;
 }
 
 .map :global(.maplibregl-ctrl-zoom-in .maplibregl-ctrl-icon) {

@@ -1,12 +1,13 @@
 'use client'
 
 import { Fragment, useRef, useState } from 'react'
-import { AttributionControl, Map, Marker, NavigationControl } from 'react-map-gl/maplibre'
+import { AttributionControl, Map, Marker } from 'react-map-gl/maplibre'
 import { setWorkerUrl, type Map as MapLibreMap } from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import type { MapGroup } from '../types'
 import { GroupFigure } from './GroupFigure'
 import { MapMarkButton } from './MapMarkButton'
+import { MapNavigationControls } from './MapNavigationControls'
 import { useMapFilters } from '../hooks/useMapFilters'
 import { cn } from '@/_utils/cn'
 import styles from './MapCanvas.module.css'
@@ -17,6 +18,8 @@ interface MapCanvasProps {
   selectedId: string | null
   selectedGroupId: string | null
   panelOpen: boolean
+  cooperativeGestures?: boolean
+  fullscreen?: boolean
   onSelect: (group: MapGroup, trigger: HTMLElement, memberId?: string) => void
   onClose: () => void
 }
@@ -24,9 +27,16 @@ interface MapCanvasProps {
 const MAP_STYLE_URL = '/maps/openfreemap-dark.json'
 const DEFAULT_CENTER = { latitude: -30.02, longitude: -71.27 }
 const DEFAULT_ZOOM = 9
-const NAVIGATION_POSITION = 'bottom-right'
 
-export function MapCanvas({ selectedId, selectedGroupId, panelOpen, onSelect, onClose }: MapCanvasProps) {
+export function MapCanvas({
+  selectedId,
+  selectedGroupId,
+  panelOpen,
+  cooperativeGestures = true,
+  fullscreen = false,
+  onSelect,
+  onClose
+}: MapCanvasProps) {
   const groups = useMapFilters((state) => state.filteredGroups)
   const loadedMap = useRef<MapLibreMap | null>(null)
   const [mapGeneration, setMapGeneration] = useState(0)
@@ -42,12 +52,17 @@ export function MapCanvas({ selectedId, selectedGroupId, panelOpen, onSelect, on
         onClick={onClose}
         onLoad={({ target }) => {
           if (loadedMap.current === target) return
+          target.touchZoomRotate.disableRotation()
+          target.keyboard.disableRotation()
           // Activity preserves children while react-map-gl replaces its map instance.
           if (loadedMap.current !== null) setMapGeneration((generation) => generation + 1)
           loadedMap.current = target
         }}
-        initialViewState={{ ...DEFAULT_CENTER, zoom: DEFAULT_ZOOM }}
-        cooperativeGestures
+        initialViewState={{ ...DEFAULT_CENTER, zoom: DEFAULT_ZOOM, bearing: 0, pitch: 0 }}
+        maxPitch={0}
+        dragRotate={false}
+        touchPitch={false}
+        cooperativeGestures={cooperativeGestures}
         locale={{
           'CooperativeGesturesHandler.WindowsHelpText': 'Mantén Ctrl y usa la rueda para acercar o alejar el mapa',
           'CooperativeGesturesHandler.MacHelpText': 'Mantén ⌘ y desplázate para acercar o alejar el mapa',
@@ -58,11 +73,17 @@ export function MapCanvas({ selectedId, selectedGroupId, panelOpen, onSelect, on
       >
         <Fragment key={mapGeneration}>
           <AttributionControl compact position="bottom-left" />
-          <NavigationControl key={NAVIGATION_POSITION} showCompass={false} position={NAVIGATION_POSITION} />
+          <MapNavigationControls fullscreen={fullscreen} />
           {groups.map((group) => {
             if (group.members.length > 1)
               return (
-                <Marker key={group.id} latitude={group.position.lat} longitude={group.position.lng} anchor="center">
+                <Marker
+                  key={group.id}
+                  latitude={group.position.lat}
+                  longitude={group.position.lng}
+                  anchor="center"
+                  style={{ zIndex: 2 }}
+                >
                   <GroupFigure
                     group={group}
                     expanded={selectedGroupId === group.id}
@@ -73,7 +94,13 @@ export function MapCanvas({ selectedId, selectedGroupId, panelOpen, onSelect, on
               )
             const mark = group.members[0]
             return (
-              <Marker key={group.id} latitude={mark.position.lat} longitude={mark.position.lng} anchor="center">
+              <Marker
+                key={group.id}
+                latitude={mark.position.lat}
+                longitude={mark.position.lng}
+                anchor="center"
+                style={{ zIndex: mark.instrumentType === 'SQC' ? 0 : 1 }}
+              >
                 <div className="flex size-8 items-center justify-center">
                   <MapMarkButton
                     mark={mark}

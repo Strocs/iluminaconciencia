@@ -17,8 +17,8 @@ const LazyMapCanvas = dynamic(() => import('./MapCanvas').then((module) => modul
   loading: MapLoading
 })
 
-export function DeferredMapCanvas(props: ComponentProps<typeof MapCanvas>) {
-  const [active, setActive] = useState(false)
+export function DeferredMapCanvas({ eager = false, ...props }: ComponentProps<typeof MapCanvas> & { eager?: boolean }) {
+  const [active, setActive] = useState(eager)
   const observe = useCallback(
     (element: HTMLDivElement | null) => {
       if (!element || active) return

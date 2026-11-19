@@ -27,7 +27,43 @@
     'Helvetica Neue', sans-serif;
 }
 
+::view-transition-group(.map-expand) {
+  animation-duration: 360ms;
+  animation-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+::view-transition-old(.map-expand),
+::view-transition-new(.map-expand) {
+  height: 100%;
+  object-fit: cover;
+}
+
+:root:active-view-transition-type(map-expand)::view-transition-old(root),
+:root:active-view-transition-type(map-expand)::view-transition-new(root) {
+  animation: none;
+}
+
+::view-transition-group(site-header) {
+  animation: none;
+  z-index: 100;
+}
+
+::view-transition-old(site-header) {
+  display: none;
+}
+
+::view-transition-new(site-header) {
+  animation: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(.map-expand),
+  ::view-transition-old(.map-expand),
+  ::view-transition-new(.map-expand) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+  }
+
   html {
     scroll-behavior: auto;
   }

@@ -49,11 +49,13 @@ El paso de props es válido; elevar consultas a páginas o layouts requiere una 
 
 ## Layouts y wrappers actuales
 
-`app/layout.tsx` configura el documento global y compone `UserenaLayout`, `HeaderLayout` y el footer del proyecto. Esos dos componentes son wrappers ordinarios: reciben `children` y se aplican porque el layout raíz los importa.
+`app/layout.tsx` configura el documento global, las fuentes y el fondo compartido. `StandardLayout`, en `app/_features/site-layout/`, compone la barra institucional, el navbar y ambos pies mediante `UserenaLayout` y `HeaderLayout`.
 
-`app/(site)/layout.tsx` define el `<main>`, sus márgenes internos y el adaptador de parámetros de URL para las páginas interiores. La home usa su propio `<main>` en `app/(home)/page.tsx` y no hereda el layout de `(site)`.
+Los layouts de `(home)` y `(site)` aplican `StandardLayout`. El de `(site)` añade el `<main>`, sus márgenes internos y el adaptador de parámetros de URL para las páginas interiores. La home conserva su propio `<main>` en `app/(home)/page.tsx` y no hereda el layout de `(site)`. El módulo funcional del mapa se comparte desde `app/_features/map/`; la sección de portada permanece junto a su ruta.
 
-El header, el pie y el `<main>` ya forman parte de los layouts existentes, sin necesidad de repetirlos en cada página. Un layout nuevo debe aportar una estructura compartida concreta; un wrapper es opcional y solo se extrae cuando hay una responsabilidad o reutilización real.
+`app/explorar/page.tsx` compone solo `HeaderLayout` y el mapa ampliado; no aplica `StandardLayout`, por lo que excluye la barra institucional y ambos pies. Todas las rutas conservan el mismo layout raíz y la navegación no exige recargar el documento.
+
+El header, el pie y el `<main>` de las páginas normales ya forman parte de sus layouts, sin necesidad de repetirlos en cada página. Un layout nuevo debe aportar una estructura compartida concreta; un wrapper es opcional y solo se extrae cuando hay una responsabilidad o reutilización real.
 
 Los ejemplos de creación y uso están en la [guía de rutas](guides/adding-routes.md).
 

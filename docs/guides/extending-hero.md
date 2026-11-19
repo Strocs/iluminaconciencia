@@ -51,7 +51,7 @@ Por ejemplo, tras añadir `'cuidar la noche'` a la unión de destacados permitid
 
 - Mantener títulos y textos breves: todas las escenas usan el mismo espacio disponible.
 - Conservar entre **una y cuatro escenas** con la configuración actual: una quinta requiere coordinar un ajuste de la configuración de la propuesta con su responsable, no solo agregar contenido.
-- Utilizar destinos existentes. El mapa utiliza `href: '/'` y `section: 'explorar'`, único valor de `section` admitido actualmente.
+- Utilizar destinos existentes. El botón «Explorar el mapa» de la tercera escena utiliza `href: '/explorar'`, sin `section`, para navegar a la ruta ampliada. `section: 'explorar'` permanece disponible para enlaces que deban desplazar a la sección del home.
 - Comprobar la portada en escritorio, móvil y pantallas de poca altura: recorrido de escenas, destinos de botones y texto sin cortes.
 - Comprobar también el contenido inicial con movimiento reducido; ese modo no garantiza mostrar todas las escenas.
 - Ejecutar los scripts `lint`, `typecheck` y `build` para detectar errores de código y de los datos tipados. Estas comprobaciones no sustituyen la revisión de lectura y navegación.

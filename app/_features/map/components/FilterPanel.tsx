@@ -7,8 +7,10 @@ import { MapFilteredCount } from './FilteredCount'
 import { useMapFilters } from '../hooks/useMapFilters'
 import type { MapMark } from '../types'
 import { BrandStarIcon } from '@/_components/BrandStarIcon'
+import { cn } from '@/_utils/cn'
 
 interface FilterPanelProps {
+  floating?: boolean
   panelRef: React.Ref<HTMLElement>
   titleId: string
   panelId: string
@@ -19,6 +21,7 @@ interface FilterPanelProps {
 }
 
 export function FilterPanel({
+  floating = false,
   panelRef,
   titleId,
   panelId,
@@ -42,7 +45,11 @@ export function FilterPanel({
       aria-labelledby={titleId}
       aria-hidden={mobile && !filtersOpen}
       inert={mobile && !filtersOpen}
-      className="absolute inset-0 z-20 flex min-h-0 w-full max-w-3/4 shrink-0 -translate-x-full flex-col gap-4 self-stretch rounded-lg border border-border bg-background p-4 transition-transform duration-200 ease-in-out data-open:translate-x-0 motion-reduce:transition-none md:static md:inset-auto md:max-w-54 md:translate-x-0! md:border-0 md:bg-transparent md:px-0 md:transition-none"
+      className={cn(
+        'absolute inset-0 z-20 flex min-h-0 w-full max-w-3/4 shrink-0 -translate-x-full flex-col gap-4 self-stretch rounded-lg border border-border bg-background p-4 transition-transform duration-200 ease-in-out data-open:translate-x-0 motion-reduce:transition-none md:static md:inset-auto md:max-w-54 md:translate-x-0! md:border-0 md:bg-transparent md:px-0 md:transition-none',
+        floating &&
+          'overflow-y-auto overscroll-contain md:absolute md:inset-y-3 md:left-3 md:w-64 md:max-w-64 md:border md:bg-background md:px-4'
+      )}
       data-open={filtersOpen ? '' : undefined}
       onPointerDown={(event) => {
         if (mobile && event.target === event.currentTarget) onClose()
@@ -50,7 +57,9 @@ export function FilterPanel({
     >
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <h3 className="text-xl font-medium text-primary">Filtros</h3>
+          <h3 id={titleId} className="text-xl font-medium text-primary">
+            Filtros
+          </h3>
 
           <Button
             as="btn"
@@ -133,12 +142,7 @@ export function FilterPanel({
                 onClick={() => onFiltersChanged(toggleInstrumentType(instrumentType))}
               >
                 {instrumentType}
-                <svg
-                  aria-hidden="true"
-                  viewBox="0 0 16 16"
-                  className="size-3.5 shrink-0"
-                  fill="currentColor"
-                >
+                <svg aria-hidden="true" viewBox="0 0 16 16" className="size-3.5 shrink-0" fill="currentColor">
                   {instrumentType === 'SQC' ? (
                     <circle cx="8" cy="8" r="5" />
                   ) : (
