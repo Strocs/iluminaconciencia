@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import logo from '@/_assets/images/logo.png'
+import logo from '@/_assets/images/logo-header.webp'
 import { BrandStarIcon } from '@/_components/BrandStarIcon'
 import { Button } from '@/_components/Button'
 import { HeaderMenuButton, HeaderRuntime } from './HeaderRuntime'
@@ -26,9 +26,9 @@ export function Header() {
             aria-label="Iluminaconciencia, inicio"
           >
             <Image
-              className="size-12 object-contain lg:size-14"
+              className="size-12 object-contain motion-safe:transition-transform motion-safe:duration-200 motion-safe:ease-out motion-safe:hover:scale-105 lg:size-14"
               src={logo}
-              sizes="(min-width: 1024px) 56px, 48px"
+              unoptimized
               alt="Logo del proyecto Iluminaconciencia"
               loading="eager"
             />

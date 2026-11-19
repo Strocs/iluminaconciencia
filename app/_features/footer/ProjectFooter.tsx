@@ -4,7 +4,7 @@ import esoLogo from './assets/eso-user-selected.jpg'
 import goreLogo from './assets/gore-trimmed.svg'
 import mincienciaLogo from './assets/minciencia-user-selected.png'
 import minrelLogo from './assets/minrel-user-selected.png'
-import projectLogo from '../../_assets/images/logo.png'
+import projectLogo from '../../_assets/images/logo-footer.webp'
 import sochiasLogo from './assets/sochias-user-selected.png'
 import { TextLink } from '@/_components/TextLink'
 import { Separator } from '@/_components/Separator'
@@ -31,10 +31,9 @@ export function ProjectFooter() {
       <div className="flex flex-col items-center justify-around gap-8 lg:flex-row lg:gap-0">
         <div className="flex w-full min-w-0 items-center lg:w-auto">
           <Image
-            className="mx-auto h-auto w-42 shrink-0 sm:w-68"
+            className="mx-auto aspect-1456/1080 w-42 shrink-0 object-contain sm:w-68"
             src={projectLogo}
-            width={projectLogo.width}
-            height={projectLogo.height}
+            unoptimized
             alt="IluminAconciencia"
           />
           <p className="max-w-xs min-w-0 text-sm font-extralight text-text/80">
