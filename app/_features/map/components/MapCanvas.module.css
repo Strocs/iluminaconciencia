@@ -20,6 +20,13 @@
   right: var(--map-controls-right, calc(var(--spacing) * 3));
   bottom: calc(var(--spacing) * 3);
   left: auto;
+  transition: right 200ms ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .map :global(.maplibregl-ctrl-bottom-right:has(.maplibregl-ctrl-zoom-in)) {
+    transition: none;
+  }
 }
 
 .map :global(.maplibregl-ctrl-group:has(> .maplibregl-ctrl-zoom-in)) button {

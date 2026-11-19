@@ -5,7 +5,8 @@ export function MapViewportLink({ fullscreen }: { fullscreen: boolean }) {
 
   return (
     <Link
-      href={fullscreen ? '/#explorar' : '/explorar'}
+      href={fullscreen ? '/#map-return' : '/explorar'}
+      scroll={!fullscreen}
       transitionTypes={['map-expand']}
       aria-label={label}
       title={label}

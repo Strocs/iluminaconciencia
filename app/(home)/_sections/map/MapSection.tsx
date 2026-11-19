@@ -1,3 +1,4 @@
+import { MapReturnAnchor } from './MapReturnAnchor'
 import { MapFilterProvider } from '@/_features/map/context/MapFilterContext'
 import { MapExplorer } from '@/_features/map/components/MapExplorer'
 import { getMapData } from '@/_features/map/_dal/getMapData'
@@ -13,6 +14,7 @@ export async function MapSection() {
       tabIndex={-1}
       className="relative z-10 -mt-12 flex h-lvh w-full scroll-mt-20 flex-col px-4 text-foreground outline-none sm:px-5 lg:max-h-220"
     >
+      <MapReturnAnchor />
       <SectionHeading
         eyebrow="02 / EXPLORAR"
         title="Puntos de Medición"

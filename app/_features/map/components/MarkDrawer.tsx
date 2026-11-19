@@ -30,7 +30,7 @@ interface MapMarkDrawerProps {
   onClose: () => void
 }
 
-function MemberArticle({ mark, selected }: { mark: MapMark; selected: boolean }) {
+function MemberArticle({ mark, selected, floating }: { mark: MapMark; selected: boolean; floating: boolean }) {
   const isCamera = mark.instrumentType === 'SQC'
   const bortle = isCamera ? undefined : getBortleClass(mark.bortleLevel)
   const equipment = [
@@ -56,8 +56,9 @@ function MemberArticle({ mark, selected }: { mark: MapMark; selected: boolean })
       data-map-member={mark.id}
       aria-label={mark.name}
       className={cn(
-        'scroll-my-2 rounded-lg border border-transparent p-2 text-sm/relaxed focus-visible:outline-2 focus-visible:outline-primary',
-        selected && 'border-primary bg-primary/5'
+        'scroll-my-2 border border-transparent p-2 text-sm/relaxed focus-visible:outline-2 focus-visible:outline-primary',
+        selected && 'border-border bg-primary/5',
+        selected && !floating ? 'rounded-md' : 'rounded-lg'
       )}
     >
       <h4 className="border-b border-border pb-3 font-body text-base leading-tight font-bold text-primary">
@@ -103,20 +104,20 @@ function MemberArticle({ mark, selected }: { mark: MapMark; selected: boolean })
       )}
       {bortle && (
         <div className="min-h-28 border-b border-border py-3 text-sm/relaxed">
-          <div className="flex items-center gap-3">
+          <div className="flex items-start gap-3">
             <span className="rotate-180 text-xs font-semibold text-foreground [writing-mode:vertical-rl]">
               Nivel de Bortle
             </span>
-            <div className="flex flex-col items-center justify-center gap-1">
-              <span className="font-body text-6xl leading-none font-bold text-foreground">{bortle.label}</span>
+            <div className="flex flex-col items-center gap-1">
+              <span className="font-body text-6xl/[0.9] font-bold text-foreground">{bortle.label}</span>
               <span
                 aria-hidden="true"
-                className="size-3 shrink-0 rounded-full"
+                className="size-5 shrink-0 rounded-full"
                 style={{ backgroundColor: bortle.color }}
               />
             </div>
             <div className="min-w-0">
-              <p className="font-semibold text-foreground">{bortle.name}</p>
+              <p className="leading-tight font-semibold text-foreground">{bortle.name}</p>
               <p className="mt-1 text-xs leading-relaxed text-text">
                 SQM <span>{bortle.sqmRange}</span> mag/arcsec²
               </p>
@@ -172,12 +173,12 @@ export function MapMarkDrawer({
             'md:absolute md:inset-0 md:w-full md:translate-x-full md:rounded-lg md:border md:bg-background md:px-4 md:transition-[translate] md:duration-200 md:data-open:translate-x-0'
         )}
       >
-        <h3 className="shrink-0 border-b border-border pb-3 font-body text-base font-bold text-primary">
+        <h3 className="shrink-0 border-b border-border pb-3 font-body text-base font-normal text-primary">
           {marks.length > 1 ? `${marks.length} instrumentos en este punto` : 'Detalle del instrumento'}
         </h3>
         <div ref={listRef} className="min-h-0 flex-1 space-y-4 overflow-y-auto overscroll-contain py-3">
           {marks.map((mark) => (
-            <MemberArticle key={mark.id} mark={mark} selected={selectedId === mark.id} />
+            <MemberArticle key={mark.id} mark={mark} selected={selectedId === mark.id} floating={!!floating} />
           ))}
         </div>
         <Button

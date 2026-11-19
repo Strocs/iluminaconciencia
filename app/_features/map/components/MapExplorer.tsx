@@ -41,7 +41,7 @@ export function MapExplorer({ fullscreen = false }: { fullscreen?: boolean }) {
       onKeyDown={onKeyDown}
       aria-label="Explorador de instrumentos"
       className={cn(
-        'group relative mx-auto flex size-full min-h-0 max-w-360 flex-1 gap-4 overflow-x-clip',
+        'group relative mx-auto flex size-full min-h-0 max-w-360 flex-1 gap-4 overflow-x-clip max-md:data-drawer-open:[--map-controls-right:calc(75%+0.5rem)]',
         fullscreen &&
           'max-w-none gap-0 overflow-hidden md:overflow-clip md:[--map-attribution-left:--spacing(70)] md:data-drawer-open:[--map-controls-right:21.5rem]'
       )}
@@ -62,7 +62,9 @@ export function MapExplorer({ fullscreen = false }: { fullscreen?: boolean }) {
       <div
         className={cn(
           '@container relative flex min-h-0 min-w-0 flex-1 self-stretch [--drawer-gap:1rem] [--drawer-width:13.5rem]',
-          fullscreen && '[--drawer-width:20rem]'
+          fullscreen
+            ? '[--drawer-width:20rem]'
+            : 'md:group-data-drawer-open:[--map-controls-right:calc(var(--drawer-width)+var(--drawer-gap)+(--spacing(3)))]'
         )}
       >
         <ViewTransition name="instrument-map" share="map-expand" default="none">
@@ -85,7 +87,7 @@ export function MapExplorer({ fullscreen = false }: { fullscreen?: boolean }) {
                 onClose={() => {
                   if (drawerOpen) closeDrawer()
                 }}
-                panelOpen={mobileOverlayOpen}
+                panelOpen={mobile && filtersOpen}
               />
             </div>
             <Button

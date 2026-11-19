@@ -5,6 +5,7 @@ type NavigationItem = {
 }
 
 export const navigationItems = [
+  { label: 'Inicio', href: '/' },
   { label: 'Proyecto', href: '/proyecto' },
   { label: 'Explorar', href: '/explorar' },
   { label: 'Noticias', href: '/noticias' },
