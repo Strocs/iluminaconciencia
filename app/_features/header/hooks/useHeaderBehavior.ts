@@ -57,7 +57,6 @@ export function useHeaderBehavior() {
       header.dataset.hidden = 'false'
 
       const headerLayout = header.parentElement
-      const menuToggle = header.querySelector<HTMLInputElement>('[data-menu-toggle]')
       let frameId: number | null = null
       let referenceScrollY = Math.max(0, window.scrollY)
 
@@ -80,7 +79,7 @@ export function useHeaderBehavior() {
 
         header.dataset.appearance = solid ? 'solid' : 'transparent'
 
-        if (!solid || currentScrollY === 0 || menuToggle?.checked) {
+        if (!solid || currentScrollY === 0 || header.hasAttribute('data-menu-open')) {
           header.dataset.hidden = 'false'
           referenceScrollY = currentScrollY
         } else if (trackDirection) {
@@ -150,7 +149,7 @@ export function useHeaderBehavior() {
       window.addEventListener('scroll', handleScroll, { passive: true })
       window.addEventListener('pageshow', scheduleUpdate)
       document.addEventListener('load', scheduleUpdate, true)
-      menuToggle?.addEventListener('change', handleMenuChange)
+      header.addEventListener('header-menu-change', handleMenuChange)
       updateHeader()
       scheduleUpdate()
 
@@ -161,7 +160,7 @@ export function useHeaderBehavior() {
         window.removeEventListener('scroll', handleScroll)
         window.removeEventListener('pageshow', scheduleUpdate)
         document.removeEventListener('load', scheduleUpdate, true)
-        menuToggle?.removeEventListener('change', handleMenuChange)
+        header.removeEventListener('header-menu-change', handleMenuChange)
         header.removeEventListener('click', handleAnchorClick)
         delete header.dataset.headerPathname
         header.style.removeProperty('--header-open-height')
