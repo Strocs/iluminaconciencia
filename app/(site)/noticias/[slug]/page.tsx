@@ -4,7 +4,6 @@ import { Breadcrumbs } from '../../_components/Breadcrumbs'
 import { DefaultSidebar } from '../../_features/sidebar'
 import { SectionHeading } from '@/_components/SectionHeading'
 import { getNews } from '@/_dal/news/getNews'
-import { createSlug } from '@/_utils/createSlug'
 import { NewsContent } from './_components/NewsContent'
 import { Separator } from '@/_components/Separator'
 
@@ -24,11 +23,7 @@ export default async function NewsDetailPage({ params }: PageProps<'/noticias/[s
     <div className="grid grid-cols-1 gap-10">
       <div className="min-w-0">
         <Breadcrumbs
-          items={[
-            { label: 'Inicio', href: '/' },
-            { label: 'Noticias', href: '/noticias' },
-            { label: createSlug(news.title) }
-          ]}
+          items={[{ label: 'Inicio', href: '/' }, { label: 'Noticias', href: '/noticias' }, { label: news.title }]}
         />
         <SectionHeading as="h1" eyebrow="03 / NOTICIAS" title={news.title} />
       </div>

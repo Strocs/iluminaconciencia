@@ -2,6 +2,7 @@
 
 import { Button } from '@/_components/Button'
 import { ArrowIcon } from '@/_components/icons/Arrow'
+import { cn } from '@/_utils/cn'
 import Image from 'next/image'
 import { useCallback, useRef, useState } from 'react'
 import { flushSync } from 'react-dom'
@@ -15,6 +16,7 @@ export interface GalleryImage {
 }
 
 const loopBuffer = 4
+const autoAdvanceDelay = 3000
 
 function slideLeft(track: HTMLUListElement, index: number) {
   const first = track.children[0]
@@ -55,7 +57,8 @@ function animatePhoto(
   const duration = 420
   const flight = photo.animate(onReturn ? [frame(to), frame(from)] : [frame(from), frame(to)], {
     duration,
-    easing: 'cubic-bezier(.22,.75,.2,1)'
+    easing: 'cubic-bezier(.22,.75,.2,1)',
+    fill: 'forwards'
   })
   const hideTarget = frameInModal.animate([{ opacity: 0 }, { opacity: 0 }], { duration, fill: 'both' })
   const fade = chrome.animate(
@@ -70,8 +73,8 @@ function animatePhoto(
     fade.cancel()
   }
   flight.onfinish = () => {
-    cleanup()
     onReturn?.()
+    cleanup()
   }
   flight.oncancel = cleanup
   return () => {
@@ -89,8 +92,9 @@ export function GalleryCarousel({ images }: { images: readonly GalleryImage[] })
   const returning = useRef(false)
   const openingSlide = useRef(0)
   const opener = useRef<HTMLButtonElement>(null)
-  const [paused, setPaused] = useState(false)
+  const resumeAfter = useRef(0)
   const [selected, setSelected] = useState<number | null>(null)
+  const [hideThumbnail, setHideThumbnail] = useState(false)
   const active = selected === null ? undefined : images[selected]
 
   const buffer = images.length > loopBuffer ? loopBuffer : 0
@@ -104,29 +108,38 @@ export function GalleryCarousel({ images }: { images: readonly GalleryImage[] })
     [buffer]
   )
 
-  const attachAutoAdvance = useCallback(
-    (node: HTMLDivElement | null) => {
-      if (!node || paused) return
+  const attachAutoAdvance = useCallback((node: HTMLDivElement | null) => {
+    if (!node) return
 
-      const motion = window.matchMedia('(prefers-reduced-motion: reduce)')
-      let visible = false
-      const observer = new IntersectionObserver(([entry]) => {
-        visible = entry?.isIntersecting ?? false
-      })
-      observer.observe(node)
-      const timer = window.setInterval(() => {
-        if (visible && !motion.matches && !document.hidden && !node.matches(':hover') && track.current) {
-          move(track.current, 1)
-        }
-      }, 5000)
-
-      return () => {
-        observer.disconnect()
-        window.clearInterval(timer)
+    const motion = window.matchMedia('(prefers-reduced-motion: reduce)')
+    let visible = false
+    const observer = new IntersectionObserver(([entry]) => {
+      visible = entry?.isIntersecting ?? false
+    })
+    observer.observe(node)
+    const timer = window.setInterval(() => {
+      if (
+        visible &&
+        !motion.matches &&
+        !document.hidden &&
+        !dialog.current?.open &&
+        performance.now() >= resumeAfter.current &&
+        !node.matches(':hover, :active, :has(:focus-visible)') &&
+        track.current
+      ) {
+        move(track.current, 1)
       }
-    },
-    [paused]
-  )
+    }, autoAdvanceDelay)
+
+    return () => {
+      observer.disconnect()
+      window.clearInterval(timer)
+    }
+  }, [])
+
+  function deferAutoAdvance() {
+    resumeAfter.current = performance.now() + autoAdvanceDelay
+  }
 
   function normalizeLoop(node: HTMLUListElement) {
     if (!buffer) return
@@ -148,7 +161,6 @@ export function GalleryCarousel({ images }: { images: readonly GalleryImage[] })
     openingSlide.current = slide
 
     flushSync(() => {
-      setPaused(true)
       setSelected((slide - buffer + images.length) % images.length)
     })
     modal.showModal()
@@ -162,6 +174,7 @@ export function GalleryCarousel({ images }: { images: readonly GalleryImage[] })
       !window.matchMedia('(prefers-reduced-motion: reduce)').matches
     ) {
       cancelFlight.current = animatePhoto(modal, chrome.current, thumbnail, target, from)
+      if (cancelFlight.current) setHideThumbnail(true)
     }
   }
 
@@ -190,12 +203,13 @@ export function GalleryCarousel({ images }: { images: readonly GalleryImage[] })
 
     const original = openingSlide.current
     const samePhoto = (original - buffer + images.length) % images.length === selected
-    const card = node.children[samePhoto ? original : buffer + selected]
+    let card = node.children[samePhoto ? original : buffer + selected]
     const viewport = node.getBoundingClientRect()
     let bounds = card.getBoundingClientRect()
     if (bounds.left < viewport.left - 1 || bounds.right > viewport.right + 1) {
       node.scrollTo({ left: slideLeft(node, buffer + selected), behavior: 'instant' })
-      bounds = node.children[buffer + selected].getBoundingClientRect()
+      card = node.children[buffer + selected]
+      bounds = card.getBoundingClientRect()
     }
 
     cancelFlight.current = animatePhoto(
@@ -204,10 +218,16 @@ export function GalleryCarousel({ images }: { images: readonly GalleryImage[] })
       target.complete && target.naturalWidth ? target : (card.querySelector('img') ?? target),
       target,
       bounds,
-      () => modal.close()
+      () => {
+        // Reveal the thumbnail before removing the dialog from the top layer.
+        flushSync(() => setHideThumbnail(false))
+        modal.close()
+      }
     )
-    if (cancelFlight.current) returning.current = true
-    else modal.close()
+    if (cancelFlight.current) {
+      returning.current = true
+      setHideThumbnail(true)
+    } else modal.close()
   }
 
   function stepDialog(direction: number) {
@@ -220,9 +240,9 @@ export function GalleryCarousel({ images }: { images: readonly GalleryImage[] })
     <>
       <div
         ref={attachAutoAdvance}
-        onFocus={() => setPaused(true)}
-        onPointerDown={() => setPaused(true)}
-        onWheel={() => setPaused(true)}
+        onPointerDown={deferAutoAdvance}
+        onPointerUp={deferAutoAdvance}
+        onWheel={deferAutoAdvance}
       >
         <ul
           ref={attachTrack}
@@ -241,7 +261,10 @@ export function GalleryCarousel({ images }: { images: readonly GalleryImage[] })
                 tabIndex={index < buffer || index >= buffer + images.length ? -1 : undefined}
                 aria-haspopup="dialog"
                 onClick={(e) => open(index, e.currentTarget)}
-                className="group relative block aspect-4/3 w-full cursor-zoom-in overflow-hidden rounded-md border border-border bg-foreground/5 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary"
+                className={cn(
+                  'group relative block aspect-4/3 w-full cursor-zoom-in overflow-hidden rounded-md border border-border bg-foreground/5 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary',
+                  hideThumbnail && src === active?.src && 'opacity-0'
+                )}
               >
                 <Image
                   src={src}
@@ -260,7 +283,10 @@ export function GalleryCarousel({ images }: { images: readonly GalleryImage[] })
             type="button"
             aria-label="Imagen anterior"
             className="min-h-11"
-            onClick={() => track.current && move(track.current, -1)}
+            onClick={() => {
+              deferAutoAdvance()
+              if (track.current) move(track.current, -1)
+            }}
           >
             <ArrowIcon size={20} className="rotate-180" />
           </Button>
@@ -283,7 +309,10 @@ export function GalleryCarousel({ images }: { images: readonly GalleryImage[] })
             type="button"
             aria-label="Imagen siguiente"
             className="min-h-11"
-            onClick={() => track.current && move(track.current, 1)}
+            onClick={() => {
+              deferAutoAdvance()
+              if (track.current) move(track.current, 1)
+            }}
           >
             <ArrowIcon size={20} />
           </Button>
@@ -297,8 +326,10 @@ export function GalleryCarousel({ images }: { images: readonly GalleryImage[] })
           close()
         }}
         onClose={() => {
+          deferAutoAdvance()
           returning.current = false
           stopFlight()
+          setHideThumbnail(false)
           setSelected(null)
           opener.current?.focus({ preventScroll: true })
         }}
