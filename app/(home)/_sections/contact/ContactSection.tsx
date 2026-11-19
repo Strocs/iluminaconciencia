@@ -10,7 +10,7 @@ export function ContactSection() {
       aria-labelledby="contacto-title"
     >
       <div className="container mx-auto w-full">
-        <SectionHeading titleId="contacto-title" eyebrow="05 / CONTACTO" title="Contáctanos" />
+        <SectionHeading titleId="contacto-title" eyebrow="06 / CONTACTO" title="Contáctanos" />
 
         <div className="grid gap-10 md:grid-cols-2 md:gap-16">
           <div className="space-y-8 justify-self-center text-center md:justify-self-end md:text-end">

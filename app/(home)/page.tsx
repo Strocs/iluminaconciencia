@@ -1,5 +1,6 @@
 import { Separator } from '@/_components/Separator'
 import { ContactSection } from './_sections/contact/ContactSection'
+import { GallerySection } from './_sections/gallery/GallerySection'
 import { Hero } from './_sections/hero'
 import { MapSection } from './_sections/map/MapSection'
 import { NewsArticlesSection } from './_sections/news/NewsArticlesSection'
@@ -11,6 +12,8 @@ export default function Home() {
       <MapSection />
       <Separator />
       <NewsArticlesSection />
+      <Separator />
+      <GallerySection />
       <Separator />
       <ContactSection />
     </main>
