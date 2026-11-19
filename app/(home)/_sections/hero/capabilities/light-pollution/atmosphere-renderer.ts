@@ -35,7 +35,13 @@ function compileShader(gl: WebGL2RenderingContext, type: number, source: string)
 
 /** Owns only the atmosphere context: one triangle, one immutable RG8 lookup, no animation clock. */
 export function createAtmosphereRenderer(canvas: HTMLCanvasElement): AtmosphereRenderer {
-  const gl = canvas.getContext('webgl2', { alpha: true, premultipliedAlpha: true })
+  const gl = canvas.getContext('webgl2', {
+    alpha: true,
+    premultipliedAlpha: true,
+    antialias: false,
+    depth: false,
+    stencil: false
+  })
   if (!gl) throw new Error('Hero atmosphere: WebGL2 is unavailable')
   const releases: (() => void)[] = []
   const destroyResources = () =>
@@ -92,9 +98,7 @@ export function createAtmosphereRenderer(canvas: HTMLCanvasElement): AtmosphereR
     terrainUniform = uniform(program, 'u_terrain')
     resolution = uniform(program, 'u_resolution')
     atmosphere = uniform(program, 'u_atmosphere')
-    gl.enable(gl.BLEND)
-    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA)
-    gl.clearColor(0, 0, 0, 0)
+    gl.disable(gl.BLEND)
     if (gl.getError() !== gl.NO_ERROR) throw new Error('Hero atmosphere: resource initialization failed')
   } catch (error) {
     destroyResources()
@@ -126,10 +130,10 @@ export function createAtmosphereRenderer(canvas: HTMLCanvasElement): AtmosphereR
     },
     draw: (intensity) => {
       if (destroyed || !sized || gl.isContextLost()) return false
-      gl.clear(gl.COLOR_BUFFER_BIT)
       gl.useProgram(program)
       gl.bindVertexArray(vao)
       gl.uniform3f(atmosphere, intensity, 1, 1)
+      // Full-screen coverage also overwrites transparent pixels when intensity reaches zero.
       gl.drawArrays(gl.TRIANGLES, 0, 3)
       gl.bindVertexArray(null)
       return !gl.isContextLost() && gl.getError() === gl.NO_ERROR

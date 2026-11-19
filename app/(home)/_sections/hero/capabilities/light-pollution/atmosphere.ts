@@ -44,9 +44,15 @@ void main() {
   vec2 terrain = terrainHeight();
   float intensity = u_atmosphere.x;
   float d = terrain.x;
-  float source = exp(-pow((terrain.y - 0.52) / (0.2 + 0.48 * intensity), 2.0));
+  float sourceWidth = 0.2 + 0.48 * intensity;
+  float sourceOffset = terrain.y - 0.52;
+  float source = exp(-pow(sourceOffset / sourceWidth, 2.0));
   float height = mix(24.0, 720.0, intensity * intensity);
-  float density = exp(-max(d, 0.0) / height) * source * intensity;
+  float falloff = exp(-max(d, 0.0) / height);
+  // Fan out the air glow without changing the continuous rim or terrain coverage.
+  float spread = sourceWidth * mix(0.65, 1.4, 1.0 - falloff);
+  float airSource = exp(-pow(sourceOffset / spread, 2.0));
+  float density = falloff * airSource * intensity;
   float air = (1.0 - exp(-2.1 * density)) * terrainCoverage(d) * u_atmosphere.y;
   float rimWidth = mix(1.2, 13.0, intensity);
   float rim = exp(-abs(d) / rimWidth) * source * intensity * 0.72 * u_atmosphere.z;

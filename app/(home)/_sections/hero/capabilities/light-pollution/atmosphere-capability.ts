@@ -1,7 +1,14 @@
 import type { HeroCapability } from '../../core/contracts'
 import { frontalSilhouetteGeometry } from '../../landscape'
 import { lightPollutionConfig } from './config'
-import { createAtmosphereRenderer, type AtmosphereRenderer } from './atmosphere-renderer'
+import type { TerrainPlacement } from './atmosphere'
+import { createAtmosphereRenderer, type AtmosphereRenderer, type AtmosphereViewport } from './atmosphere-renderer'
+
+interface AtmosphereFrame {
+  readonly viewport: AtmosphereViewport
+  readonly terrain: TerrainPlacement
+  readonly intensity: number
+}
 
 /** CSS/SVG keep their own opacity timelines; visibility switches only after a successful GPU draw. */
 export function createAtmosphereCapability(root: HTMLElement): HeroCapability | null {
@@ -20,6 +27,7 @@ export function createAtmosphereCapability(root: HTMLElement): HeroCapability | 
   let failed = motion.matches
   let scheduled = 0
   let progress = 0
+  let previousFrame: AtmosphereFrame | undefined
   const restoreFallback = () => {
     canvas.style.visibility = 'hidden'
     layers.forEach((layer, index) => {
@@ -41,35 +49,51 @@ export function createAtmosphereCapability(root: HTMLElement): HeroCapability | 
   const draw = () => {
     if (destroyed || failed) return
     try {
+      const { startProgress, endProgress } = lightPollutionConfig.horizon
+      const intensity = Math.max(0, Math.min(1, 1 - (progress - startProgress) / (endProgress - startProgress)))
+      // The first zero-intensity draw clears the old light; later geometry changes cannot reveal it.
+      if (intensity === 0 && previousFrame?.intensity === 0) return
+
       const bounds = canvas.getBoundingClientRect()
       const plane = terrain.getBoundingClientRect()
       // A zero-sized initial mount may become measurable later; it is not a context retry.
       if (!(bounds.width > 0) || !(bounds.height > 0) || !(plane.width > 0) || !(plane.height > 0)) return
+      const viewport: AtmosphereViewport = {
+        width: bounds.width,
+        height: bounds.height,
+        devicePixelRatio: Math.min(window.devicePixelRatio || 1, 2)
+      }
+      const placement: TerrainPlacement = {
+        left: plane.left - bounds.left,
+        top: plane.top - bounds.top,
+        scaleX: plane.width / frontalSilhouetteGeometry.viewBoxWidth,
+        scaleY: plane.height / frontalSilhouetteGeometry.viewBoxHeight
+      }
+      const sameGeometry =
+        previousFrame !== undefined &&
+        previousFrame.viewport.width === viewport.width &&
+        previousFrame.viewport.height === viewport.height &&
+        previousFrame.viewport.devicePixelRatio === viewport.devicePixelRatio &&
+        previousFrame.terrain.left === placement.left &&
+        previousFrame.terrain.top === placement.top &&
+        previousFrame.terrain.scaleX === placement.scaleX &&
+        previousFrame.terrain.scaleY === placement.scaleY
+      if (sameGeometry && previousFrame?.intensity === intensity) return
+
       renderer ??= createAtmosphereRenderer(canvas)
-      renderer.resize(
-        {
-          width: bounds.width,
-          height: bounds.height,
-          devicePixelRatio: Math.min(window.devicePixelRatio || 1, 2)
-        },
-        {
-          left: plane.left - bounds.left,
-          top: plane.top - bounds.top,
-          scaleX: plane.width / frontalSilhouetteGeometry.viewBoxWidth,
-          scaleY: plane.height / frontalSilhouetteGeometry.viewBoxHeight
-        }
-      )
-      const { startProgress, endProgress } = lightPollutionConfig.horizon
-      const intensity = Math.max(0, Math.min(1, 1 - (progress - startProgress) / (endProgress - startProgress)))
+      if (!sameGeometry) renderer.resize(viewport, placement)
       if (!renderer.draw(intensity)) {
         enterFallback()
         return
       }
-      layers.forEach((layer) => {
-        layer.style.visibility = 'hidden'
-      })
-      canvas.style.visibility = 'visible'
-      root.dataset.heroAtmosphereReady = 'true'
+      if (!previousFrame) {
+        layers.forEach((layer) => {
+          layer.style.visibility = 'hidden'
+        })
+        canvas.style.visibility = 'visible'
+        root.dataset.heroAtmosphereReady = 'true'
+      }
+      previousFrame = { viewport, terrain: placement, intensity }
     } catch {
       enterFallback()
     }
