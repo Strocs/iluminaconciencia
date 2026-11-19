@@ -285,7 +285,7 @@ export default function MedicionPage() {
                 <p>
                   Comienza por el mapa para recorrer el territorio y explorar los puntos de medición por su ubicación.
                 </p>
-                <Button href="/#explorar" variant="neutral">
+                <Button href="/explorar" variant="neutral">
                   Explorar el mapa
                 </Button>
               </div>

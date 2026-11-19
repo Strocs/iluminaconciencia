@@ -232,7 +232,7 @@ export function ProjectContent({ teamEntry = false }: { teamEntry?: boolean }) {
             </p>
             <div className="flex flex-wrap gap-4">
               <Button href="/medicion">Cómo medimos</Button>
-              <Button href="/#explorar" variant="neutral">
+              <Button href="/explorar" variant="neutral">
                 Explorar el mapa
               </Button>
             </div>
