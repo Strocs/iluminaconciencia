@@ -1,6 +1,6 @@
 # OpenFreeMap dark style
 
-`openfreemap-dark.json` is a local copy of the OpenFreeMap dark style with the four narrowly scoped compatibility fixes listed below. The style continues to use OpenFreeMap's hosted tiles, fonts, and sprite resources.
+`openfreemap-dark.json` es una copia local del estilo oscuro de OpenFreeMap. Incluye ajustes de compatibilidad, orden de capas, idioma y jerarquía de rótulos. Las teselas, las fuentes y el sprite siguen alojados en OpenFreeMap.
 
 ## Upstream provenance
 
@@ -13,14 +13,17 @@
 
 ## Modifications
 
-Only these four semantic locations differ from the retrieved style:
+Cambios respecto al estilo original:
 
 1. `layers[id=place_town].layout.icon-image`: `circle-11` → `circle_11`.
 2. `layers[id=place_city].layout.icon-image`: `circle-11` → `circle_11`.
 3. `layers[id=place_city_large].layout.icon-image`: `circle-11` → `circle_11`.
-4. Removed `layers[id=landcover_wood].paint.fill-pattern` (`wood-pattern`), retaining the layer's fill paint.
+4. Eliminación de `layers[id=landcover_wood].paint.fill-pattern` (`wood-pattern`), sin cambiar el relleno de la capa.
+5. Las capas de texto `water_name`, `highway_name_other` y `highway_name_motorway` se sitúan después de la geometría del mapa base y antes de `place_other`. Los contornos regionales se insertan justo antes de `water_name`, para que no cubran los rótulos ni queden debajo de los rellenos o las líneas del mapa base.
+6. Los nombres del mapa base se leen exclusivamente de `name:es`. En Chile y en el resto del mundo, si la tesela no contiene un nombre en español o este está vacío, no se muestra el rótulo. Las referencias de ruta (`ref`) de las autopistas se conservan porque son identificadores, no nombres. La geometría del mapa base se mantiene en todo el mundo.
+7. El tamaño de los rótulos aumenta de 10 a 12 en `place_state` y `place_city`, y de 14 a 16 en `place_city_large`. El tamaño de las demás categorías no cambia.
 
-No other style fields, colors, data sources, resource URLs, or metadata were intentionally changed.
+Las autopistas y las vías de clase `primary` y `trunk`, con sus etiquetas, se habilitan en el zoom 10. Las vías `secondary` y `tertiary`, las calles menores, los senderos y sus etiquetas se habilitan en el zoom 12. Los umbrales del estilo no añaden vías que la tesela no incluya. Los muelles y las áreas de aeropuerto se habilitan en el zoom 10, y el trazado detallado de carreteras, en el zoom 12.
 
 ## Required license notices
 
@@ -95,3 +98,13 @@ OpenMapTiles and OpenStreetMap attribution is required for maps based on this
 style and data: <https://openmaptiles.org/> and
 <https://www.openstreetmap.org/copyright>. OpenFreeMap's recommended attribution
 is <https://openfreemap.org> © OpenMapTiles, Data from OpenStreetMap.
+
+## Límites regionales de Chile
+
+`chile-regions-9469f09/` contiene 17 archivos `.geojson.gz` para las 16 regiones (ADM1), con un archivo para Valparaíso continental y otro para Rapa Nui y el archipiélago Juan Fernández. Procede de la Biblioteca del Congreso Nacional de Chile (BCN) y OCHA ROLAC, distribuida por [geoBoundaries](https://www.geoboundaries.org/) (Chile, 2020, `CHL-ADM1-47653553`). Licencia de origen: [CC BY 3.0 IGO](https://creativecommons.org/licenses/by/3.0/igo/). La atribución también se muestra en el mapa.
+
+- [Archivo de origen simplificado de geoBoundaries, revisión `9469f09`](https://github.com/wmgeolab/geoBoundaries/raw/9469f09/releaseData/gbOpen/CHL/ADM1/geoBoundaries-CHL-ADM1_simplified.geojson). SHA-256: `64ca160bd88f899ab5b2134733e1e191059fe20cdc9329dc189b40c1a9d194fa`.
+- Regeneración: `node scripts/split-chile-regions.mjs <archivo.geojson>`. El comando valida el SHA-256, separa las geometrías y las comprime con gzip sin simplificar ni redondear las coordenadas de origen. El catálogo `app/_features/map/chile-regions.ts` conserva únicamente los códigos, los nombres y las cajas de encuadre. Si cambia el origen o el contenido de los archivos publicados, debe cambiarse también la ruta versionada utilizada por el mapa.
+- `CL-VS` contiene solo el polígono continental. `CL-VS-RN-JF` es el identificador interno de «Rapa Nui e Islas Juan Fernández». Contiene los ocho polígonos del GeoJSON de Valparaíso que pertenecen a esos dos grupos. No incluye Salas y Gómez, las islas Desventuradas ni los islotes costeros de Valparaíso. Ambos archivos conservan el mismo `shapeID`; no representan regiones administrativas distintas.
+- El mapa solicita únicamente el archivo de la región seleccionada y descomprime su contenido en el navegador. Los archivos contienen bytes gzip; no se requiere configurar `Content-Encoding` en el servidor.
+- Los contornos corresponden a la edición simplificada de geoBoundaries, que no incluye la Antártica. No se deben usar como referencia oficial ni para análisis de precisión.

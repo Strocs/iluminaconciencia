@@ -10,6 +10,20 @@ El módulo se comparte entre la sección del home y `/explorar`. Los enlaces «E
 
 Los gestos cooperativos siguen activos en el home para proteger el scroll. En `/explorar` se desactivan: la rueda aplica zoom sin Ctrl/⌘ y un dedo desplaza el mapa. Las restricciones de inclinación y giro se mantienen en ambas vistas. La transición respeta movimiento reducido y los navegadores sin soporte navegan sin animación. Las capturas de View Transitions no conservan una instancia viva del motor ni garantizan que las teselas estén listas al terminar la ampliación.
 
+## Navegación por región
+
+El panel utiliza el primitivo compartido [`Select`](../../_components/Select.tsx): un botón con la identidad visual del sitio y una lista flotante que no queda recortada por el scroll. El desplegable admite navegación por teclado y búsqueda por escritura. La etiqueta, las opciones y la acción de encuadrar la región pertenecen al panel del mapa.
+
+El desplegable «Región de Chile» encuadra y resalta la selección. Ofrece 17 opciones para las 16 regiones, ya que Valparaíso continental y las islas de Rapa Nui y Juan Fernández se pueden encuadrar por separado. No cambia la visibilidad ni el recuento de instrumentos; los filtros de Bortle y tipo son independientes. Coquimbo está seleccionada al abrir el mapa. La cámara se inicializa con los límites de la selección y el margen del viewport, sin reencuadrar tras la carga. En móvil, la selección cierra el panel para mostrar el resultado y devuelve el foco a «Filtros». El panel admite desplazamiento vertical cuando los controles superan su altura.
+
+«Valparaíso» encuadra el continente; «Rapa Nui e Islas Juan Fernández», al final de la lista, encuadra y dibuja solo los polígonos de esos dos grupos, extraídos del GeoJSON de Valparaíso sin modificar sus coordenadas. Esta división solo afecta a la navegación del mapa. En `/explorar`, el encuadre deja margen para el panel flotante de escritorio. [Los GeoJSON comprimidos](../../../public/maps/README.md#límites-regionales-de-chile) se descargan por selección: al iniciar el mapa se solicita solo Coquimbo. Al cambiar de región, se retira el contorno anterior y se carga el nuevo sin afectar los marcadores. Las regiones no seleccionadas conservan los límites que muestre el mapa base.
+
+## Límites comunales
+
+A partir del zoom 6, se solicita y dibuja únicamente el archivo de la región seleccionada. La línea fina discontinua queda por debajo de los rótulos del mapa base. Las carreteras principales y sus etiquetas se habilitan en el zoom 10; los caminos secundarios y sus etiquetas, en el zoom 12, si las teselas incluyen esas vías. Al bajar del umbral, se retira la fuente comunal. «Rapa Nui e Islas Juan Fernández» no tiene capa comunal porque sus comunas no comparten límites terrestres; el contorno regional se conserva.
+
+La capa omite costas y límites entre regiones. La [documentación del conjunto](../../../public/maps/chile-communes-9469f09/README.md) describe la procedencia, la licencia y la generación de los archivos.
+
 ## Flujo de datos
 
 | Módulo                         | Responsabilidad                                                                                              |

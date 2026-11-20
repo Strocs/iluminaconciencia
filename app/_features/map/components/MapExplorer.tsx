@@ -1,6 +1,9 @@
 'use client'
 
-import { ViewTransition } from 'react'
+import { useRef, useState, ViewTransition } from 'react'
+import type { MapRef } from 'react-map-gl/maplibre'
+import { chileRegions, coquimboRegion } from '../chile-regions'
+import { frameMapRegion } from '../map-camera'
 import { cn } from '@/_utils/cn'
 import { useMapOverlays } from '../hooks/useMapOverlays'
 import { MapMarkDrawer } from './MarkDrawer'
@@ -33,6 +36,19 @@ export function MapExplorer({ fullscreen = false }: { fullscreen?: boolean }) {
   } = useMapOverlays()
 
   const mobileOverlayOpen = mobile && (filtersOpen || drawerOpen)
+  const mapRef = useRef<MapRef>(null)
+  const [region, setRegion] = useState(coquimboRegion)
+  const floatingPanel = fullscreen && !mobile ? panelRef : null
+
+  function selectRegion(code: string) {
+    const nextRegion = chileRegions.find((item) => item.code === code)
+    if (!nextRegion) return
+    setRegion(nextRegion)
+    if (drawerOpen) closeDrawer(false)
+    if (mobile && filtersOpen) closeFilters()
+    const map = mapRef.current?.getMap()
+    if (map) frameMapRegion(map, nextRegion, floatingPanel?.current ?? null)
+  }
 
   return (
     <div
@@ -55,6 +71,8 @@ export function MapExplorer({ fullscreen = false }: { fullscreen?: boolean }) {
         panelId={filterPanelId}
         mobile={mobile}
         filtersOpen={filtersOpen}
+        regionCode={region.code}
+        onRegionChange={selectRegion}
         onClose={() => closeFilters()}
         onFiltersChanged={onFiltersChanged}
       />
@@ -81,6 +99,9 @@ export function MapExplorer({ fullscreen = false }: { fullscreen?: boolean }) {
                 eager={fullscreen}
                 fullscreen={fullscreen}
                 cooperativeGestures={!fullscreen}
+                mapRef={mapRef}
+                region={region}
+                floatingPanelRef={floatingPanel}
                 selectedId={selectedId}
                 selectedGroupId={selectedGroupId}
                 onSelect={openDrawer}

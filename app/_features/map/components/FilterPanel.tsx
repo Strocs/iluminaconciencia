@@ -3,11 +3,15 @@
 import { Button } from '@/_components/Button'
 import { bortleClasses } from '@/_features/bortle/bortle-classes'
 import { InfoPopover } from '@/_components/InfoPopover'
+import { Select } from '@/_components/Select'
 import { MapFilteredCount } from './FilteredCount'
 import { useMapFilters } from '../hooks/useMapFilters'
 import type { MapMark } from '../types'
 import { BrandStarIcon } from '@/_components/BrandStarIcon'
 import { cn } from '@/_utils/cn'
+import { chileRegions } from '../chile-regions'
+
+const regionOptions = chileRegions.map(({ code, label }) => ({ value: code, label }))
 
 interface FilterPanelProps {
   floating?: boolean
@@ -16,6 +20,8 @@ interface FilterPanelProps {
   panelId: string
   mobile: boolean
   filtersOpen: boolean
+  regionCode: string
+  onRegionChange: (code: string) => void
   onFiltersChanged: (marks: MapMark[]) => void
   onClose: () => void
 }
@@ -27,6 +33,8 @@ export function FilterPanel({
   panelId,
   mobile,
   filtersOpen,
+  regionCode,
+  onRegionChange,
   onFiltersChanged,
   onClose
 }: FilterPanelProps) {
@@ -46,9 +54,8 @@ export function FilterPanel({
       aria-hidden={mobile && !filtersOpen}
       inert={mobile && !filtersOpen}
       className={cn(
-        'absolute inset-0 z-20 flex min-h-0 w-full max-w-3/4 shrink-0 -translate-x-full flex-col gap-4 self-stretch rounded-lg border border-border bg-background p-4 transition-transform duration-200 ease-in-out data-open:translate-x-0 motion-reduce:transition-none md:static md:inset-auto md:max-w-54 md:translate-x-0! md:border-0 md:bg-transparent md:px-0 md:transition-none',
-        floating &&
-          'overflow-y-auto overscroll-contain md:absolute md:inset-y-3 md:left-3 md:w-64 md:max-w-64 md:border md:bg-background md:px-4'
+        'absolute inset-0 z-20 flex min-h-0 w-full max-w-3/4 shrink-0 -translate-x-full flex-col gap-4 self-stretch map-panel-scrollbar overflow-y-auto overscroll-contain rounded-lg border border-border bg-background p-4 transition-transform duration-200 ease-in-out *:shrink-0 data-open:translate-x-0 motion-reduce:transition-none md:static md:inset-auto md:max-w-54 md:translate-x-0! md:border-0 md:bg-transparent md:px-1 md:transition-none',
+        floating && 'md:absolute md:inset-y-3 md:left-3 md:w-64 md:max-w-64 md:border md:bg-background md:px-4'
       )}
       data-open={filtersOpen ? '' : undefined}
       onPointerDown={(event) => {
@@ -73,9 +80,17 @@ export function FilterPanel({
           </Button>
         </div>
         <p className="text-sm leading-snug font-light text-text">
-          Filtra los fotómetros por escala de Bortle y tipo. Las cámaras SQC se seleccionan por separado.
+          Ajusta los filtros o selecciona una región para verla en detalle.
         </p>
       </div>
+
+      <Select
+        label="Región de Chile"
+        labelIcon={<BrandStarIcon />}
+        options={regionOptions}
+        value={regionCode}
+        onValueChange={onRegionChange}
+      />
 
       <fieldset className="space-y-2 border-t border-border">
         <legend className="flex w-full items-center gap-2 text-sm leading-tight text-foreground">

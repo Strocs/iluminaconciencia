@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useId, useRef, useState, type ReactNode } from 'react'
+import { useCallback, useId, useRef, useState, type KeyboardEvent, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { cn } from '@/_utils/cn'
 
@@ -131,8 +131,12 @@ export function InfoPopover({
       document.addEventListener(
         'keydown',
         (event) => {
-          if (event.key !== 'Escape' || triggerRef.current?.getAttribute('aria-expanded') !== 'true') return
-          if (node.contains(document.activeElement)) triggerRef.current?.focus()
+          if (
+            event.defaultPrevented ||
+            event.key !== 'Escape' ||
+            triggerRef.current?.getAttribute('aria-expanded') !== 'true'
+          )
+            return
           close()
           event.preventDefault()
         },
@@ -147,6 +151,31 @@ export function InfoPopover({
     },
     [cancelClose, close, measureAndPlace]
   )
+
+  function closeAndRestoreFocus() {
+    triggerRef.current?.focus({ preventScroll: true })
+    close()
+  }
+
+  function handlePanelKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    if (event.key === 'Escape') {
+      event.preventDefault()
+      event.stopPropagation()
+      closeAndRestoreFocus()
+      return
+    }
+    if (event.key !== 'Tab') return
+
+    // Portaled controls are not part of the parent overlay's tab order.
+    event.stopPropagation()
+    const controls = Array.from(
+      event.currentTarget.querySelectorAll<HTMLElement>('button:not(:disabled), a[href], [tabindex="0"]')
+    ).filter((control) => control.getClientRects().length && !control.closest('[inert]'))
+    if (document.activeElement !== (event.shiftKey ? controls[0] : controls.at(-1))) return
+
+    event.preventDefault()
+    closeAndRestoreFocus()
+  }
 
   return (
     <>
@@ -176,19 +205,30 @@ export function InfoPopover({
         onPointerLeave={(event) => {
           if (openOnHover && event.pointerType === 'mouse') scheduleClose()
         }}
-        onFocus={(event) => {
-          if (event.currentTarget.matches(':focus-visible')) show()
-        }}
         onBlur={scheduleClose}
-        onClick={() => {
-          cancelOpen()
-          cancelClose()
-          setOpen((current) => !current)
+        onClick={(event) => {
+          if (open) {
+            close()
+            return
+          }
+          show()
+          if (event.detail === 0) {
+            requestAnimationFrame(() => {
+              if (triggerRef.current?.getAttribute('aria-expanded') === 'true') {
+                panelRef.current?.querySelector('button')?.focus({ preventScroll: true })
+              }
+            })
+          }
         }}
         onKeyDown={(event) => {
-          if (open && (event.key === 'ArrowDown' || (event.key === 'Tab' && !event.shiftKey))) {
+          if (!open) return
+          if (event.key === 'Escape') {
             event.preventDefault()
-            panelRef.current?.querySelector('button')?.focus()
+            event.stopPropagation()
+            close()
+          } else if (event.key === 'ArrowDown') {
+            event.preventDefault()
+            panelRef.current?.querySelector('button')?.focus({ preventScroll: true })
           }
         }}
       >
@@ -219,6 +259,7 @@ export function InfoPopover({
             }}
             onFocus={cancelClose}
             onBlur={scheduleClose}
+            onKeyDown={handlePanelKeyDown}
           >
             <div data-popover-heading className="flex shrink-0 items-start justify-between gap-3 px-4 pt-4 pb-3">
               <h2 id={titleId} className="text-sm/normal font-semibold">
@@ -228,10 +269,7 @@ export function InfoPopover({
                 type="button"
                 aria-label="Cerrar explicación"
                 className="-mt-1 -mr-1 flex size-7 shrink-0 cursor-pointer items-center justify-center rounded-sm text-xl/none text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
-                onClick={() => {
-                  triggerRef.current?.focus()
-                  close()
-                }}
+                onClick={closeAndRestoreFocus}
               >
                 <span aria-hidden="true">×</span>
               </button>

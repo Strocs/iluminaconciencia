@@ -6,8 +6,14 @@ import type { MapCanvas } from './MapCanvas'
 
 function MapLoading() {
   return (
-    <div role="status" className="flex size-full items-center justify-center text-sm text-text">
-      Cargando mapa…
+    <div className="flex size-full items-center justify-center">
+      <div
+        role="progressbar"
+        aria-label="Cargando mapa"
+        className="h-1 w-32 overflow-hidden rounded-full bg-primary/20"
+      >
+        <div className="h-full w-1/2 rounded-full bg-primary motion-safe:animate-map-loading motion-reduce:mx-auto" />
+      </div>
     </div>
   )
 }

@@ -1,7 +1,7 @@
 'use client'
 
-import { Fragment, useRef, useState } from 'react'
-import { AttributionControl, Map, Marker } from 'react-map-gl/maplibre'
+import { Fragment, useCallback, useRef, useState, type Ref, type RefObject } from 'react'
+import { AttributionControl, Layer, Map, Marker, Source, type MapRef } from 'react-map-gl/maplibre'
 import { setWorkerUrl, type Map as MapLibreMap } from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import type { MapGroup } from '../types'
@@ -10,13 +10,22 @@ import { MapMarkButton } from './MapMarkButton'
 import { MapNavigationControls } from './MapNavigationControls'
 import { useMapFilters } from '../hooks/useMapFilters'
 import { cn } from '@/_utils/cn'
+import type { ChileRegion } from '../chile-regions'
+import { communeBoundaryUrl, registerCommuneBoundaryProtocol } from '../commune-boundary-source'
+import { getRegionPadding } from '../map-camera'
+import { regionBoundaryUrl, registerRegionBoundaryProtocol } from '../region-boundary-source'
 import styles from './MapCanvas.module.css'
 
 setWorkerUrl(new URL('maplibre-gl/dist/maplibre-gl-worker.mjs', import.meta.url).toString())
+registerRegionBoundaryProtocol()
+registerCommuneBoundaryProtocol()
 
 interface MapCanvasProps {
   selectedId: string | null
   selectedGroupId: string | null
+  mapRef: Ref<MapRef>
+  floatingPanelRef: RefObject<HTMLElement | null> | null
+  region: ChileRegion
   panelOpen: boolean
   cooperativeGestures?: boolean
   fullscreen?: boolean
@@ -25,12 +34,18 @@ interface MapCanvasProps {
 }
 
 const MAP_STYLE_URL = '/maps/openfreemap-dark.json'
-const DEFAULT_CENTER = { latitude: -30.02, longitude: -71.27 }
-const DEFAULT_ZOOM = 9
+// The local OpenFreeMap style groups text layers above the basemap geometry.
+const FIRST_MAP_LABEL_LAYER = 'water_name'
+const COMMUNE_MIN_ZOOM = 6
+const REGIONAL_ATTRIBUTION =
+  'Límites: <a href="https://www.geoboundaries.org/">BCN / OCHA ROLAC · geoBoundaries</a> · <a href="https://creativecommons.org/licenses/by/3.0/igo/">CC BY 3.0 IGO</a>'
 
 export function MapCanvas({
   selectedId,
   selectedGroupId,
+  mapRef,
+  floatingPanelRef,
+  region,
   panelOpen,
   cooperativeGestures = true,
   fullscreen = false,
@@ -40,17 +55,49 @@ export function MapCanvas({
   const groups = useMapFilters((state) => state.filteredGroups)
   const loadedMap = useRef<MapLibreMap | null>(null)
   const [mapGeneration, setMapGeneration] = useState(0)
+  const [initialPadding, setInitialPadding] = useState<ReturnType<typeof getRegionPadding>>(null)
+  const [showCommunes, setShowCommunes] = useState(false)
+  const { code: regionCode, bounds } = region
+  const communeData = showCommunes ? communeBoundaryUrl(regionCode) : null
+  const measureViewport = useCallback(
+    (viewport: HTMLDivElement | null) => {
+      if (!viewport) return
+      const measure = () => getRegionPadding(viewport, floatingPanelRef?.current ?? null)
+      const padding = measure()
+      if (padding) {
+        setInitialPadding(padding)
+        return
+      }
+
+      // An Activity can initially hide the viewport; wait for a measurable size.
+      const observer = new ResizeObserver(() => {
+        const nextPadding = measure()
+        if (!nextPadding) return
+        observer.disconnect()
+        setInitialPadding(nextPadding)
+      })
+      observer.observe(viewport)
+      return () => observer.disconnect()
+    },
+    [floatingPanelRef]
+  )
+
+  if (!initialPadding) return <div ref={measureViewport} className="size-full" />
 
   return (
     <div
+      ref={measureViewport}
       role="region"
       aria-label="Mapa de puntos de medición"
       className={cn('size-full', styles.map, panelOpen && styles.controlsHidden)}
     >
       <Map
+        ref={mapRef}
         mapStyle={MAP_STYLE_URL}
         onClick={onClose}
+        onZoom={({ target }) => setShowCommunes(target.getZoom() >= COMMUNE_MIN_ZOOM)}
         onLoad={({ target }) => {
+          setShowCommunes(target.getZoom() >= COMMUNE_MIN_ZOOM)
           if (loadedMap.current === target) return
           target.touchZoomRotate.disableRotation()
           target.keyboard.disableRotation()
@@ -58,7 +105,7 @@ export function MapCanvas({
           if (loadedMap.current !== null) setMapGeneration((generation) => generation + 1)
           loadedMap.current = target
         }}
-        initialViewState={{ ...DEFAULT_CENTER, zoom: DEFAULT_ZOOM, bearing: 0, pitch: 0 }}
+        initialViewState={{ bounds, fitBoundsOptions: { padding: initialPadding }, bearing: 0, pitch: 0 }}
         maxPitch={0}
         dragRotate={false}
         touchPitch={false}
@@ -72,6 +119,38 @@ export function MapCanvas({
         style={{ width: '100%', height: '100%' }}
       >
         <Fragment key={mapGeneration}>
+          {communeData && (
+            <Source
+              key={'commune-' + regionCode}
+              id={'chile-commune-' + regionCode}
+              type="geojson"
+              data={communeData}
+              tolerance={0}
+            >
+              <Layer
+                id={'chile-commune-boundaries-' + regionCode}
+                type="line"
+                beforeId={FIRST_MAP_LABEL_LAYER}
+                minzoom={COMMUNE_MIN_ZOOM}
+                paint={{ 'line-color': '#f4bd63', 'line-width': 1, 'line-opacity': 0.65, 'line-dasharray': [3, 3] }}
+              />
+            </Source>
+          )}
+          <Source
+            key={regionCode}
+            id={'chile-region-' + regionCode}
+            type="geojson"
+            data={regionBoundaryUrl(regionCode)}
+            tolerance={0}
+            attribution={REGIONAL_ATTRIBUTION}
+          >
+            <Layer
+              id={'chile-region-boundary-' + regionCode}
+              type="line"
+              beforeId={FIRST_MAP_LABEL_LAYER}
+              paint={{ 'line-color': '#f4bd63', 'line-width': 1.5 }}
+            />
+          </Source>
           <AttributionControl compact position="bottom-left" />
           <MapNavigationControls fullscreen={fullscreen} />
           {groups.map((group) => {
