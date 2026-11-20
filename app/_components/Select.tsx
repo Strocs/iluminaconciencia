@@ -13,7 +13,13 @@ interface SelectProps {
   value: string
   onValueChange: (value: string) => void
   disabled?: boolean
+  variant?: keyof typeof triggerVariants
   className?: string
+}
+
+const triggerVariants = {
+  default: 'bg-background aria-expanded:bg-primary aria-expanded:text-background',
+  transparent: 'bg-transparent hover:bg-transparent hover:text-primary aria-expanded:bg-transparent'
 }
 
 const normalize = (text: string) =>
@@ -50,6 +56,7 @@ export function Select({
   value,
   onValueChange,
   disabled,
+  variant = 'default',
   className
 }: SelectProps) {
   const baseId = useId()
@@ -184,7 +191,10 @@ export function Select({
           if (open) closeList()
           else openList(Math.max(0, selected))
         }}
-        className="group/select min-h-9 w-full justify-between gap-2 bg-background px-3 text-left font-semibold aria-expanded:bg-primary aria-expanded:text-background"
+        className={cn(
+          'group/select min-h-9 w-full justify-between gap-2 px-3 text-left font-semibold',
+          triggerVariants[variant]
+        )}
       >
         <span className="min-w-0 truncate">{options[selected]?.label ?? '—'}</span>
         <svg
@@ -210,7 +220,7 @@ export function Select({
             search.current = { text: '', time: 0 }
           }
         }}
-        className="fixed inset-auto m-0 overflow-y-auto overscroll-contain rounded-lg border border-border bg-background p-1.5 font-body text-sm text-foreground shadow-xl shadow-black/40"
+        className="fixed inset-auto m-0 map-panel-scrollbar overflow-y-auto overscroll-contain rounded-lg border border-border bg-background p-1.5 pe-2 font-body text-sm text-foreground shadow-xl shadow-black/40"
       >
         {options.map((option, index) => (
           <li

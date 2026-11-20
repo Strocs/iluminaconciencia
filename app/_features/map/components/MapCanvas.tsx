@@ -161,7 +161,7 @@ export function MapCanvas({
                   latitude={group.position.lat}
                   longitude={group.position.lng}
                   anchor="center"
-                  style={{ zIndex: 2 }}
+                  style={{ zIndex: 2, pointerEvents: 'none' }}
                 >
                   <GroupFigure
                     group={group}
@@ -178,7 +178,7 @@ export function MapCanvas({
                 latitude={mark.position.lat}
                 longitude={mark.position.lng}
                 anchor="center"
-                style={{ zIndex: mark.instrumentType === 'SQC' ? 0 : 1 }}
+                style={{ zIndex: mark.instrumentType === 'SQC' ? 0 : 1, pointerEvents: 'none' }}
               >
                 <div className="flex size-8 items-center justify-center">
                   <MapMarkButton

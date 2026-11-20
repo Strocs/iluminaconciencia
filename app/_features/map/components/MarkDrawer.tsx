@@ -6,6 +6,7 @@ import { getBortleClass } from '@/_features/bortle/lookup'
 import { MONTHS } from '@/_utils/months'
 import { cn } from '@/_utils/cn'
 import type { MapMark } from '../types'
+import { MapPanelScrollArea } from './MapPanelScrollArea'
 
 function formatSummaryPeriod(period: string) {
   const monthOnlyPeriod = period.trim().match(/^([a-z]{3,9})\s+(\d{4})$/i)
@@ -176,11 +177,11 @@ export function MapMarkDrawer({
         <h3 className="shrink-0 border-b border-border pb-3 font-body text-base font-normal text-primary">
           {marks.length > 1 ? `${marks.length} instrumentos en este punto` : 'Detalle del instrumento'}
         </h3>
-        <div ref={listRef} className="map-panel-scrollbar min-h-0 flex-1 space-y-4 overflow-y-auto overscroll-contain py-3">
+        <MapPanelScrollArea ref={listRef} className="space-y-4 py-3">
           {marks.map((mark) => (
             <MemberArticle key={mark.id} mark={mark} selected={selectedId === mark.id} floating={!!floating} />
           ))}
-        </div>
+        </MapPanelScrollArea>
         <Button
           as="btn"
           ref={closeButtonRef}

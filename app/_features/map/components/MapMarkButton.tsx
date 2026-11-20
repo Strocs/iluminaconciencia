@@ -41,7 +41,7 @@ export function MapMarkButton({ mark, selected, compact = false, groupId, onSele
           : selected
             ? 'border-solid bg-(--mark-color) text-(--mark-text) ring-2 ring-foreground ring-offset-2 ring-offset-background'
             : 'bg-[#111114] text-foreground',
-        compact && 'pointer-events-none'
+        compact ? 'pointer-events-none' : 'pointer-events-auto'
       )}
       style={{ '--mark-color': color, '--mark-text': textColor } as CSSProperties}
       onClick={(event) => {

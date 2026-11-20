@@ -16,8 +16,29 @@ function slot(index: number, count: number, expanded: boolean) {
     : { x: (index === 1 ? -1 : 1) * (expanded ? 28 : 9), y: expanded ? 24 : 7 }
 }
 
+function compactGroupHitArea(members: MapGroup['members'], scale: number) {
+  const margin = 2
+  const bounds = members.map(({ instrumentType }, index) => {
+    const { x, y } = slot(index, members.length, false)
+    // Match MapMarkButton: 32px circle or 26px square, rotated for TESS-W.
+    const size = instrumentType === 'SQC' ? 32 : instrumentType === 'TESS-W' ? 26 * Math.SQRT2 : 26
+    const radius = (size * scale) / 2 + margin
+    return { left: x - radius, right: x + radius, top: y - radius, bottom: y + radius }
+  })
+  const left = Math.min(...bounds.map((mark) => mark.left))
+  const top = Math.min(...bounds.map((mark) => mark.top))
+
+  return {
+    left: `calc(50% + ${left}px)`,
+    top: `calc(50% + ${top}px)`,
+    width: Math.max(...bounds.map((mark) => mark.right)) - left,
+    height: Math.max(...bounds.map((mark) => mark.bottom)) - top
+  }
+}
+
 export function GroupFigure({ group, expanded, selectedId, onSelect }: GroupFigureProps) {
-  const scale = expanded ? 1 : group.members.length === 2 ? 0.75 : 0.6
+  const compactScale = group.members.length === 2 ? 0.75 : 0.6
+  const scale = expanded ? 1 : compactScale
 
   return (
     <div className="pointer-events-none relative h-28 w-32">
@@ -28,10 +49,7 @@ export function GroupFigure({ group, expanded, selectedId, onSelect }: GroupFigu
             key={mark.id}
             inert={!expanded}
             aria-hidden={!expanded}
-            className={cn(
-              'absolute top-1/2 left-1/2 flex size-8 -translate-1/2 items-center justify-center transition-transform duration-200 motion-reduce:transition-none',
-              expanded && 'pointer-events-auto'
-            )}
+            className="pointer-events-none absolute top-1/2 left-1/2 flex size-8 -translate-1/2 items-center justify-center transition-transform duration-200 motion-reduce:transition-none"
             style={{ transform: `translate(${position.x}px, ${position.y}px) scale(${scale})` }}
           >
             <MapMarkButton
@@ -51,9 +69,10 @@ export function GroupFigure({ group, expanded, selectedId, onSelect }: GroupFigu
         aria-controls="mark-drawer"
         tabIndex={expanded ? -1 : 0}
         className={cn(
-          'pointer-events-auto absolute top-1/2 left-1/2 h-16 w-18 -translate-1/2 cursor-pointer rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground',
-          expanded && 'pointer-events-none invisible'
+          'absolute z-10 cursor-pointer rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground',
+          expanded ? 'pointer-events-none invisible' : 'pointer-events-auto'
         )}
+        style={compactGroupHitArea(group.members, compactScale)}
         onClick={(event) => {
           event.stopPropagation()
           onSelect(group, event.currentTarget)
